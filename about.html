@@ -16,10 +16,130 @@
     a:hover { color: #f5d732; }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-rise { from { opacity: 0; transform: translateY(70px) scale(0.975) } to { opacity: 1; transform: none } }
-    @media (prefers-reduced-motion: reduce), (max-width: 900px) {
-      [data-curtain] { position: static !important; height: auto !important; min-height: 0 !important; box-shadow: none !important; }
+
+    /* Shared flow (desktop + mobile): Hero → Brisa Way → Our Roots over band → Way cards */
+    [data-bb-hero-grid] {
+      grid-template-columns: 1fr;
+      gap: clamp(18px, 2.4vw, 36px);
+      align-content: center;
+      justify-items: stretch;
+    }
+    [data-bb-hero-photo] {
+      width: 100%;
+      max-height: min(52svh, 620px);
+      aspect-ratio: 4 / 3;
+    }
+    [data-bb-hero-grid] h1 {
+      max-width: none;
+    }
+    [data-bb-roots] {
+      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      height: 100svh;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(64px, 8vh, 150px) clamp(16px, 4.7vw, 90px) clamp(24px, 3vw, 60px);
+      box-sizing: border-box;
+      pointer-events: none;
+      background: transparent;
+    }
+    [data-bb-roots-card] {
+      width: 100%;
+      max-width: 1180px;
+      max-height: calc(100svh - 96px);
+      overflow-y: auto;
+      background: #eeeee4;
+      padding: clamp(22px, 3vw, 60px) clamp(18px, 3.4vw, 66px);
+      box-sizing: border-box;
+      display: grid;
+      gap: clamp(14px, 1.7vw, 30px);
+      pointer-events: auto;
+    }
+    [data-bb-roots-card] p {
+      margin: 0;
+      font-size: clamp(16px, 2.15vw, 42px);
+      line-height: 1.4;
+      text-align: justify;
+      color: #606060;
+    }
+    [data-screen-label="The Brisa Way"] {
+      position: relative;
+      z-index: 5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-curtain] { position: static !important; height: auto !important; min-height: 0 !important; box-shadow: none !important; overflow: visible !important; }
       [data-curtain] [data-curtain-fit] { max-height: none !important; }
       [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
+      [data-bb-hero-inner] { height: auto !important; min-height: 0 !important; }
+      [data-curtain][data-bb-band] { min-height: 42svh !important; height: 42svh !important; }
+      [data-bb-roots] { position: relative !important; height: auto !important; min-height: 0 !important; }
+      [data-bb-hello] { height: auto !important; overflow: visible !important; }
+      [data-bb-hello] [data-screen-label="Say Hello"] { flex: none !important; min-height: 52svh !important; }
+    }
+    @media (max-width: 900px) {
+      [data-bb-nav] > div:last-child { font-size: 14px !important; gap: 4px !important; }
+      [data-bb-hero-inner] { padding-bottom: 18px !important; }
+      [data-bb-hero-grid] { gap: 18px !important; padding-top: 14px !important; }
+      [data-bb-hero-photo] { max-height: 42svh !important; }
+      [data-bb-hero-grid] h1 {
+        font-size: clamp(32px, 8.5vw, 44px) !important;
+        line-height: 1.1 !important;
+      }
+      [data-screen-label="Hero"] > [data-bb-deco]:nth-of-type(1) {
+        width: clamp(150px, 44vw, 240px) !important;
+        left: -20% !important;
+        bottom: -12% !important;
+      }
+      [data-screen-label="Hero"] > [data-bb-deco]:nth-of-type(2) {
+        width: clamp(130px, 38vw, 210px) !important;
+        right: -18% !important;
+        bottom: -8% !important;
+      }
+      [data-bb-band] h2 { font-size: clamp(40px, 12vw, 72px) !important; }
+      [data-bb-roots] { padding: clamp(64px, 10vh, 96px) 16px 24px !important; }
+      [data-bb-roots-card] { padding: clamp(22px, 4vh, 32px) 18px !important; gap: 14px !important; }
+      [data-bb-roots-card] p { font-size: clamp(16px, 4.2vw, 19px) !important; line-height: 1.45 !important; }
+      [data-screen-label="The Brisa Way"] { padding: 72px 16px 64px !important; }
+      [data-bb-way-row] { grid-template-columns: 1fr 1fr !important; }
+      [data-bb-way-photo] {
+        aspect-ratio: 3 / 4 !important;
+        max-height: 46svh !important;
+        overflow: hidden !important;
+      }
+      [data-bb-way-copy] { padding: 18px 14px !important; gap: 10px !important; }
+      [data-bb-way-row] h3 { font-size: clamp(18px, 4.6vw, 24px) !important; }
+      [data-bb-way-row] p { font-size: clamp(13px, 3.4vw, 16px) !important; line-height: 1.4 !important; }
+      [data-bb-stamp] {
+        width: clamp(118px, 34vw, 168px) !important;
+        left: 6px !important;
+        top: -40px !important;
+      }
+      [data-bb-stamp] span { font-size: clamp(12px, 3.4vw, 16px) !important; }
+      [data-screen-label="The Brisa Way"] > [data-bb-deco] {
+        display: block !important;
+        width: 160% !important;
+        left: -30% !important;
+        top: -48px !important;
+        height: 90px !important;
+      }
+      [data-bb-hello] [data-screen-label="Say Hello"] > div { padding: 16px !important; }
+      [data-bb-hello-card] { padding: 20px 16px !important; }
+      [data-bb-hello-card] h2 {
+        font-size: clamp(22px, 5.5vw, 28px) !important;
+        margin-bottom: 12px !important;
+      }
+      [data-bb-hello-card] > div {
+        font-size: clamp(14px, 3.6vw, 17px) !important;
+        gap: 8px !important;
+        word-break: break-word !important;
+      }
+      [data-bb-hello] [data-screen-label="Footer"] { padding: 18px 16px 14px !important; }
+      [data-bb-hello] [data-screen-label="Footer"] > div:first-child > div:first-child {
+        font-size: clamp(36px, 12vw, 56px) !important;
+      }
     }
   </style>
   <title>About Brisa Bay | A family, a bay breeze, and Napa roots</title>
@@ -40,14 +160,14 @@
   <!-- ================= HERO ================= -->
   <div data-screen-label="Hero" data-curtain="" style="position: sticky; top: 0; z-index: 1; height: 100svh; background: #e6393a; padding: 0 clamp(20px, 4.7vw, 90px); box-sizing: border-box; overflow: hidden">
 
-    <img src="assets/brush/circle-yellow.png" alt="" style="position: absolute; left: -13%; bottom: -16%; width: clamp(200px, 30vw, 560px); pointer-events: none; z-index: 1">
-    <img src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -14%; bottom: -10%; width: clamp(180px, 26vw, 500px); pointer-events: none; z-index: 1">
+    <img data-bb-deco="" src="assets/brush/circle-yellow.png" alt="" style="position: absolute; left: -13%; bottom: -16%; width: clamp(200px, 30vw, 560px); pointer-events: none; z-index: 1">
+    <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -14%; bottom: -10%; width: clamp(180px, 26vw, 500px); pointer-events: none; z-index: 1">
     
 
     <!-- first viewport: nav + headline + photo only -->
-    <div style="position: relative; z-index: 5; height: 100%; min-height: 100svh; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) 0 clamp(24px, 3vw, 50px); box-sizing: border-box">
+    <div data-bb-hero-inner="" style="position: relative; z-index: 5; height: 100%; min-height: 100svh; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) 0 clamp(24px, 3vw, 50px); box-sizing: border-box">
 
-    <div style="position: relative; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
+    <div data-bb-nav="" style="position: relative; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
       <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(8px, 1.4vw, 26px); font-size: clamp(15px, 2.1vw, 40px); color: #eeeee4">
         <span style="padding: 0.12em 0.7em; border-radius: 999px; color: #f5d732; cursor: default">About us</span>
@@ -56,27 +176,18 @@
       </div>
     </div>
 
-    <div style="position: relative; z-index: 3; flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: clamp(24px, 4vw, 80px); align-items: center; padding: clamp(24px, 4vw, 70px) 0 0">
-      <h1 style="position: relative; z-index: 4; margin: 0; max-width: 16ch; font-family: 'Old Newspaper', serif; font-size: clamp(40px, 5.8vw, 112px); line-height: 1.12; font-weight: 400; color: #eeeee4; text-wrap: balance">Where the wine meets the breeze.</h1>
-      <div style="width: 100%; aspect-ratio: 1538 / 1022; max-height: 52svh">
+    <div data-bb-hero-grid="" style="position: relative; z-index: 3; flex: 1; min-height: 0; display: grid; gap: clamp(18px, 2.4vw, 36px); align-items: center; padding: clamp(24px, 4vw, 70px) 0 0">
+      <div data-bb-hero-photo="" style="width: 100%; aspect-ratio: 4 / 3; max-height: min(52svh, 620px)">
         <img src="assets/web/about-hero.jpg" alt="Friends clinking glasses of Brisa Bay over a table of food on a sunlit deck" style="display: block; width: 100%; height: 100%; object-fit: cover">
       </div>
+      <h1 style="position: relative; z-index: 4; margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(32px, 5.8vw, 112px); line-height: 1.12; font-weight: 400; color: #eeeee4; text-wrap: balance">Where the wine meets the breeze.</h1>
     </div>
 
     </div>
   </div>
 
-  <!-- ================= PANEL 2: OUR ROOTS (slides over the hero) ================= -->
-  <div data-curtain="" style="position: sticky; top: 0; z-index: 2; height: 100svh; display: flex; align-items: center; justify-content: center; padding: clamp(84px, 8vw, 150px) clamp(20px, 4.7vw, 90px) clamp(24px, 3vw, 60px); box-sizing: border-box; pointer-events: none">
-
-    <div data-screen-label="Our Roots" data-reveal="" style="animation: bb-rise linear both; animation-timeline: view(); animation-range: entry 10% entry 95%; pointer-events: auto; position: relative; z-index: 3; width: 100%; max-width: 1180px; max-height: 100%; background: #eeeee4; padding: clamp(26px, 3vw, 60px) clamp(24px, 3.4vw, 66px); box-sizing: border-box; display: grid; gap: clamp(16px, 1.7vw, 30px); overflow: hidden">
-      <p style="margin: 0; font-size: clamp(19px, 2.15vw, 42px); line-height: 1.4; text-align: justify; text-wrap: pretty">We've always believed that certain places have a soul of their own: the power to bring back a memory, shift your mood, or simply ground you in the present. For us, that place is right at the edge of the San Pablo Bay.</p>
-      <p style="margin: 0; font-size: clamp(19px, 2.15vw, 42px); line-height: 1.4; text-align: justify; text-wrap: pretty">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic; font-weight: 700">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive, and moving.</p>
-    </div>
-  </div>
-
-  <!-- ================= PANEL 3: THE BRISA WAY — TITLE BAND (pinned) ================= -->
-  <div data-screen-label="Brisa Way Band" data-curtain="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
+  <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
+  <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
     <img src="assets/web/way-band.jpg" alt="Wide view of Napa Valley vineyard rows with cypress trees and hills beyond" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(60,58,52,0.28) 0%, rgba(60,58,52,0) 55%)"></div>
     <div style="position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 clamp(20px, 5vw, 90px); box-sizing: border-box">
@@ -84,13 +195,21 @@
     </div>
   </div>
 
+  <!-- ================= OUR ROOTS (slides over The Brisa Way band) ================= -->
+  <div data-bb-roots="" style="display: flex; position: sticky; top: 0; z-index: 4; height: 100svh; align-items: center; justify-content: center; padding: clamp(64px, 8vh, 150px) clamp(16px, 4.7vw, 90px) clamp(24px, 3vw, 60px); box-sizing: border-box; pointer-events: none">
+    <div data-bb-roots-card="" data-screen-label="Our Roots" style="pointer-events: auto; width: 100%; max-width: 1180px; max-height: calc(100svh - 96px); background: #eeeee4; padding: clamp(22px, 3vw, 60px) clamp(18px, 3.4vw, 66px); box-sizing: border-box; display: grid; gap: clamp(14px, 1.7vw, 30px); overflow: auto">
+      <p style="margin: 0; font-size: clamp(16px, 2.15vw, 42px); line-height: 1.4; text-align: justify; text-wrap: pretty; color: #606060">We've always believed that certain places have a soul of their own: the power to bring back a memory, shift your mood, or simply ground you in the present. For us, that place is right at the edge of the San Pablo Bay.</p>
+      <p style="margin: 0; font-size: clamp(16px, 2.15vw, 42px); line-height: 1.4; text-align: justify; text-wrap: pretty; color: #606060">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic; font-weight: 700">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive, and moving.</p>
+    </div>
+  </div>
+
   <!-- ================= PANEL 4: THE BRISA WAY — GRID (slides over the band) ================= -->
   <div data-screen-label="The Brisa Way" style="position: relative; z-index: 4; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55); padding: clamp(60px, 7vw, 130px) clamp(20px, 5vw, 190px) clamp(70px, 11vw, 200px); box-sizing: border-box">
 
-    <img src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
+    <img data-bb-deco="" src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
 
     <!-- rotating stamp -->
-    <div style="position: absolute; left: clamp(-14px, 1.5vw, 46px); top: clamp(-120px, -9vw, -46px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 7">
+    <div data-bb-stamp="" style="position: absolute; left: clamp(-14px, 1.5vw, 46px); top: clamp(-120px, -9vw, -46px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 7">
       <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
         <img src="assets/brush/asterisk-sage-centered.png" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
       </div>
@@ -107,49 +226,49 @@
 
     <div style="display: grid; gap: clamp(16px, 2vw, 30px)">
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
-        <div style="background: #e6393a; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
+      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
+        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
+        <div data-bb-way-copy="" style="background: #e6393a; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
           <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">The Un-Occasion</h3>
           <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">Forget the calendar milestones. Great wine is for the spontaneous moments, Opened just because the sun is out, the music is good, or simply because you're together.</p>
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div style="background: #f2500a; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
+      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
+        <div data-bb-way-copy="" style="background: #f2500a; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
           <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">Freshness First</h3>
           <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">Shaped by the cool winds of San Pablo Bay, we show a brighter side of Napa Valley. No heavy flavors here; just crisp, light, and refreshing wine full of life.</p>
         </div>
-        <div style="width: 100%; aspect-ratio: 3522 / 5290"><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
+        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 3522 / 5290"><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
-        <div style="background: #9ac21e; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
+      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
+        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
+        <div data-bb-way-copy="" style="background: #9ac21e; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
           <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">Better Together</h3>
           <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">This wine isn't meant for a dark cellar or silent analysis. It's a bridge between people: the perfect excuse for a long lunch that rolls right into dinner with friends.</p>
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div style="background: #60b98f; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 90px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
+      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
+        <div data-bb-way-copy="" style="background: #60b98f; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 90px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
           <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">Keeping it Simple</h3>
           <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">We've stripped away the complex terminology and unwritten rules. No pretense, no pressure, just great Napa wine made to let you focus entirely on the moment.</p>
         </div>
-        <div style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
+        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
       </div>
 
     </div>
   </div>
 
   <!-- ================= PANEL 5: SAY HELLO + FOOTER — ONE VIEWPORT (pinned) ================= -->
-  <div data-curtain="" style="position: sticky; top: 0; z-index: 5; height: 100svh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
+  <div data-curtain="" data-bb-hello="" style="position: sticky; top: 0; z-index: 5; height: 100svh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
 
   <div data-screen-label="Say Hello" style="position: relative; flex: 1; min-height: 0; display: flex; align-items: center">
     <img src="assets/web/hello-band.jpg" alt="Oak barrels stacked along a Napa wine cave" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     
     <div style="position: relative; z-index: 3; width: 100%; padding: clamp(24px, 3vw, 56px) clamp(20px, 5vw, 190px)">
-      <div style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
+      <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
         <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; font-weight: 700; color: #606060">Say hello.</h2>
         <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: #606060">
           <span>hello@brisabaywine.com</span>

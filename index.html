@@ -17,6 +17,61 @@
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+    @media (max-width: 900px) {
+      [data-bb-hero] {
+        aspect-ratio: auto !important;
+        min-height: 62svh !important;
+        height: 62svh !important;
+      }
+      [data-bb-deco] { display: none !important; }
+      [data-bb-stamp] {
+        width: clamp(120px, 34vw, 180px) !important;
+        left: 12px !important;
+        top: -18px !important;
+      }
+      [data-bb-wines] {
+        margin-top: clamp(72px, 22vw, 140px) !important;
+        padding-top: 8px !important;
+      }
+      [data-bb-wines] img[alt*="bottle"] {
+        height: clamp(280px, 70vw, 420px) !important;
+      }
+      [data-bb-moment] {
+        flex: 0 0 100% !important;
+        height: clamp(220px, 58vw, 360px) !important;
+      }
+      [data-bb-skip] { text-align: left !important; align-items: flex-start !important; }
+      [data-bb-skip] p { text-align: left !important; }
+      [data-bb-collage] {
+        aspect-ratio: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 14px !important;
+      }
+      [data-bb-collage] > [data-bb-deco] { display: none !important; }
+      [data-bb-collage-item],
+      [data-bb-collage-copy] {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        transform: none !important;
+      }
+      [data-bb-collage-item] { aspect-ratio: 4 / 3 !important; }
+      [data-bb-collage-copy] { order: -1 !important; }
+      [data-bb-collage-copy] h2 {
+        font-size: clamp(26px, 8vw, 40px) !important;
+        text-align: left !important;
+        padding: 8px 4px 4px !important;
+      }
+      [data-bb-nav] { row-gap: 10px !important; }
+      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
+      [data-bb-section] { padding-left: 20px !important; padding-right: 20px !important; overflow: hidden !important; }
+      [data-screen-label="Our Story"] > div:last-child { padding: 36px 22px !important; }
+      [data-screen-label="Skip the Cellar"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-screen-label="Footer"] { padding-left: 20px !important; padding-right: 20px !important; }
+      [data-screen-label="Bottled Moments"] > div:first-of-type { padding-left: 20px !important; padding-right: 20px !important; }
+    }
   </style>
   <title>Brisa Bay | Napa Valley wine meant to be lived, not collected</title>
   <meta name="description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
@@ -36,13 +91,13 @@
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
 
   <!-- ================= HERO ================= -->
-  <div data-screen-label="Hero" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
+  <div data-screen-label="Hero" data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
     <video id="bb-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
       <source src="assets/web2/hero-video.mp4" type="video/mp4">
     </video>
     <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
 
-    <div style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
+    <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
       <div style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em">Brisa Bay</div>
       <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
         <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
@@ -104,12 +159,12 @@
   </div>
 
   <!-- ================= OUR WINES ================= -->
-  <div data-screen-label="Our Wines" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
+  <div data-screen-label="Our Wines" data-bb-section="" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
 
-    <img src="assets/brush/wave-lime.png" alt="" style="position: absolute; left: 27%; top: clamp(-120px, -10vw, -40px); width: 93%; height: clamp(200px, 32vw, 624px); z-index: 8; pointer-events: none">
-    <img src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -6%; top: 30%; width: clamp(300px, 43vw, 820px); z-index: 1; pointer-events: none">
+    <img data-bb-deco="" src="assets/brush/wave-lime.png" alt="" style="position: absolute; left: 27%; top: clamp(-120px, -10vw, -40px); width: 93%; height: clamp(200px, 32vw, 624px); z-index: 8; pointer-events: none">
+    <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -6%; top: 30%; width: clamp(300px, 43vw, 820px); z-index: 1; pointer-events: none">
 
-    <div style="position: absolute; left: clamp(-20px, 4.7vw, 90px); top: clamp(-30px, -2vw, -10px); width: clamp(200px, 24vw, 460px); aspect-ratio: 1; z-index: 9">
+    <div data-bb-stamp="" style="position: absolute; left: clamp(-20px, 4.7vw, 90px); top: clamp(-30px, -2vw, -10px); width: clamp(200px, 24vw, 460px); aspect-ratio: 1; z-index: 9">
       <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
       <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
         <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
@@ -121,7 +176,7 @@
       </svg>
     </div>
 
-    <div style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: clamp(150px, 19.5vw, 380px)">
+    <div data-bb-wines="" style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: clamp(150px, 19.5vw, 380px)">
       <div>
         <h2 style="margin: 0 0 clamp(30px, 3.6vw, 70px); font-family: 'Old Newspaper', serif; font-size: clamp(40px, 5vw, 96px); font-weight: 400; color: #5b584e; letter-spacing: 0.04em">Our Wines</h2>
         <sc-if value="{{ isWine0 }}" hint-placeholder-val="{{ true }}">
@@ -165,7 +220,7 @@
 
   <!-- ================= BOTTLED MOMENTS ================= -->
   <div data-screen-label="Bottled Moments" style="position: relative; z-index: 3">
-    <img src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
+    <img data-bb-deco="" src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
     <div style="background: #60b98f; text-align: center; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); position: relative">
       <h2 style="margin: 0 0 clamp(12px, 1.15vw, 22px); font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.6vw, 88px); font-weight: 400; color: #eeeee4; letter-spacing: 0.03em; text-wrap: balance">Bottled Moments</h2>
       <p style="margin: 0 auto clamp(14px, 1.2vw, 22px); max-width: 46ch; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 2.1vw, 40px); color: #eeeee4; text-wrap: pretty">A gallery of real afternoons, sent in by the people drinking them.</p>
@@ -179,7 +234,7 @@
         <div style="flex: 1; min-width: 0; overflow: hidden">
           <div style="display: flex; width: 100%; gap: clamp(8px, 0.75vw, 14px); transform: {{ momentShift }}; transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1); will-change: transform">
             <sc-for list="{{ moments }}" as="shot" hint-placeholder-count="10">
-              <a href="{{ shot.permalink }}" target="_blank" rel="noopener" style="flex: 0 0 calc((100% - 2 * clamp(8px, 0.75vw, 14px)) / 3); height: clamp(240px, 27.6vw, 530px); background: #cfcfc7; overflow: hidden; display: block; text-decoration: none">
+              <a data-bb-moment="" href="{{ shot.permalink }}" target="_blank" rel="noopener" style="flex: 0 0 calc((100% - 2 * clamp(8px, 0.75vw, 14px)) / 3); height: clamp(240px, 27.6vw, 530px); background: #cfcfc7; overflow: hidden; display: block; text-decoration: none">
                 <img src="{{ shot.src }}" alt="{{ shot.alt }}" loading="lazy" style="display: block; width: 100%; height: 100%; object-fit: cover">
               </a>
             </sc-for>
@@ -201,7 +256,7 @@
   <div data-screen-label="Skip the Cellar" style="position: relative; background: #eeeee4; padding: clamp(40px, 4.2vw, 80px) clamp(20px, 5vw, 190px); box-sizing: border-box">
     <div style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); align-items: center; gap: clamp(34px, 4vw, 80px)">
       <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 6vw, 116px); line-height: 1.25; font-weight: 400; color: #5b584e; letter-spacing: 0.03em">Skip the Cellar. <br>Find a Bottle.</h2>
-      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 2.7vw, 52px)">
+      <div data-bb-skip="" style="display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 2.7vw, 52px)">
         <p style="margin: 0; max-width: 620px; font-size: clamp(19px, 1.9vw, 36px); line-height: 1.35; text-align: right; font-style: italic; font-weight: 700; color: #5b584e; text-wrap: pretty">No wine snobs. No pretense. No occasion required.</p>
         <p style="margin: 0; max-width: 620px; font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: right; text-wrap: pretty">We skip the barriers to share the wines we love with anyone who wants to enjoy them. Find Brisa Bay at your favorite local spots.</p>
         <a href="where-to-buy.html" style="background: #60b98f; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block" style-hover="background: #f5d732; color: #e6393a">Locate Brisa Bay</a>
@@ -212,25 +267,25 @@
   <!-- ================= COLLAGE ================= -->
   <div data-screen-label="Vibrant Collage" style="position: relative; background: #eeeee4; z-index: 14; padding: clamp(30px, 3vw, 60px) clamp(16px, 3.4vw, 66px) clamp(40px, 4.2vw, 80px); box-sizing: border-box; overflow: hidden">
 
-    <div style="position: relative; width: 100%; aspect-ratio: 1440 / 1150">
+    <div data-bb-collage="" style="position: relative; width: 100%; aspect-ratio: 1440 / 1150">
 
-      <img src="assets/brush/swoosh-lime.png" alt="" style="position: absolute; left: -1%; top: -4%; width: 44%; z-index: 2; pointer-events: none">
-      <img src="assets/brush/splash-yellow.png" alt="" style="position: absolute; left: 42%; top: 24%; width: 27%; transform: rotate(184deg); z-index: 1; pointer-events: none">
-      <img src="assets/brush/splash-yellow.png" alt="" style="position: absolute; left: -7%; top: 54%; width: 18%; transform: rotate(204deg); z-index: 1; pointer-events: none">
+      <img data-bb-deco="" src="assets/brush/swoosh-lime.png" alt="" style="position: absolute; left: -1%; top: -4%; width: 44%; z-index: 2; pointer-events: none">
+      <img data-bb-deco="" src="assets/brush/splash-yellow.png" alt="" style="position: absolute; left: 42%; top: 24%; width: 27%; transform: rotate(184deg); z-index: 1; pointer-events: none">
+      <img data-bb-deco="" src="assets/brush/splash-yellow.png" alt="" style="position: absolute; left: -7%; top: 54%; width: 18%; transform: rotate(204deg); z-index: 1; pointer-events: none">
 
-      <div style="position: absolute; left: 7%; top: 44%; width: 42%; aspect-ratio: 1; z-index: 3">
+      <div data-bb-collage-item="" style="position: absolute; left: 7%; top: 44%; width: 42%; aspect-ratio: 1; z-index: 3">
         <img src="assets/web2/collage-a.jpg" alt="Two friends clinking glasses of Brisa Bay over a picnic blanket with bottles and a tray of fruit" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
       </div>
-      <div style="position: absolute; left: 56%; top: 4%; width: 38%; aspect-ratio: 1 / 1.07; z-index: 3">
+      <div data-bb-collage-item="" style="position: absolute; left: 56%; top: 4%; width: 38%; aspect-ratio: 1 / 1.07; z-index: 3">
         <img src="assets/web2/collage-b.jpg" alt="A restaurant table set with bottles of Brisa Bay, glasses of white wine, a charcuterie board and bruschetta" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
       </div>
-      <div style="position: absolute; left: 51.5%; top: 54%; width: 35.5%; aspect-ratio: 1.48; z-index: 4">
+      <div data-bb-collage-item="" style="position: absolute; left: 51.5%; top: 54%; width: 35.5%; aspect-ratio: 1.48; z-index: 4">
         <img src="assets/web2/collage-c.jpg" alt="Overhead shot of a woman on a yellow pool float holding a glass of rosé and a bottle of Brisa Bay Sauvignon Blanc" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
       </div>
 
       
 
-      <div style="position: absolute; left: 2%; top: 20%; width: 52%; z-index: 7">
+      <div data-bb-collage-copy="" style="position: absolute; left: 2%; top: 20%; width: 52%; z-index: 7">
         <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 3.5vw, 68px); line-height: 1.26; font-weight: 400; color: #5b584e; text-align: center; letter-spacing: 0.03em; text-wrap: balance">Vibrant, beautifully balanced, and made for real life.</h2>
       </div>
 
@@ -318,7 +373,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
 class Component extends DCLogic {
-  state = { wine: 0, moment: 0, ageOk: false, faqOpen: false, gateDenied: false, heroPlaying: true, moments: null };
+  state = { wine: 0, moment: 0, ageOk: false, faqOpen: false, gateDenied: false, heroPlaying: true, moments: null, narrow: false };
   componentDidMount() {
     try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
     const v = document.getElementById('bb-hero-video');
@@ -328,7 +383,17 @@ class Component extends DCLogic {
       v.addEventListener('pause', sync);
       v.play().then(() => this.setState({ heroPlaying: true })).catch(() => this.setState({ heroPlaying: false }));
     }
+    this._mq = window.matchMedia('(max-width: 900px)');
+    this._onMq = () => this.setState({ narrow: !!this._mq.matches, moment: 0 });
+    this._onMq();
+    if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
+    else if (this._mq.addListener) this._mq.addListener(this._onMq);
     this.loadMoments();
+  }
+  componentWillUnmount() {
+    if (!this._mq) return;
+    if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
+    else if (this._mq.removeListener) this._mq.removeListener(this._onMq);
   }
   loadMoments() {
     fetch('/api/instagram/moments?limit=10')
@@ -357,10 +422,11 @@ class Component extends DCLogic {
     ];
     const moments = (this.state.moments && this.state.moments.length) ? this.state.moments : fallbackMoments;
     const momentCount = moments.length;
-    const visible = Math.min(3, Math.max(1, momentCount));
+    const visible = this.state.narrow ? 1 : Math.min(3, Math.max(1, momentCount));
     const maxMoment = Math.max(0, momentCount - visible);
     const m = Math.min(Math.max(0, this.state.moment | 0), maxMoment);
     const setMoment = (n) => this.setState({ moment: ((n % (maxMoment + 1)) + (maxMoment + 1)) % (maxMoment + 1) });
+    const gap = 'clamp(8px, 0.75vw, 14px)';
     return {
       isWine0: w === 0,
       isWine1: w === 1,
@@ -371,12 +437,16 @@ class Component extends DCLogic {
       showWine0: () => setWine(0),
       showWine1: () => setWine(1),
       moments,
-      momentShift: `translateX(calc(-${m} * ((100% + clamp(8px, 0.75vw, 14px)) / ${visible})))`,
+      momentShift: visible === 1
+        ? `translateX(calc(-${m} * (100% + ${gap})))`
+        : `translateX(calc(-${m} * ((100% + ${gap}) / ${visible})))`,
       prevMoment: () => setMoment(m - 1),
       nextMoment: () => setMoment(m + 1),
       momentDots: Array.from({ length: maxMoment + 1 }, (_, i) => ({
         bg: i === m ? '#e6393a' : 'rgba(87,84,74,0.28)',
-        label: `Show moments ${i + 1} to ${Math.min(i + visible, momentCount)}`,
+        label: visible === 1
+          ? `Show moment ${i + 1}`
+          : `Show moments ${i + 1} to ${Math.min(i + visible, momentCount)}`,
         go: () => setMoment(i)
       })),
       play: (this.props.motion ?? true) ? 'running' : 'paused',
