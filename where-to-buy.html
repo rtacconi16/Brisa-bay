@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
+    @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
+    body { margin: 0; background: #eeeee4; }
+    a { color: #e6393a; }
+    a:hover { color: #f5d732; }
+    .leaflet-popup-content-wrapper { border-radius: 2px; background: #eeeee4; }
+    .leaflet-container { font-family: 'Garamond Pro', Garamond, serif; }
+  </style>
+  <title>Where to Buy Brisa Bay | Store locator</title>
+  <meta name="description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
+  <meta name="theme-color" content="#3c3a34">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Brisa Bay">
+  <meta property="og:title" content="Where to Buy Brisa Bay | Store locator">
+  <meta property="og:description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
+  <meta property="og:image" content="assets/web2/bottle.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Where to Buy Brisa Bay | Store locator">
+  <meta name="twitter:description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
+</helmet>
+
+<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; font-family: 'Garamond Pro', Garamond, serif; color: #57544a">
+
+  <!-- ================= LOCATOR VIEWPORT ================= -->
+  <div data-screen-label="Store Locator" style="height: 100svh; min-height: 560px; display: flex; flex-direction: column; overflow: hidden">
+
+    <div style="flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(14px, 1.5vw, 28px) clamp(20px, 3.4vw, 64px); background: #3c3a34">
+      <a href="index.html" style="font-size: clamp(22px, 1.9vw, 36px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
+      <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2vw, 40px); font-size: clamp(15px, 1.25vw, 24px); color: #eeeee4">
+        <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
+        <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
+        <span style="cursor: default; color: #f5d732">Where to buy</span>
+      </div>
+    </div>
+
+    <div style="flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch">
+
+      <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
+        <div style="flex: 0 0 clamp(300px, 25vw, 460px); display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.18)">
+          <div style="flex: 0 0 auto; padding: clamp(20px, 1.9vw, 38px) clamp(20px, 1.9vw, 38px) clamp(14px, 1.2vw, 22px)">
+            <h1 style="margin: 0 0 6px; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.2vw, 44px); font-weight: 400; line-height: 1.05; color: #3c3a34; letter-spacing: 0.02em">Where to buy</h1>
+            <p style="margin: 0; font-size: clamp(15px, 1.05vw, 21px); line-height: 1.4; color: rgba(87,84,74,0.75); text-wrap: pretty">Shops, bars and restaurants pouring Brisa Bay. Pick one to find it on the map.</p>
+            <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
+              <input type="search" placeholder="Search by name or town" aria-label="Search stockists" value="{{ query }}" onChange="{{ onQuery }}" style="margin-top: clamp(14px, 1.2vw, 22px); width: 100%; box-sizing: border-box; background: transparent; border: none; border-bottom: 1px solid rgba(87,84,74,0.35); padding: 8px 2px 10px; font-family: 'Garamond Pro', Garamond, serif; font-size: clamp(15px, 1.05vw, 21px); color: #3c3a34; outline: none">
+            </sc-if>
+          </div>
+
+          <div style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
+            <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
+              <div role="button" onClick="{{ store.onSelect }}" style="display: flex; gap: 14px; align-items: flex-start; padding: clamp(14px, 1.1vw, 22px) clamp(20px, 1.9vw, 38px); border-top: 1px solid rgba(87,84,74,0.14); cursor: pointer; transition: background 0.2s; background: {{ store.bg }}" style-hover="background: rgba(96,185,143,0.14)">
+                <div style="flex: 0 0 auto; width: 11px; height: 11px; margin-top: 8px; border-radius: 50%; background: {{ store.dot }}"></div>
+                <div style="flex: 1 1 auto; min-width: 0">
+                  <div style="font-size: clamp(17px, 1.2vw, 24px); font-style: italic; font-weight: 700; color: #3c3a34; line-height: 1.2">{{ store.name }}</div>
+                  <div style="margin-top: 3px; font-size: clamp(11px, 0.72vw, 14px); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(87,84,74,0.6)">{{ store.type }}</div>
+                  <div style="margin-top: 5px; font-size: clamp(14px, 0.98vw, 19px); line-height: 1.35; color: rgba(87,84,74,0.85)">{{ store.address }}, {{ store.city }}</div>
+                  <a href="{{ store.directions }}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 6px; font-size: clamp(14px, 0.95vw, 18px); color: #e6393a; text-decoration: none" style-hover="color: #60b98f">Directions &rarr;</a>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">Nothing here yet. Ask your local shop to order Brisa Bay, or email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="flex: 1 1 auto; position: relative; min-width: 0; background: #dfdfd6">
+        <x-import component-from-global-scope="store-map" from="./store-map.js" storesjson="{{ storesJson }}" hint-size="100%,100%"></x-import>
+        <div onClick="{{ resetView }}" role="button" style="position: absolute; top: clamp(14px, 1.2vw, 24px); right: clamp(14px, 1.2vw, 24px); z-index: 500; background: #eeeee4; color: #3c3a34; font-size: clamp(14px, 0.95vw, 18px); padding: 9px 18px 11px; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 10px rgba(60,58,52,0.25); transition: transform 0.2s" style-hover="transform: scale(1.05); color: #e6393a">See all</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(56px, 10vw, 190px) clamp(20px, 5vw, 190px) clamp(40px, 5vw, 90px); box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(30px, 5vw, 80px)">
+      <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: #eeeee4">Brisa Bay</div>
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(36px, 6.8vw, 130px)">
+        <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(16px, 2vw, 38px); color: #eeeee4">
+          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
+          <span style="cursor: default; color: #f5d732">Store Locator</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(16px, 2vw, 38px); color: #eeeee4">
+          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
+          <a href="mailto:hello@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+          <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: clamp(20px, 3vw, 40px); margin-top: clamp(34px, 4vw, 60px)">
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 2vw, 38px); color: #eeeee4">
+        <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Privacy Policy</a>
+        <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
+        <span>© Brisa Bay 2026</span>
+      </div>
+      <div style="display: flex; gap: clamp(12px, 1.3vw, 24px)">
+        <a href="https://www.instagram.com/brisabay" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(40px, 2.7vw, 50px); height: clamp(40px, 2.7vw, 50px); border-radius: 50%; background: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
+        <a href="https://www.tiktok.com/@brisabay" target="_blank" rel="noopener" aria-label="Brisa Bay on TikTok" style="width: clamp(40px, 2.7vw, 50px); height: clamp(40px, 2.7vw, 50px); border-radius: 50%; background: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="56%" height="56%" viewBox="0 0 24 24" fill="#60b98f"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.77.12V9.77a5.76 5.76 0 0 0-.77-.05 5.68 5.68 0 1 0 5.68 5.68V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.34 4.34 0 0 1-3.24-1.48z"></path></svg></a>
+        <a href="https://www.facebook.com/brisabay" target="_blank" rel="noopener" aria-label="Brisa Bay on Facebook" style="width: clamp(40px, 2.7vw, 50px); height: clamp(40px, 2.7vw, 50px); border-radius: 50%; background: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="56%" height="56%" viewBox="0 0 24 24" fill="#60b98f"><path d="M13.5 21v-7h2.4l.4-3h-2.8V9.1c0-.87.24-1.46 1.49-1.46h1.4V5c-.28-.04-1.22-.12-2.32-.12-2.3 0-3.87 1.4-3.87 3.98V11H7.8v3h2.39v7h3.31z"></path></svg></a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= FAQ MODAL ================= -->
+<sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
+    <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
+      <div onClick="{{ closeFaq }}" role="button" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
+      <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
+      <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
+      <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
+        <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
+          <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; font-weight: 700; color: #57544a">{{ item.q }}</h3>
+          <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
+        </div>
+      </sc-for>
+      <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</p>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ================= AGE GATE ================= -->
+<sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="Age verification" style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
+    <div style="background: #eeeee4; width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
+      <div style="font-size: clamp(24px, 2.3vw, 44px); color: #57544a; margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
+      <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Welcome to the brighter side of Napa.</h2>
+          <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Before you come in, please confirm you are of legal drinking age &mdash; 21 or older in the United States.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 1.2vw, 22px); justify-content: center">
+            <div onClick="{{ acceptAge }}" role="button" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
+            <div onClick="{{ denyAge }}" role="button" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
+          </div>
+          <p style="margin: clamp(26px, 2.5vw, 48px) 0 0; font-size: clamp(14px, 1.2vw, 22px); line-height: 1.5; color: rgba(87,84,74,0.7); text-wrap: pretty">We never sell or market alcohol to anyone under the legal drinking age. Please enjoy Brisa Bay responsibly.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ gateDenied }}" hint-placeholder-val="{{ false }}">
+        <div>
+          <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Come back and see us at 21.</h2>
+          <p style="margin: 0; font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;storeList&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;search&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+const STORES = [
+  { id: 'oak-vine', name: 'Oak & Vine Market', type: 'Bottle shop', address: '1245 Main Street', city: 'Napa, CA', lat: 38.2975, lng: -122.2869 },
+  { id: 'yountville', name: 'Yountville Bottle Room', type: 'Bottle shop', address: '6525 Washington Street', city: 'Yountville, CA', lat: 38.4016, lng: -122.3608 },
+  { id: 'st-helena', name: 'St. Helena Provisions', type: 'Grocer', address: '1300 Main Street', city: 'St. Helena, CA', lat: 38.5052, lng: -122.4703 },
+  { id: 'calistoga', name: 'Corner Cellar', type: 'Wine bar', address: '1401 Lincoln Avenue', city: 'Calistoga, CA', lat: 38.5788, lng: -122.5797 },
+  { id: 'sonoma', name: 'Plaza Wine Co.', type: 'Bottle shop', address: '452 First Street East', city: 'Sonoma, CA', lat: 38.2930, lng: -122.4570 },
+  { id: 'healdsburg', name: 'Healdsburg Fine Wine', type: 'Bottle shop', address: '320 Center Street', city: 'Healdsburg, CA', lat: 38.6100, lng: -122.8690 },
+  { id: 'mill-valley', name: 'The Mill Valley Table', type: 'Restaurant', address: '100 Throckmorton Avenue', city: 'Mill Valley, CA', lat: 37.9060, lng: -122.5450 },
+  { id: 'ferry', name: 'Ferry Landing Cellar', type: 'Bottle shop', address: '1 Ferry Building', city: 'San Francisco, CA', lat: 37.7955, lng: -122.3937 },
+  { id: 'chestnut', name: 'Chestnut Street Bottles', type: 'Bottle shop', address: '2200 Chestnut Street', city: 'San Francisco, CA', lat: 37.8000, lng: -122.4400 },
+  { id: 'berkeley', name: 'North Berkeley Grocer', type: 'Grocer', address: '1500 Shattuck Avenue', city: 'Berkeley, CA', lat: 37.8800, lng: -122.2694 },
+  { id: 'oakland', name: 'Lakeside Supper Club', type: 'Restaurant', address: '2101 Lakeshore Avenue', city: 'Oakland, CA', lat: 37.8060, lng: -122.2470 },
+  { id: 'palo-alto', name: 'University Wine Merchant', type: 'Bottle shop', address: '345 University Avenue', city: 'Palo Alto, CA', lat: 37.4460, lng: -122.1610 }
+];
+
+class Component extends DCLogic {
+  state = { ageOk: false, faqOpen: false, gateDenied: false, query: '', active: null };
+
+  componentDidMount() {
+    try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
+    this._onPick = (e) => this.setState({ active: e.detail });
+    document.addEventListener('store-select', this._onPick);
+  }
+  componentWillUnmount() { document.removeEventListener('store-select', this._onPick); }
+
+  _map() { return document.querySelector('store-map'); }
+
+  select(id) {
+    this.setState({ active: id });
+    const m = this._map();
+    if (m && m.focusStore) m.focusStore(id, true);
+  }
+
+  renderVals() {
+    const q = this.state.query.trim().toLowerCase();
+    const matches = q
+      ? STORES.filter((s) => (s.name + ' ' + s.city + ' ' + s.type).toLowerCase().includes(q))
+      : STORES;
+    return {
+      showList: this.props.storeList ?? true,
+      showSearch: this.props.search ?? true,
+      query: this.state.query,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      noResults: matches.length === 0,
+      storesJson: JSON.stringify(STORES),
+      visibleStores: matches.map((s) => ({
+        ...s,
+        bg: this.state.active === s.id ? 'rgba(245,215,50,0.22)' : 'transparent',
+        dot: this.state.active === s.id ? '#f5d732' : '#e6393a',
+        directions: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city),
+        onSelect: () => this.select(s.id)
+      })),
+      resetView: () => { this.setState({ active: null }); const m = this._map(); if (m && m.resetView) m.resetView(); },
+      showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
+      gateAsking: !this.state.gateDenied,
+      gateDenied: !!this.state.gateDenied,
+      acceptAge: () => { try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {} this.setState({ ageOk: true }); },
+      denyAge: () => this.setState({ gateDenied: true }),
+      faqOpen: !!this.state.faqOpen,
+      openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
+      closeFaq: () => this.setState({ faqOpen: false }),
+      faqItems: [
+        { q: 'Where can I buy Brisa Bay?', a: 'Use the map on this page to find the shops, bars and restaurants closest to you. If your favourite spot does not carry us yet, ask them to order it.' },
+        { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
+        { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
+        { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
+        { q: 'How do I get in touch?', a: 'Email hello@brisabay.com for trade, press or anything else. We read everything.' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
