@@ -23,12 +23,21 @@
     @media (prefers-reduced-motion: reduce), (max-width: 900px) {
       [data-curtain] { position: static !important; height: auto !important; min-height: 0 !important; box-shadow: none !important; }
       [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
-      [data-hero] { min-height: 62svh !important; }
+      [data-hero] {
+        position: relative !important;
+        height: 62svh !important;
+        min-height: 62svh !important;
+        overflow: hidden !important;
+      }
       [data-stage] { min-height: 70svh !important; height: auto !important; padding-bottom: 40px !important; overflow: visible !important; }
       [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
     }
     @media (max-width: 900px) {
       [data-bb-deco] { display: none !important; }
+      [data-bb-hero-photo] {
+        object-fit: cover !important;
+        object-position: center 72% !important;
+      }
       [data-bb-title] {
         height: auto !important;
         min-height: 48px !important;
@@ -69,7 +78,7 @@
 
   <!-- ================= VIEWPORT 1: HERO ================= -->
   <div data-screen-label="Hero" data-curtain="" data-hero="" style="position: sticky; top: 0; z-index: 1; height: 100svh; overflow: hidden; background: #d9d9d4">
-    <img src="assets/web/blends-hero.jpg" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+    <img data-bb-hero-photo="" src="assets/web/blends-hero.jpg" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; display: block">
     <div style="position: absolute; left: 0; right: 0; top: 0; height: 42%; background: linear-gradient(to bottom, rgba(45,45,42,0.62), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
     <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 38%; background: linear-gradient(to top, rgba(45,45,42,0.5), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
 
