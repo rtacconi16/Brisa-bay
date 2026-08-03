@@ -18,6 +18,135 @@
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
 
+    /* Hero → Story cinematic scrub */
+    [data-bb-hero-scroll] {
+      position: relative;
+      z-index: 1;
+      height: 165vh;
+      background: #3c3a34;
+    }
+    [data-bb-hero-pin] {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      height: 100svh;
+      overflow: hidden;
+    }
+    [data-bb-opening] {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-bb-hero-video] {
+      transform-origin: center center;
+      will-change: transform;
+    }
+    [data-bb-hero-veil] {
+      position: absolute;
+      inset: 0;
+      background: #2d2d2a;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 3;
+      will-change: opacity;
+    }
+    /* Story pins, then Our Wines scrolls over it */
+    [data-bb-story-scroll] {
+      position: relative;
+      z-index: 2;
+      height: 155vh;
+      background: #3c3a34;
+    }
+    [data-bb-story] {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      height: 100svh;
+      overflow: hidden;
+      background: #3c3a34;
+    }
+    [data-bb-story-media] {
+      transform-origin: center center;
+      will-change: transform, filter;
+    }
+    [data-bb-story-copy] {
+      will-change: opacity, transform;
+    }
+    [data-bb-story-line] {
+      opacity: 0;
+      transform: translate3d(0, 32px, 0);
+      will-change: opacity, transform;
+    }
+
+    /* Our Wines — pinned bottle stage */
+    [data-bb-wines-scroll] {
+      position: relative;
+      z-index: 6;
+      height: 200vh;
+      background: #eeeee4;
+    }
+    [data-bb-wines-pin] {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(32px, 4vh, 56px) clamp(20px, 5vw, 190px);
+      box-sizing: border-box;
+      background: #eeeee4;
+      overflow-x: clip;
+      overflow-y: hidden;
+    }
+    [data-bb-wines-pin] [data-bb-wines-deco] {
+      position: absolute;
+    }
+    [data-bb-wines-copy] {
+      will-change: opacity, transform;
+    }
+    [data-bb-bottle-stage] {
+      display: grid;
+      place-items: center;
+      will-change: transform;
+      transform-origin: center 70%;
+    }
+    [data-bb-wines-deco] {
+      will-change: transform;
+    }
+    [data-bb-wine-swap] {
+      display: grid;
+      width: 100%;
+    }
+    [data-bb-wine-panel] {
+      grid-area: 1 / 1;
+      transition: opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+      will-change: opacity, transform;
+    }
+    [data-bb-bottle-layer] {
+      grid-area: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.65s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1);
+      will-change: opacity, transform;
+      justify-self: center;
+    }
+    [data-bb-bottle-img] {
+      display: block;
+      height: clamp(360px, 52vw, 1000px);
+      filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25));
+      animation: bb-floaty 7s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-wine-panel],
+      [data-bb-bottle-layer] {
+        transition: none !important;
+      }
+      [data-bb-bottle-img] {
+        animation: none !important;
+      }
+    }
+
     /* Skip the Cellar — pinned manifesto reveal */
     [data-bb-skip-scroll] {
       position: relative;
@@ -31,30 +160,52 @@
       z-index: 1;
       height: 100svh;
       display: flex;
-      align-items: center;
-      padding: clamp(48px, 8vh, 96px) clamp(48px, 8vw, 160px) clamp(48px, 8vh, 96px) clamp(48px, 7vw, 140px);
+      align-items: stretch;
+      padding: clamp(28px, 4.5vh, 56px) clamp(28px, 5vw, 96px) clamp(40px, 6vh, 72px) clamp(28px, 4.5vw, 72px);
       box-sizing: border-box;
       background: #eeeee4;
     }
     /* Bottled Moments scrolls over Skip so text can fade as it arrives */
+    [data-bb-moments],
     [data-screen-label="Bottled Moments"] {
       position: relative;
       z-index: 2;
     }
+    [data-bb-moments-intro] {
+      will-change: transform;
+    }
+    [data-bb-moments-line],
+    [data-bb-moments-stamp] {
+      opacity: 0;
+      transform: translate3d(0, 28px, 0);
+      will-change: opacity, transform;
+    }
+    [data-bb-moments-bar] {
+      will-change: transform;
+    }
+    [data-bb-moments-gallery] {
+      opacity: 0;
+      transform: translate3d(0, 48px, 0);
+      will-change: opacity, transform;
+    }
     [data-bb-skip-inner] {
       width: 100%;
-      max-width: 1180px;
+      max-width: none;
+      height: 100%;
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
       column-gap: clamp(56px, 9vw, 160px);
-      align-items: end;
+      align-items: stretch;
       will-change: opacity, transform;
     }
     [data-bb-skip-title] {
       margin: 0;
-      max-width: 9ch;
+      max-width: none;
+      white-space: nowrap;
       opacity: 0;
-      transform-origin: left center;
+      transform-origin: left top;
+      align-self: start;
+      justify-self: start;
       will-change: opacity, transform;
     }
     [data-bb-skip] {
@@ -63,6 +214,8 @@
       flex-direction: column;
       align-items: flex-start;
       gap: clamp(16px, 2.2vh, 26px);
+      align-self: end;
+      justify-self: end;
     }
     [data-bb-skip-rule] {
       display: block;
@@ -103,26 +256,11 @@
     }
 
     @media (min-width: 901px) {
-      [data-bb-opening] {
-        height: 100svh;
-        display: flex;
-        flex-direction: column;
-      }
       [data-bb-hero] {
         flex: 1 1 auto;
         min-height: 0;
         aspect-ratio: auto;
         height: auto;
-      }
-      [data-bb-wines-section] {
-        height: 100svh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding-top: clamp(32px, 4vh, 56px);
-        padding-bottom: clamp(32px, 4vh, 56px);
-        box-sizing: border-box;
       }
       [data-bb-wines] {
         margin-top: 0;
@@ -189,7 +327,7 @@
         gap: clamp(12px, 1.5vh, 24px);
         min-height: 0;
       }
-      [data-bb-wines] img[alt*="bottle"] {
+      [data-bb-bottle-img] {
         height: min(58vh, 560px);
         max-height: calc(100% - 72px);
       }
@@ -199,83 +337,243 @@
       }
     }
     @media (prefers-reduced-motion: reduce) {
+      [data-bb-hero-scroll],
+      [data-bb-story-scroll],
+      [data-bb-wines-scroll],
       [data-bb-skip-scroll] { height: auto !important; }
+      [data-bb-hero-pin],
+      [data-bb-story],
+      [data-bb-wines-pin],
       [data-bb-skip-pin] { position: relative !important; height: auto !important; min-height: 100svh !important; }
+      [data-bb-hero-veil] { opacity: 0.2 !important; }
+      [data-bb-story-copy],
+      [data-bb-story-line],
+      [data-bb-story-media],
+      [data-bb-wines-copy],
+      [data-bb-wines-pin],
+      [data-bb-bottle-stage],
+      [data-bb-moments-line],
+      [data-bb-moments-stamp],
+      [data-bb-moments-gallery],
+      [data-bb-moments-intro],
+      [data-bb-moments-bar],
       [data-bb-skip-inner],
       [data-bb-skip-title],
       [data-bb-skip],
       [data-bb-skip-lead],
       [data-bb-skip-body],
-      [data-bb-skip-cta] { opacity: 1 !important; transform: none !important; }
+      [data-bb-skip-cta] { opacity: 1 !important; transform: none !important; filter: none !important; }
       [data-bb-skip-rule] { transform: none !important; }
     }
     @media (max-width: 900px) {
+      /* Keep page from sideways-scrolling when transforms fire */
+      body { overflow-x: clip; }
+
+      /* Shorter / simpler mobile scrub — less sticky fatigue */
+      [data-bb-hero-scroll] { height: 125vh !important; }
+      [data-bb-hero-pin] { height: 100svh !important; }
+      [data-bb-opening] { height: 100% !important; }
       [data-bb-hero] {
+        flex: 1 1 auto !important;
         aspect-ratio: auto !important;
-        min-height: 62svh !important;
-        height: 62svh !important;
+        min-height: 0 !important;
+        height: auto !important;
       }
-      [data-bb-deco] { display: none !important; }
-      [data-bb-moments-intro] {
+
+      /* Story: natural section, no long pin */
+      [data-bb-story-scroll] { height: auto !important; }
+      [data-bb-story] {
+        position: relative !important;
+        height: auto !important;
+        min-height: 88svh !important;
+      }
+      [data-bb-story-copy] {
+        max-width: none !important;
+        margin-left: 0 !important;
+        padding: 48px 20px 40px !important;
+        justify-content: flex-end !important;
+        gap: 18px !important;
+      }
+      [data-bb-story-copy] p {
+        text-align: left !important;
+        font-size: 17px !important;
+        line-height: 1.45 !important;
+      }
+
+      /* Wines: un-pin so stacked copy + bottle never clips */
+      [data-bb-wines-scroll] { height: auto !important; }
+      [data-bb-wines-pin] {
+        position: relative !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        padding: 48px 20px 56px !important;
+      }
+      [data-bb-wines] {
+        grid-template-columns: 1fr !important;
+        gap: 28px !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+      }
+      [data-bb-wines-copy] { order: 2; }
+      [data-bb-bottle] { order: 1; }
+      [data-bb-wines] h2 {
+        font-size: clamp(36px, 11vw, 52px) !important;
+        margin-bottom: 16px !important;
+      }
+      [data-bb-wines] h3 {
+        font-size: clamp(18px, 5.2vw, 24px) !important;
+        margin-bottom: 12px !important;
+      }
+      [data-bb-wines] p {
+        font-size: 16px !important;
+        text-align: left !important;
+        margin-bottom: 14px !important;
+      }
+      [data-bb-bottle-img] {
+        height: min(46vh, 320px) !important;
+        max-height: none !important;
+      }
+      [data-bb-wines-controls] {
+        flex-wrap: wrap !important;
+        gap: 10px 12px !important;
+      }
+      [data-bb-wines-controls] > div[role="button"] {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 22px !important;
+      }
+
+      /* Skip: keep a light pin, tighter type */
+      [data-bb-skip-scroll] { height: 145vh !important; }
+      [data-bb-skip-pin] {
+        padding: max(24px, env(safe-area-inset-top)) 20px 32px !important;
+        align-items: stretch !important;
+      }
+      [data-bb-skip-inner] {
         grid-template-columns: 1fr !important;
         row-gap: 28px !important;
-        padding: 48px 20px 40px !important;
+        align-items: stretch !important;
+        height: 100% !important;
+      }
+      [data-bb-skip-title] {
+        max-width: none !important;
+        white-space: nowrap !important;
+        font-size: clamp(28px, 8.5vw, 44px) !important;
+        line-height: 1.05 !important;
+        align-self: start !important;
+        justify-self: start !important;
+      }
+      [data-bb-skip] {
+        align-self: end !important;
+        justify-self: start !important;
+        max-width: none !important;
+      }
+      [data-bb-skip-lead] { font-size: 17px !important; }
+      [data-bb-skip-body] { font-size: 15px !important; }
+
+      /* Nav */
+      [data-bb-nav] {
+        padding: max(14px, env(safe-area-inset-top)) 16px 12px !important;
+        gap: 8px 12px !important;
+        row-gap: 8px !important;
+      }
+      [data-bb-nav] > div:first-child { font-size: 22px !important; }
+      [data-bb-nav] [role="navigation"] {
+        font-size: 13px !important;
+        gap: 12px !important;
+        flex: 1 1 100%;
+      }
+
+      [data-bb-ticker] em,
+      [data-bb-ticker] span { font-size: 15px !important; }
+
+      [data-bb-deco] { display: none !important; }
+
+      /* Moments */
+      [data-bb-moments-intro] {
+        grid-template-columns: 1fr !important;
+        row-gap: 24px !important;
+        padding: 44px 20px 36px !important;
         text-align: center !important;
       }
       [data-bb-moments-copy] {
         max-width: none !important;
         text-align: center !important;
         margin: 0 auto !important;
+        gap: 14px !important;
       }
       [data-bb-moments-headline] {
         flex-direction: column !important;
         align-items: center !important;
         flex-wrap: wrap !important;
+        gap: 10px !important;
+      }
+      [data-bb-moments-headline] h2,
+      [data-bb-moments-line] {
+        white-space: normal !important;
+        text-wrap: balance !important;
+      }
+      [data-bb-moments-headline] h2 {
+        font-size: clamp(34px, 10vw, 48px) !important;
+      }
+      [data-bb-moments-headline] p {
+        font-size: 17px !important;
+        min-width: 0 !important;
       }
       [data-bb-moments-cta] {
         white-space: normal !important;
         text-wrap: pretty !important;
+        font-size: 15px !important;
         margin-left: auto !important;
         margin-right: auto !important;
       }
       [data-bb-moments-logo] { min-height: 0 !important; }
       [data-bb-moments-intro] [data-bb-stamp] {
-        width: clamp(140px, 42vw, 200px) !important;
+        width: clamp(130px, 38vw, 180px) !important;
         margin: 0 auto !important;
       }
-      [data-bb-wines] {
-        margin-top: 0 !important;
-        padding-top: 8px !important;
+      [data-bb-moments-gallery] {
+        padding: 16px 8px 28px !important;
       }
-      [data-bb-wines] img[alt*="bottle"] {
-        height: clamp(280px, 70vw, 420px) !important;
+      [data-bb-moments-gallery] > div:first-child {
+        gap: 8px !important;
+        padding: 0 4px !important;
+      }
+      [data-bb-moments-gallery] > div:first-child > div[role="button"] {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 20px !important;
       }
       [data-bb-moment] {
         flex: 0 0 100% !important;
-        height: clamp(220px, 58vw, 360px) !important;
+        height: clamp(240px, 70vw, 380px) !important;
       }
-      [data-bb-skip-scroll] { height: 170vh !important; }
-      [data-bb-skip-pin] { padding: 56px 20px !important; }
-      [data-bb-skip-inner] {
-        grid-template-columns: 1fr !important;
-        row-gap: 28px !important;
-        align-items: start !important;
+
+      [data-bb-section] {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
       }
-      [data-bb-skip-title] { max-width: none !important; }
-      [data-bb-nav] { row-gap: 10px !important; }
-      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
-      [data-bb-section] { padding-left: 20px !important; padding-right: 20px !important; overflow: hidden !important; }
-      [data-bb-story] {
-        height: auto !important;
-        min-height: 72svh !important;
+
+      [data-screen-label="Footer"] {
+        padding: 48px 20px 36px !important;
       }
-      [data-bb-story-copy] {
-        max-width: none !important;
-        padding: 36px 22px !important;
-        justify-content: flex-end !important;
+      [data-screen-label="Footer"] > div:first-of-type > div:first-child {
+        font-size: clamp(48px, 16vw, 72px) !important;
       }
-      [data-screen-label="Footer"] { padding-left: 20px !important; padding-right: 20px !important; }
-      [data-screen-label="Bottled Moments"] > div:first-of-type { padding-left: 20px !important; padding-right: 20px !important; }
+    }
+
+    @media (max-width: 480px) {
+      [data-bb-nav] [role="navigation"] {
+        font-size: 12px !important;
+        gap: 10px !important;
+      }
+      [data-bb-skip-title] {
+        font-size: clamp(32px, 12vw, 42px) !important;
+      }
+      [data-bb-bottle-img] {
+        height: min(42vh, 280px) !important;
+      }
     }
   </style>
   <title>Brisa Bay | Napa Valley wine meant to be lived, not collected</title>
@@ -296,100 +594,107 @@
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; font-family: 'Garamond Pro', serif; color: #57544a">
 
   <!-- ================= OPENING VIEWPORT: HERO + TICKER ================= -->
-  <div data-bb-opening="">
-    <div data-screen-label="Hero" data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
-      <video id="bb-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
-        <source src="assets/web2/hero-video.mp4" type="video/mp4">
-      </video>
-      <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
+  <div data-bb-hero-scroll="" data-screen-label="Hero">
+    <div data-bb-hero-pin="">
+      <div data-bb-opening="">
+        <div data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
+          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline preload="metadata" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+            <source src="assets/web2/hero-video.mp4" type="video/mp4">
+          </video>
+          <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
+          <div data-bb-hero-veil="" aria-hidden="true"></div>
 
-      <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
-        <div style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em">Brisa Bay</div>
-        <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
-          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
-          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+          <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
+            <div style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em">Brisa Bay</div>
+            <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
+              <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
+              <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
+              <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+            </div>
+          </div>
         </div>
-      </div>
 
-    </div>
-
-    <!-- ================= TICKER ================= -->
-    <div data-screen-label="Ticker" data-bb-ticker="" aria-hidden="true" style="flex: none; background: #60b98f; overflow: hidden; padding: clamp(8px, 0.75vw, 14px) 0">
-      <div style="display: flex; align-items: center; white-space: nowrap; width: max-content; animation: bb-marquee 28s linear infinite; animation-play-state: {{ play }}">
-        <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
-          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
-          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
-          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
-          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-        </span>
-        <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
-          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
-          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
-          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
-          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-        </span>
+        <!-- ================= TICKER ================= -->
+        <div data-screen-label="Ticker" data-bb-ticker="" aria-hidden="true" style="flex: none; background: #60b98f; overflow: hidden; padding: clamp(8px, 0.75vw, 14px) 0">
+          <div style="display: flex; align-items: center; white-space: nowrap; width: max-content; animation: bb-marquee 28s linear infinite; animation-play-state: {{ play }}">
+            <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
+              <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
+              <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+              <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
+              <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+              <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
+              <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+            </span>
+            <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
+              <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
+              <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+              <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
+              <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+              <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
+              <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ================= OUR STORY VIEWPORT ================= -->
-  <div data-screen-label="Our Story" data-bb-story="" style="position: relative; z-index: 1; height: 100svh; overflow: hidden; background: #3c3a34">
-    <img src="assets/web2/story-photo.jpg" alt="Friends sitting on a beach blanket pouring Brisa Bay Chardonnay, glasses of wine and a tray of fruit in the sun" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-    <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,45,42,0.15) 0%, rgba(45,45,42,0.35) 42%, rgba(45,45,42,0.72) 100%); pointer-events: none; z-index: 2"></div>
-    <div data-bb-story-copy="" style="position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 5vw, 110px); box-sizing: border-box; max-width: min(720px, 52%); margin-left: auto">
-      <p style="margin: 0; font-size: clamp(17px, 1.9vw, 36px); line-height: 1.42; color: #eeeee4; text-align: justify; text-wrap: pretty">Where the water meets the vines, the San Pablo Bay breeze inspired our family to take our deep Napa roots in a fresh direction. Working with growers who put their hearts into the soil, we craft vibrant wines with no barriers or exclusivity.</p>
-      <p style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); color: #eeeee4; font-style: italic; font-weight: 700">This is wine meant to be lived.</p>
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 1.9vw, 36px)">
-        <a href="about.html" style="background: #f5d732; color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1.05vw, 20px); border-radius: 30px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Learn the Brisa Way</a>
+  <div data-bb-story-scroll="" data-screen-label="Our Story">
+    <div data-bb-story="">
+      <img data-bb-story-media="" src="assets/web2/story-photo.jpg" alt="Friends sitting on a beach blanket pouring Brisa Bay Chardonnay, glasses of wine and a tray of fruit in the sun" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+      <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,45,42,0.72) 0%, rgba(45,45,42,0.35) 48%, rgba(45,45,42,0.12) 100%); pointer-events: none; z-index: 2"></div>
+      <div data-bb-story-copy="" style="position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 5vw, 110px); box-sizing: border-box; max-width: min(720px, 52%); margin-right: auto">
+        <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.9vw, 36px); line-height: 1.42; color: #eeeee4; text-align: justify; text-wrap: pretty">Where the water meets the vines, the San Pablo Bay breeze inspired our family to take our deep Napa roots in a fresh direction. Working with growers who put their hearts into the soil, we craft vibrant wines with no barriers or exclusivity.</p>
+        <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); color: #eeeee4; font-style: italic; font-weight: 700">This is wine meant to be lived.</p>
+        <div data-bb-story-line="" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 1.9vw, 36px)">
+          <a href="about.html" style="background: #f5d732; color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1.05vw, 20px); border-radius: 30px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Learn the Brisa Way</a>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ================= OUR WINES VIEWPORT ================= -->
-  <div data-screen-label="Our Wines" data-bb-section="" data-bb-wines-section="" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box; overflow-x: clip">
+  <div data-bb-wines-scroll="" data-screen-label="Our Wines">
+    <div data-bb-wines-pin="">
+      <img data-bb-deco="" data-bb-wines-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -8%; bottom: -12%; top: auto; width: clamp(420px, 58vw, 1100px); z-index: 1; pointer-events: none">
 
-    <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -8%; bottom: -12%; top: auto; width: clamp(420px, 58vw, 1100px); z-index: 1; pointer-events: none">
-
-    <div data-bb-wines="" style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: 0">
-      <div>
-        <h2 style="margin: 0 0 clamp(30px, 3.6vw, 70px); font-family: 'Old Newspaper', serif; font-size: clamp(40px, 5vw, 96px); font-weight: 400; color: #5b584e; letter-spacing: 0.04em">Our Wines</h2>
-        <sc-if value="{{ isWine0 }}" hint-placeholder-val="{{ true }}">
-          <div>
-            <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic; font-weight: 700">Brisa Bay Napa Valley Chardonnay</h3>
-            <p style="margin: 0 0 clamp(16px, 1.5vw, 28px); font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: justify; text-wrap: pretty">A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
-            <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px, 1.1vw, 20px); margin: 0 0 clamp(14px, 1.3vw, 24px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">NAPA VALLEY</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">2024 VINTAGE</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">13.5% ABV</span></div>
-            <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> grilled halibut, roast chicken, ripe peaches and soft cheeses.</p>
+      <div data-bb-wines="" style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: 0">
+        <div data-bb-wines-copy="">
+          <h2 style="margin: 0 0 clamp(30px, 3.6vw, 70px); font-family: 'Old Newspaper', serif; font-size: clamp(40px, 5vw, 96px); font-weight: 400; color: #5b584e; letter-spacing: 0.04em">Our Wines</h2>
+          <div data-bb-wine-swap="">
+            <div data-bb-wine-panel="" style="{{ wine0Panel }}" aria-hidden="{{ wine0Hidden }}">
+              <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic; font-weight: 700">Brisa Bay Napa Valley Chardonnay</h3>
+              <p style="margin: 0 0 clamp(16px, 1.5vw, 28px); font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: justify; text-wrap: pretty">A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px, 1.1vw, 20px); margin: 0 0 clamp(14px, 1.3vw, 24px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">NAPA VALLEY</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">2024 VINTAGE</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">13.5% ABV</span></div>
+              <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> grilled halibut, roast chicken, ripe peaches and soft cheeses.</p>
+            </div>
+            <div data-bb-wine-panel="" style="{{ wine1Panel }}" aria-hidden="{{ wine1Hidden }}">
+              <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic; font-weight: 700">Brisa Bay Napa Valley Sauvignon Blanc</h3>
+              <p style="margin: 0 0 clamp(16px, 1.5vw, 28px); font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: justify; text-wrap: pretty">Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px, 1.1vw, 20px); margin: 0 0 clamp(14px, 1.3vw, 24px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">NAPA VALLEY</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">2024 VINTAGE</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">13.0% ABV</span></div>
+              <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> oysters, ceviche, herby salads and fresh goat cheese.</p>
+            </div>
           </div>
-        </sc-if>
-        <sc-if value="{{ isWine1 }}" hint-placeholder-val="{{ false }}">
-          <div>
-            <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic; font-weight: 700">Brisa Bay Napa Valley Sauvignon Blanc</h3>
-            <p style="margin: 0 0 clamp(16px, 1.5vw, 28px); font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: justify; text-wrap: pretty">Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
-            <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px, 1.1vw, 20px); margin: 0 0 clamp(14px, 1.3vw, 24px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">NAPA VALLEY</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">2024 VINTAGE</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">13.0% ABV</span></div>
-            <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> oysters, ceviche, herby salads and fresh goat cheese.</p>
+          <a href="blends.html" style="background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block; transition: transform 0.25s" style-hover="transform: scale(1.06)">See both blends &amp; tasting notes</a>
+        </div>
+        <div data-bb-bottle="" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(16px, 1.8vw, 28px); min-height: 0">
+          <div data-bb-bottle-stage="">
+            <div data-bb-bottle-layer="" style="{{ wine0Bottle }}" aria-hidden="{{ wine0Hidden }}">
+              <img data-bb-bottle-img="" src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="animation-play-state: {{ wine0Play }}">
+            </div>
+            <div data-bb-bottle-layer="" style="{{ wine1Bottle }}" aria-hidden="{{ wine1Hidden }}">
+              <img data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc.png" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="animation-play-state: {{ wine1Play }}">
+            </div>
           </div>
-        </sc-if>
-        <a href="blends.html" style="background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block; transition: transform 0.25s" style-hover="transform: scale(1.06)">See both blends &amp; tasting notes</a>
-      </div>
-      <div data-bb-bottle="" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(16px, 1.8vw, 28px); min-height: 0">
-        <sc-if value="{{ isWine0 }}" hint-placeholder-val="{{ true }}">
-          <img src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="height: clamp(360px, 52vw, 1000px); filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25)); animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
-        </sc-if>
-        <sc-if value="{{ isWine1 }}" hint-placeholder-val="{{ false }}">
-          <img src="assets/web2/bottle-sauvblanc.png" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="height: clamp(360px, 52vw, 1000px); filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25)); animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
-        </sc-if>
-        <div style="display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.4vw, 26px)">
-          <span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.15vw, 22px); letter-spacing: 0.08em; color: rgba(87,84,74,0.6)">SWITCH WINE</span>
-          <div onClick="{{ prevWine }}" role="button" aria-label="Show the Chardonnay" title="Previous wine — Chardonnay" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">←</div>
-          <div onClick="{{ nextWine }}" role="button" aria-label="Show the Sauvignon Blanc" title="Next wine — Sauvignon Blanc" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">→</div>
-          <div style="display: flex; align-items: center; gap: clamp(8px, 0.7vw, 13px); margin-left: clamp(4px, 0.6vw, 12px)">
-            <div onClick="{{ showWine0 }}" role="button" aria-label="Show the Chardonnay" title="Chardonnay" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot0 }}"></div>
-            <div onClick="{{ showWine1 }}" role="button" aria-label="Show the Sauvignon Blanc" title="Sauvignon Blanc" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot1 }}"></div>
+          <div data-bb-wines-controls="" style="display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.4vw, 26px)">
+            <span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.15vw, 22px); letter-spacing: 0.08em; color: rgba(87,84,74,0.6)">SWITCH WINE</span>
+            <div onClick="{{ prevWine }}" role="button" aria-label="Show the Chardonnay" title="Previous wine — Chardonnay" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">←</div>
+            <div onClick="{{ nextWine }}" role="button" aria-label="Show the Sauvignon Blanc" title="Next wine — Sauvignon Blanc" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">→</div>
+            <div style="display: flex; align-items: center; gap: clamp(8px, 0.7vw, 13px); margin-left: clamp(4px, 0.6vw, 12px)">
+              <div onClick="{{ showWine0 }}" role="button" aria-label="Show the Chardonnay" title="Chardonnay" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot0 }}"></div>
+              <div onClick="{{ showWine1 }}" role="button" aria-label="Show the Sauvignon Blanc" title="Sauvignon Blanc" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot1 }}"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -412,18 +717,18 @@
   </div>
 
   <!-- ================= BOTTLED MOMENTS ================= -->
-  <div data-screen-label="Bottled Moments">
-    <img data-bb-deco="" src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
+  <div data-bb-moments="" data-screen-label="Bottled Moments">
+    <img data-bb-deco="" data-bb-moments-bar="" src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
     <div data-bb-moments-intro="" style="background: #60b98f; position: relative; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: center; column-gap: clamp(28px, 4vw, 72px); padding: clamp(48px, 6vh, 110px) clamp(20px, 5vw, 160px); box-sizing: border-box">
       <div data-bb-moments-copy="" style="text-align: left; min-width: 0; display: flex; flex-direction: column; gap: clamp(16px, 1.6vw, 28px)">
         <div data-bb-moments-headline="" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(12px, 1.4vw, 28px) clamp(16px, 2vw, 36px)">
-          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.6vw, 84px); font-weight: 400; color: #eeeee4; letter-spacing: 0.03em; white-space: nowrap">Bottled Moments</h2>
-          <p style="margin: 0; flex: 1 1 16ch; min-width: min(100%, 16ch); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.9vw, 32px); line-height: 1.3; color: #eeeee4; text-wrap: pretty">A gallery of real afternoons, sent in by the people drinking them.</p>
+          <h2 data-bb-moments-line="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.6vw, 84px); font-weight: 400; color: #eeeee4; letter-spacing: 0.03em; white-space: nowrap">Bottled Moments</h2>
+          <p data-bb-moments-line="" style="margin: 0; flex: 1 1 16ch; min-width: min(100%, 16ch); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.9vw, 32px); line-height: 1.3; color: #eeeee4; text-wrap: pretty">A gallery of real afternoons, sent in by the people drinking them.</p>
         </div>
-        <p data-bb-moments-cta="" style="margin: 0; font-size: clamp(15px, 1.5vw, 26px); line-height: 1.5; color: rgba(238,238,228,0.92); white-space: nowrap">Want yours up here? Post your pour with <strong>#BrisaBay</strong> and tag <a href="https://www.instagram.com/brisabay" target="_blank" rel="noopener" style="color: #f5d732">@brisabay</a> — we add new moments every month.</p>
+        <p data-bb-moments-cta="" data-bb-moments-line="" style="margin: 0; font-size: clamp(15px, 1.5vw, 26px); line-height: 1.5; color: rgba(238,238,228,0.92); white-space: nowrap">Want yours up here? Post your pour with <strong>#BrisaBay</strong> and tag <a href="https://www.instagram.com/brisabay" target="_blank" rel="noopener" style="color: #f5d732">@brisabay</a> — we add new moments every month.</p>
       </div>
       <div data-bb-moments-logo="" style="display: flex; align-items: center; justify-content: center; min-width: 0">
-        <div data-bb-stamp="" style="position: relative; width: min(100%, clamp(180px, 24vw, 340px)); aspect-ratio: 1; z-index: 2">
+        <div data-bb-stamp="" data-bb-moments-stamp="" style="position: relative; width: min(100%, clamp(180px, 24vw, 340px)); aspect-ratio: 1; z-index: 2">
           <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
           <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
             <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
@@ -437,7 +742,7 @@
       </div>
     </div>
 
-    <div style="position: relative; background: #eeeee4; padding: clamp(18px, 2vw, 36px) 0 clamp(28px, 3vw, 56px)">
+    <div data-bb-moments-gallery="" style="position: relative; background: #eeeee4; padding: clamp(18px, 2vw, 36px) 0 clamp(28px, 3vw, 56px)">
       <div style="display: flex; align-items: center; gap: clamp(10px, 1.2vw, 22px); padding: 0 clamp(12px, 2vw, 40px)">
         <div onClick="{{ prevMoment }}" role="button" aria-label="Previous moment" title="Previous" style="flex: none; width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s; z-index: 2" style-hover="transform: scale(1.1)">←</div>
 
@@ -546,6 +851,12 @@ class Component extends DCLogic {
   state = { wine: 0, moment: 0, ageOk: false, faqOpen: false, gateDenied: false, moments: null, narrow: false };
   _skipRaf = 0;
   _skipCleanup = null;
+  _heroRaf = 0;
+  _heroCleanup = null;
+  _winesRaf = 0;
+  _winesCleanup = null;
+  _momentsRaf = 0;
+  _momentsCleanup = null;
 
   componentDidMount() {
     try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
@@ -557,13 +868,272 @@ class Component extends DCLogic {
     if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
     else if (this._mq.addListener) this._mq.addListener(this._onMq);
     this.loadMoments();
-    requestAnimationFrame(() => this._bindSkipScroll());
+    requestAnimationFrame(() => {
+      this._bindHeroScroll();
+      this._bindWinesScroll();
+      this._bindSkipScroll();
+      this._bindMomentsScroll();
+    });
   }
   componentWillUnmount() {
+    if (this._heroCleanup) this._heroCleanup();
+    if (this._winesCleanup) this._winesCleanup();
     if (this._skipCleanup) this._skipCleanup();
+    if (this._momentsCleanup) this._momentsCleanup();
     if (!this._mq) return;
     if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
     else if (this._mq.removeListener) this._mq.removeListener(this._onMq);
+  }
+
+  _motionEnabled() {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return !reduceMotion && (this.props.motion ?? true);
+  }
+
+  _bindHeroScroll() {
+    if (this._heroCleanup) this._heroCleanup();
+    const scrollEl = document.querySelector('[data-bb-hero-scroll]');
+    const pinEl = document.querySelector('[data-bb-hero-pin]');
+    const video = document.querySelector('[data-bb-hero-video]');
+    const veil = document.querySelector('[data-bb-hero-veil]');
+    const ticker = document.querySelector('[data-bb-ticker]');
+    const story = document.querySelector('[data-bb-story]');
+    const storyCopy = document.querySelector('[data-bb-story-copy]');
+    const media = document.querySelector('[data-bb-story-media]');
+    const winesEl = document.querySelector('[data-bb-wines-scroll]');
+    const lines = Array.from(document.querySelectorAll('[data-bb-story-line]'));
+    if (!scrollEl || !pinEl) return;
+
+    const clamp01 = (n) => Math.min(1, Math.max(0, n));
+    const range = (p, a, b) => clamp01((p - a) / (b - a));
+    const ease = (t) => t * t * (3 - 2 * t);
+
+    const showAll = () => {
+      if (video) video.style.transform = 'none';
+      if (veil) veil.style.opacity = '0.15';
+      if (ticker) ticker.style.opacity = '1';
+      if (media) { media.style.transform = 'none'; media.style.filter = 'none'; }
+      if (storyCopy) { storyCopy.style.opacity = '1'; storyCopy.style.transform = 'none'; }
+      lines.forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    };
+    if (!this._motionEnabled()) {
+      showAll();
+      return;
+    }
+
+    let current = 0;
+    let running = false;
+
+    const progress = () => {
+      const total = Math.max(1, scrollEl.offsetHeight - pinEl.offsetHeight);
+      return clamp01(-scrollEl.getBoundingClientRect().top / total);
+    };
+
+    const storyProgress = () => {
+      if (!story) return 0;
+      const top = story.getBoundingClientRect().top;
+      const h = window.innerHeight || 1;
+      return clamp01(1 - top / (h * 0.85));
+    };
+
+    // Story dissolves as Our Wines covers it
+    const winesCover = () => {
+      if (!winesEl) return 0;
+      const top = winesEl.getBoundingClientRect().top;
+      const h = window.innerHeight || 1;
+      const start = h * 0.92;
+      const end = h * 0.22;
+      return clamp01((start - top) / Math.max(1, start - end));
+    };
+
+    const apply = (p, storyP, cover) => {
+      const zoom = 1.04 + ease(p) * 0.18;
+      const dark = 0.08 + ease(p) * 0.55;
+      if (video) video.style.transform = `scale(${zoom})`;
+      if (veil) veil.style.opacity = String(dark);
+      if (ticker) ticker.style.opacity = String(1 - ease(p) * 0.35);
+
+      const exit = ease(cover);
+      const stay = 1 - exit;
+
+      if (media) {
+        const ken = 1.08 - ease(storyP) * 0.08 + exit * 0.06;
+        const drift = (1 - ease(storyP)) * 36 - exit * 28;
+        media.style.transform = `translate3d(0, ${drift}px, 0) scale(${ken})`;
+        media.style.filter = exit > 0.001 ? `brightness(${1 - exit * 0.45})` : 'none';
+      }
+
+      if (storyCopy) {
+        storyCopy.style.opacity = String(stay);
+        storyCopy.style.transform = exit > 0.001
+          ? `translate3d(0, ${exit * -48}px, 0)`
+          : 'none';
+      }
+
+      lines.forEach((el, i) => {
+        const t = ease(range(storyP, 0.12 + i * 0.14, 0.42 + i * 0.14));
+        el.style.opacity = String(t);
+        el.style.transform = t >= 0.999 ? 'none' : `translate3d(0, ${(1 - t) * 28}px, 0)`;
+      });
+    };
+
+    const tick = () => {
+      const target = progress();
+      const storyP = storyProgress();
+      const cover = winesCover();
+      current += (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.001) current = target;
+      apply(current, storyP, cover);
+      if (Math.abs(target - current) >= 0.001) {
+        this._heroRaf = requestAnimationFrame(tick);
+      } else {
+        running = false;
+        this._heroRaf = 0;
+      }
+    };
+
+    const onScroll = () => {
+      if (running) return;
+      running = true;
+      this._heroRaf = requestAnimationFrame(tick);
+    };
+
+    current = progress();
+    apply(current, storyProgress(), winesCover());
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    this._heroCleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (this._heroRaf) cancelAnimationFrame(this._heroRaf);
+      this._heroRaf = 0;
+      running = false;
+      this._heroCleanup = null;
+    };
+  }
+
+  _bindWinesScroll() {
+    if (this._winesCleanup) this._winesCleanup();
+    const scrollEl = document.querySelector('[data-bb-wines-scroll]');
+    const pinEl = document.querySelector('[data-bb-wines-pin]');
+    const copy = document.querySelector('[data-bb-wines-copy]');
+    const stage = document.querySelector('[data-bb-bottle-stage]');
+    const controls = document.querySelector('[data-bb-wines-controls]');
+    const deco = document.querySelector('[data-bb-wines-deco]');
+    if (!scrollEl || !pinEl) return;
+
+    const clamp01 = (n) => Math.min(1, Math.max(0, n));
+    const range = (p, a, b) => clamp01((p - a) / (b - a));
+    const ease = (t) => t * t * (3 - 2 * t);
+
+    const winesGrid = document.querySelector('[data-bb-wines]');
+    const showAll = () => {
+      if (copy) { copy.style.opacity = '1'; copy.style.transform = 'none'; }
+      if (stage) stage.style.transform = 'none';
+      if (controls) { controls.style.opacity = '1'; controls.style.transform = 'none'; }
+      if (deco) deco.style.transform = 'none';
+      if (winesGrid) winesGrid.style.transform = 'none';
+    };
+    if (!this._motionEnabled()) {
+      showAll();
+      return;
+    }
+
+    let current = 0;
+    let running = false;
+
+    const scrubRoom = () => Math.max(0, scrollEl.offsetHeight - pinEl.offsetHeight);
+
+    const progress = () => {
+      const total = scrubRoom();
+      // Mobile uses auto-height (no pin scrub) — drive reveal from arrival instead
+      if (total < 24) return 0;
+      return clamp01(-scrollEl.getBoundingClientRect().top / total);
+    };
+
+    // How far Wines has covered Story (before the pin scrub really starts)
+    const arrival = () => {
+      const top = scrollEl.getBoundingClientRect().top;
+      const h = window.innerHeight || 1;
+      const start = h * 0.95;
+      const end = h * 0.08;
+      return clamp01((start - top) / Math.max(1, start - end));
+    };
+
+    const apply = (p, arrive) => {
+      const handoff = ease(arrive);
+      const drive = Math.max(p, handoff);
+      const enter = ease(range(drive, 0, 0.42));
+      const settle = ease(range(drive, 0.18, 0.7));
+      const exit = scrubRoom() < 24 ? 0 : ease(range(p, 0.78, 1));
+
+      // Soft lift of wines content as cream panel covers Story (not the sticky pin)
+      if (winesGrid) {
+        winesGrid.style.transform = handoff < 0.999
+          ? `translate3d(0, ${(1 - handoff) * 40}px, 0)`
+          : 'none';
+      }
+
+      if (copy) {
+        copy.style.opacity = String(enter * (1 - exit * 0.25));
+        copy.style.transform = enter >= 0.999 && exit < 0.001
+          ? 'none'
+          : `translate3d(0, ${(1 - enter) * 48 - exit * 20}px, 0)`;
+      }
+
+      if (stage) {
+        const y = (1 - ease(range(drive, 0.05, 0.55))) * 120 - exit * 28;
+        const rot = (1 - settle) * -7 + exit * 2;
+        const scale = 0.88 + settle * 0.14 - exit * 0.03;
+        stage.style.transform = `translate3d(0, ${y}px, 0) rotate(${rot}deg) scale(${scale})`;
+      }
+
+      if (controls) {
+        const c = ease(range(drive, 0.28, 0.62));
+        controls.style.opacity = String(c * (1 - exit * 0.35));
+        controls.style.transform = c >= 0.999 ? 'none' : `translate3d(0, ${(1 - c) * 18}px, 0)`;
+      }
+
+      if (deco) {
+        deco.style.transform = `translate3d(${(1 - settle) * 40 + exit * 24}px, ${(1 - enter) * 60 - exit * 30}px, 0) rotate(${(1 - settle) * -6}deg)`;
+      }
+    };
+
+    const tick = () => {
+      const target = progress();
+      const arrive = arrival();
+      current += (target - current) * 0.14;
+      if (Math.abs(target - current) < 0.001) current = target;
+      apply(current, arrive);
+      if (Math.abs(target - current) >= 0.001) {
+        this._winesRaf = requestAnimationFrame(tick);
+      } else {
+        running = false;
+        this._winesRaf = 0;
+      }
+    };
+
+    const onScroll = () => {
+      if (running) return;
+      running = true;
+      this._winesRaf = requestAnimationFrame(tick);
+    };
+
+    current = progress();
+    apply(current, arrival());
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    this._winesCleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (this._winesRaf) cancelAnimationFrame(this._winesRaf);
+      this._winesRaf = 0;
+      running = false;
+      this._winesCleanup = null;
+    };
   }
 
   _bindSkipScroll() {
@@ -685,6 +1255,113 @@ class Component extends DCLogic {
       this._skipCleanup = null;
     };
   }
+
+  _bindMomentsScroll() {
+    if (this._momentsCleanup) this._momentsCleanup();
+    const section = document.querySelector('[data-bb-moments]');
+    const intro = document.querySelector('[data-bb-moments-intro]');
+    const bar = document.querySelector('[data-bb-moments-bar]');
+    const stamp = document.querySelector('[data-bb-moments-stamp]');
+    const gallery = document.querySelector('[data-bb-moments-gallery]');
+    const lines = Array.from(document.querySelectorAll('[data-bb-moments-line]'));
+    if (!section || !intro) return;
+
+    const clamp01 = (n) => Math.min(1, Math.max(0, n));
+    const range = (p, a, b) => clamp01((p - a) / (b - a));
+    const ease = (t) => t * t * (3 - 2 * t);
+
+    const showAll = () => {
+      intro.style.transform = 'none';
+      if (bar) bar.style.transform = 'none';
+      if (stamp) { stamp.style.opacity = '1'; stamp.style.transform = 'none'; }
+      if (gallery) { gallery.style.opacity = '1'; gallery.style.transform = 'none'; }
+      lines.forEach((el) => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    };
+    if (!this._motionEnabled()) {
+      showAll();
+      return;
+    }
+
+    let running = false;
+
+    // 0 = still below Skip; 1 = Moments fully covers the viewport
+    const arrival = () => {
+      const top = section.getBoundingClientRect().top;
+      const h = window.innerHeight || 1;
+      const start = h * 0.95;
+      const end = h * 0.12;
+      return clamp01((start - top) / Math.max(1, start - end));
+    };
+
+    const galleryProgress = () => {
+      if (!gallery) return 0;
+      const top = gallery.getBoundingClientRect().top;
+      const h = window.innerHeight || 1;
+      return clamp01(1 - top / (h * 0.92));
+    };
+
+    const apply = (cover, gal) => {
+      const enter = ease(cover);
+
+      intro.style.transform = enter >= 0.999
+        ? 'none'
+        : `translate3d(0, ${(1 - enter) * 56}px, 0)`;
+
+      if (bar) {
+        bar.style.transform = `translate3d(0, ${(1 - enter) * 36}px, 0) scaleX(${0.92 + enter * 0.08})`;
+      }
+
+      lines.forEach((el, i) => {
+        const t = ease(range(cover, 0.12 + i * 0.12, 0.42 + i * 0.12));
+        el.style.opacity = String(t);
+        el.style.transform = t >= 0.999 ? 'none' : `translate3d(0, ${(1 - t) * 26}px, 0)`;
+      });
+
+      if (stamp) {
+        const t = ease(range(cover, 0.28, 0.72));
+        stamp.style.opacity = String(t);
+        stamp.style.transform = t >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - t) * 40}px, 0) rotate(${(1 - t) * -12}deg) scale(${0.88 + t * 0.12})`;
+      }
+
+      if (gallery) {
+        const g = ease(Math.max(gal, range(cover, 0.55, 1)));
+        gallery.style.opacity = String(g);
+        gallery.style.transform = g >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - g) * 52}px, 0)`;
+      }
+    };
+
+    const tick = () => {
+      apply(arrival(), galleryProgress());
+      running = false;
+      this._momentsRaf = 0;
+    };
+
+    const onScroll = () => {
+      if (running) return;
+      running = true;
+      this._momentsRaf = requestAnimationFrame(tick);
+    };
+
+    apply(arrival(), galleryProgress());
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    this._momentsCleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (this._momentsRaf) cancelAnimationFrame(this._momentsRaf);
+      this._momentsRaf = 0;
+      running = false;
+      this._momentsCleanup = null;
+    };
+  }
+
   loadMoments() {
     fetch('/api/instagram/moments?limit=10')
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error('moments api failed'))))
@@ -695,8 +1372,20 @@ class Component extends DCLogic {
       .catch(() => {});
   }
   renderVals() {
-    const w = this.state.wine;
-    const setWine = (n) => this.setState({ wine: n });
+    const w = this.state.wine | 0;
+    const setWine = (n) => {
+      const next = ((n % 2) + 2) % 2;
+      if (next === (this.state.wine | 0)) return;
+      this.setState({ wine: next });
+    };
+    const motionOn = this.props.motion ?? true;
+    const play = motionOn ? 'running' : 'paused';
+    const winePanel = (active, fromX) => active
+      ? 'opacity:1;transform:none;pointer-events:auto;z-index:2'
+      : `opacity:0;transform:translate3d(${fromX}px,14px,0);pointer-events:none;z-index:1`;
+    const wineBottle = (active, fromX, fromRot) => active
+      ? 'opacity:1;transform:none;z-index:2'
+      : `opacity:0;transform:translate3d(${fromX}px,24px,0) rotate(${fromRot}deg) scale(0.94);z-index:1;pointer-events:none`;
     const fallbackMoments = [
       { src: 'assets/web2/story-photo.jpg', alt: 'Friends on a beach blanket pouring Brisa Bay Chardonnay', permalink: 'https://www.instagram.com/brisabay' },
       { src: 'assets/web2/collage-a.jpg', alt: 'Friends clinking glasses of Brisa Bay over a picnic blanket', permalink: 'https://www.instagram.com/brisabay' },
@@ -717,12 +1406,18 @@ class Component extends DCLogic {
     const setMoment = (n) => this.setState({ moment: ((n % (maxMoment + 1)) + (maxMoment + 1)) % (maxMoment + 1) });
     const gap = 'clamp(8px, 0.75vw, 14px)';
     return {
-      isWine0: w === 0,
-      isWine1: w === 1,
+      wine0Panel: winePanel(w === 0, -22),
+      wine1Panel: winePanel(w === 1, 22),
+      wine0Bottle: wineBottle(w === 0, -40, -7),
+      wine1Bottle: wineBottle(w === 1, 40, 7),
+      wine0Play: w === 0 && motionOn ? 'running' : 'paused',
+      wine1Play: w === 1 && motionOn ? 'running' : 'paused',
+      wine0Hidden: w !== 0,
+      wine1Hidden: w !== 1,
       dot0: w === 0 ? '#e6393a' : 'rgba(87,84,74,0.28)',
       dot1: w === 1 ? '#e6393a' : 'rgba(87,84,74,0.28)',
-      prevWine: () => setWine((w + 1) % 2),
-      nextWine: () => setWine((w + 1) % 2),
+      prevWine: () => setWine(w + 1),
+      nextWine: () => setWine(w + 1),
       showWine0: () => setWine(0),
       showWine1: () => setWine(1),
       moments,
@@ -738,7 +1433,7 @@ class Component extends DCLogic {
           : `Show moments ${i + 1} to ${Math.min(i + visible, momentCount)}`,
         go: () => setMoment(i)
       })),
-      play: (this.props.motion ?? true) ? 'running' : 'paused',
+      play,
       slotStyle: { style: { width: '100%', height: '100%', display: 'block' } },
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
