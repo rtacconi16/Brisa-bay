@@ -105,6 +105,9 @@
     [data-bb-way-panel]:nth-child(2) { z-index: 13; }
     [data-bb-way-panel]:nth-child(3) { z-index: 12; }
     [data-bb-way-panel]:nth-child(4) { z-index: 11; }
+    [data-bb-way-panel]:first-child [data-bb-way-photo] {
+      transform: translate3d(12px, 0, 0) rotate(-7deg);
+    }
     [data-bb-way-panel]:not(:first-child) [data-bb-way-photo] {
       transform: translate3d(0, 115vh, 0) rotate(10deg) scale(0.96);
     }
@@ -121,36 +124,38 @@
       align-items: center;
     }
     [data-bb-way-photo] {
-      /* Center the stack in the left column (between screen edge and copy) */
+      /* Outer shell only moves — never use filter here (breaks child radius clipping) */
       justify-self: center;
       align-self: center;
-      width: fit-content;
-      max-width: min(100%, 42vw);
+      width: min(36vw, 420px);
+      max-width: 100%;
       max-height: min(72vh, 100%);
       min-height: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      border-radius: clamp(32px, 4vw, 64px);
-      clip-path: inset(0 round clamp(32px, 4vw, 64px));
+      display: block;
       transform-origin: 50% 60%;
-      will-change: transform;
+    }
+    [data-bb-way-photo-frame] {
+      display: block;
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      max-height: min(72vh, 100%);
+      overflow: hidden;
+      border-radius: 48px;
+      background: #eeeee4;
+      box-shadow: 0 22px 40px rgba(60, 58, 52, 0.2);
+      /* Force a clipped compositing layer so radius is present on first paint */
+      -webkit-mask-image: -webkit-radial-gradient(white, black);
+      transform: translate3d(0, 0, 0);
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
-      isolation: isolate;
-      box-shadow: 0 22px 50px rgba(60, 58, 52, 0.18);
     }
     [data-bb-way-photo] img {
       display: block;
-      max-width: 100%;
-      max-height: min(72vh, 100%);
-      width: auto;
-      height: auto;
-      object-fit: contain;
-      border-radius: 0;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 48px;
     }
     [data-bb-way-copy] {
       display: flex;
@@ -257,7 +262,7 @@
       [data-bb-way-title] { opacity: 1 !important; transform: none !important; }
       [data-bb-way-word] { opacity: 1 !important; transform: none !important; }
       [data-bb-way-copy] { opacity: 1 !important; }
-      [data-bb-way-photo] { transform: none !important; box-shadow: none !important; }
+      [data-bb-way-photo] { transform: none !important; }
       [data-bb-way-pin] > [data-bb-stamp] { transform: none !important; }
       [data-bb-way-progress] { display: none !important; }
     }
@@ -273,16 +278,17 @@
         gap: 12px !important;
       }
       [data-bb-way-photo] {
-        aspect-ratio: auto !important;
+        width: min(42vw, 220px) !important;
         max-height: 46svh !important;
-        height: auto !important;
+      }
+      [data-bb-way-photo-frame] {
+        max-height: 46svh !important;
+        border-radius: 28px !important;
         overflow: hidden !important;
       }
       [data-bb-way-photo] img {
-        max-height: 46svh !important;
-        width: auto !important;
-        height: auto !important;
-        object-fit: contain !important;
+        border-radius: 28px !important;
+        object-fit: cover !important;
       }
       [data-bb-way-copy] {
         padding: calc(clamp(118px, 34vw, 168px) + 12px + 8px - 72px) 0 0 !important;
@@ -391,7 +397,7 @@
 
         <div data-bb-way-panel="" data-label="The Un-Occasion">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky"></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">The Un-Occasion</h3>
               <p data-bb-way-body="">Forget the calendar milestones. Great wine is for the spontaneous moments, Opened just because the sun is out, the music is good, or simply because you're together.</p>
@@ -401,7 +407,7 @@
 
         <div data-bb-way-panel="" data-label="Freshness First">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice"></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">Freshness First</h3>
               <p data-bb-way-body="">Shaped by the cool winds of San Pablo Bay, we show a brighter side of Napa Valley. No heavy flavors here; just crisp, light, and refreshing wine full of life.</p>
@@ -411,7 +417,7 @@
 
         <div data-bb-way-panel="" data-label="Better Together">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water"></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">Better Together</h3>
               <p data-bb-way-body="">This wine isn't meant for a dark cellar or silent analysis. It's a bridge between people: the perfect excuse for a long lunch that rolls right into dinner with friends.</p>
@@ -421,7 +427,7 @@
 
         <div data-bb-way-panel="" data-label="Keeping it Simple">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines"></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">Keeping it Simple</h3>
               <p data-bb-way-body="">We've stripped away the complex terminology and unwritten rules. No pretense, no pressure, just great Napa wine made to let you focus entirely on the moment.</p>
