@@ -17,6 +17,91 @@
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+
+    /* Skip the Cellar — pinned manifesto reveal */
+    [data-bb-skip-scroll] {
+      position: relative;
+      z-index: 1;
+      height: 180vh;
+      background: #eeeee4;
+    }
+    [data-bb-skip-pin] {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      height: 100svh;
+      display: flex;
+      align-items: center;
+      padding: clamp(48px, 8vh, 96px) clamp(48px, 8vw, 160px) clamp(48px, 8vh, 96px) clamp(48px, 7vw, 140px);
+      box-sizing: border-box;
+      background: #eeeee4;
+    }
+    /* Bottled Moments scrolls over Skip so text can fade as it arrives */
+    [data-screen-label="Bottled Moments"] {
+      position: relative;
+      z-index: 2;
+    }
+    [data-bb-skip-inner] {
+      width: 100%;
+      max-width: 1180px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      column-gap: clamp(56px, 9vw, 160px);
+      align-items: end;
+      will-change: opacity, transform;
+    }
+    [data-bb-skip-title] {
+      margin: 0;
+      max-width: 9ch;
+      opacity: 0;
+      transform-origin: left center;
+      will-change: opacity, transform;
+    }
+    [data-bb-skip] {
+      max-width: 32ch;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: clamp(16px, 2.2vh, 26px);
+    }
+    [data-bb-skip-rule] {
+      display: block;
+      width: clamp(48px, 5vw, 88px);
+      height: 2px;
+      background: #60b98f;
+      transform-origin: left center;
+      transform: scaleX(0);
+      margin-bottom: clamp(4px, 0.8vh, 10px);
+      will-change: transform;
+    }
+    [data-bb-skip-lead],
+    [data-bb-skip-body],
+    [data-bb-skip-cta] {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+      will-change: opacity, transform;
+    }
+    [data-bb-skip-lead] {
+      margin: 0;
+      font-size: clamp(18px, 1.55vw, 28px);
+      line-height: 1.35;
+      font-style: italic;
+      font-weight: 700;
+      color: #5b584e;
+      text-wrap: pretty;
+    }
+    [data-bb-skip-body] {
+      margin: 0;
+      font-size: clamp(16px, 1.35vw, 24px);
+      line-height: 1.5;
+      color: #606060;
+      text-wrap: pretty;
+    }
+    [data-bb-skip-cta] {
+      margin-top: clamp(4px, 1vh, 12px);
+      display: inline-block;
+    }
+
     @media (min-width: 901px) {
       [data-bb-opening] {
         height: 100svh;
@@ -39,13 +124,6 @@
         padding-bottom: clamp(32px, 4vh, 56px);
         box-sizing: border-box;
       }
-      [data-bb-wines-section] [data-bb-stamp] {
-        width: clamp(140px, 16vw, 260px);
-        top: clamp(-12px, -0.5vh, 8px);
-      }
-      [data-bb-wines-section] [data-bb-stamp] span {
-        font-size: clamp(14px, 1.6vw, 28px) !important;
-      }
       [data-bb-wines] {
         margin-top: 0;
         min-height: 0;
@@ -53,6 +131,41 @@
         height: 100%;
         align-items: center;
         align-content: center;
+      }
+      [data-bb-moments-intro] {
+        display: grid;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        align-items: center;
+        column-gap: clamp(32px, 5vw, 80px);
+        padding: clamp(56px, 7vh, 120px) clamp(40px, 6vw, 160px);
+      }
+      [data-bb-moments-copy] {
+        max-width: none;
+      }
+      [data-bb-moments-headline] {
+        flex-wrap: nowrap;
+      }
+      [data-bb-moments-copy] h2 {
+        font-size: clamp(40px, 4.8vw, 84px) !important;
+      }
+      [data-bb-moments-headline] p {
+        font-size: clamp(18px, 1.8vw, 32px) !important;
+      }
+      [data-bb-moments-cta] {
+        font-size: clamp(15px, 1.35vw, 24px) !important;
+        white-space: nowrap;
+      }
+      [data-bb-moments-logo] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: clamp(200px, 28vh, 360px);
+      }
+      [data-bb-moments-intro] [data-bb-stamp] {
+        width: min(100%, clamp(200px, 22vw, 340px));
+      }
+      [data-bb-moments-intro] [data-bb-stamp] span {
+        font-size: clamp(18px, 2vw, 36px) !important;
       }
       [data-bb-wines] h2 {
         margin-bottom: clamp(16px, 2.2vh, 36px) !important;
@@ -70,13 +183,31 @@
         align-self: center;
         height: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: clamp(12px, 1.5vh, 24px);
+        min-height: 0;
       }
       [data-bb-wines] img[alt*="bottle"] {
-        height: min(68vh, 620px);
-        max-height: 100%;
+        height: min(58vh, 560px);
+        max-height: calc(100% - 72px);
       }
+      [data-bb-skip-title] {
+        font-size: clamp(52px, 6.6vw, 118px) !important;
+        line-height: 1.02 !important;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-skip-scroll] { height: auto !important; }
+      [data-bb-skip-pin] { position: relative !important; height: auto !important; min-height: 100svh !important; }
+      [data-bb-skip-inner],
+      [data-bb-skip-title],
+      [data-bb-skip],
+      [data-bb-skip-lead],
+      [data-bb-skip-body],
+      [data-bb-skip-cta] { opacity: 1 !important; transform: none !important; }
+      [data-bb-skip-rule] { transform: none !important; }
     }
     @media (max-width: 900px) {
       [data-bb-hero] {
@@ -85,13 +216,35 @@
         height: 62svh !important;
       }
       [data-bb-deco] { display: none !important; }
-      [data-bb-stamp] {
-        width: clamp(120px, 34vw, 180px) !important;
-        left: 12px !important;
-        top: -18px !important;
+      [data-bb-moments-intro] {
+        grid-template-columns: 1fr !important;
+        row-gap: 28px !important;
+        padding: 48px 20px 40px !important;
+        text-align: center !important;
+      }
+      [data-bb-moments-copy] {
+        max-width: none !important;
+        text-align: center !important;
+        margin: 0 auto !important;
+      }
+      [data-bb-moments-headline] {
+        flex-direction: column !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+      }
+      [data-bb-moments-cta] {
+        white-space: normal !important;
+        text-wrap: pretty !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      [data-bb-moments-logo] { min-height: 0 !important; }
+      [data-bb-moments-intro] [data-bb-stamp] {
+        width: clamp(140px, 42vw, 200px) !important;
+        margin: 0 auto !important;
       }
       [data-bb-wines] {
-        margin-top: clamp(72px, 22vw, 140px) !important;
+        margin-top: 0 !important;
         padding-top: 8px !important;
       }
       [data-bb-wines] img[alt*="bottle"] {
@@ -101,30 +254,14 @@
         flex: 0 0 100% !important;
         height: clamp(220px, 58vw, 360px) !important;
       }
-      [data-bb-skip] { text-align: left !important; align-items: flex-start !important; }
-      [data-bb-skip] p { text-align: left !important; }
-      [data-bb-collage] {
-        aspect-ratio: auto !important;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 14px !important;
+      [data-bb-skip-scroll] { height: 170vh !important; }
+      [data-bb-skip-pin] { padding: 56px 20px !important; }
+      [data-bb-skip-inner] {
+        grid-template-columns: 1fr !important;
+        row-gap: 28px !important;
+        align-items: start !important;
       }
-      [data-bb-collage] > [data-bb-deco] { display: none !important; }
-      [data-bb-collage-item],
-      [data-bb-collage-copy] {
-        position: relative !important;
-        left: auto !important;
-        top: auto !important;
-        width: 100% !important;
-        transform: none !important;
-      }
-      [data-bb-collage-item] { aspect-ratio: 4 / 3 !important; }
-      [data-bb-collage-copy] { order: -1 !important; }
-      [data-bb-collage-copy] h2 {
-        font-size: clamp(26px, 8vw, 40px) !important;
-        text-align: left !important;
-        padding: 8px 4px 4px !important;
-      }
+      [data-bb-skip-title] { max-width: none !important; }
       [data-bb-nav] { row-gap: 10px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
       [data-bb-section] { padding-left: 20px !important; padding-right: 20px !important; overflow: hidden !important; }
@@ -137,7 +274,6 @@
         padding: 36px 22px !important;
         justify-content: flex-end !important;
       }
-      [data-screen-label="Skip the Cellar"] { padding-left: 20px !important; padding-right: 20px !important; }
       [data-screen-label="Footer"] { padding-left: 20px !important; padding-right: 20px !important; }
       [data-screen-label="Bottled Moments"] > div:first-of-type { padding-left: 20px !important; padding-right: 20px !important; }
     }
@@ -157,7 +293,7 @@
 
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#60b98f"></rect><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-size="34" fill="#eeeee4">BB</text></svg></template>
 
-<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
+<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; font-family: 'Garamond Pro', serif; color: #57544a">
 
   <!-- ================= OPENING VIEWPORT: HERO + TICKER ================= -->
   <div data-bb-opening="">
@@ -176,19 +312,6 @@
         </div>
       </div>
 
-      <div style="position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none">
-        <div onClick="{{ toggleHeroVideo }}" role="button" aria-label="{{ heroPlayLabel }}" title="{{ heroPlayLabel }}" style="pointer-events: auto; width: clamp(64px, 5.7vw, 110px); height: clamp(64px, 5.7vw, 110px); border-radius: 50%; background: rgba(52,52,48,0.82); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.1)">
-          <sc-if value="{{ heroPlaying }}" hint-placeholder-val="{{ true }}">
-            <div style="display: flex; align-items: center; gap: clamp(5px, 0.45vw, 8px)">
-              <div style="width: clamp(5px, 0.45vw, 8px); height: clamp(22px, 2vw, 38px); background: #eeeee4; border-radius: 1px"></div>
-              <div style="width: clamp(5px, 0.45vw, 8px); height: clamp(22px, 2vw, 38px); background: #eeeee4; border-radius: 1px"></div>
-            </div>
-          </sc-if>
-          <sc-if value="{{ heroPaused }}" hint-placeholder-val="{{ false }}">
-            <div style="width: 0; height: 0; border-left: clamp(20px, 1.8vw, 34px) solid #eeeee4; border-top: clamp(12px, 1.1vw, 21px) solid transparent; border-bottom: clamp(12px, 1.1vw, 21px) solid transparent; margin-left: clamp(5px, 0.5vw, 9px)"></div>
-          </sc-if>
-        </div>
-      </div>
     </div>
 
     <!-- ================= TICKER ================= -->
@@ -228,24 +351,11 @@
   </div>
 
   <!-- ================= OUR WINES VIEWPORT ================= -->
-  <div data-screen-label="Our Wines" data-bb-section="" data-bb-wines-section="" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
+  <div data-screen-label="Our Wines" data-bb-section="" data-bb-wines-section="" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box; overflow-x: clip">
 
-    <img data-bb-deco="" src="assets/brush/wave-lime.png" alt="" style="position: absolute; left: 27%; top: clamp(-120px, -10vw, -40px); width: 93%; height: clamp(200px, 32vw, 624px); z-index: 8; pointer-events: none">
-    <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -6%; top: 30%; width: clamp(300px, 43vw, 820px); z-index: 1; pointer-events: none">
+    <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -8%; bottom: -12%; top: auto; width: clamp(420px, 58vw, 1100px); z-index: 1; pointer-events: none">
 
-    <div data-bb-stamp="" style="position: absolute; left: clamp(-20px, 4.7vw, 90px); top: clamp(-30px, -2vw, -10px); width: clamp(200px, 24vw, 460px); aspect-ratio: 1; z-index: 9">
-      <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
-      <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
-        <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
-        <span style="position: relative; font-size: clamp(23px, 2.8vw, 53px); color: #eeeee4">Brisa Bay</span>
-      </div>
-      <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
-        <defs><path id="homeStampCircleR" d="M 230,230 m -230,0 a 230,230 0 1,1 460,0 a 230,230 0 1,1 -460,0"></path></defs>
-        <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#e6393a" font-weight="600"><textPath href="#homeStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-      </svg>
-    </div>
-
-    <div data-bb-wines="" style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: clamp(150px, 19.5vw, 380px)">
+    <div data-bb-wines="" style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: 0">
       <div>
         <h2 style="margin: 0 0 clamp(30px, 3.6vw, 70px); font-family: 'Old Newspaper', serif; font-size: clamp(40px, 5vw, 96px); font-weight: 400; color: #5b584e; letter-spacing: 0.04em">Our Wines</h2>
         <sc-if value="{{ isWine0 }}" hint-placeholder-val="{{ true }}">
@@ -264,36 +374,67 @@
             <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> oysters, ceviche, herby salads and fresh goat cheese.</p>
           </div>
         </sc-if>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(24px, 5.7vw, 110px)">
-          <a href="blends.html" style="background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block; transition: transform 0.25s" style-hover="transform: scale(1.06)">See both blends &amp; tasting notes</a>
-          <div style="display: flex; align-items: center; gap: clamp(14px, 1.4vw, 26px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.15vw, 22px); letter-spacing: 0.08em; color: rgba(87,84,74,0.6)">SWITCH WINE</span>
-            <div onClick="{{ prevWine }}" role="button" aria-label="Show the Chardonnay" title="Previous wine — Chardonnay" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">←</div>
-            <div onClick="{{ nextWine }}" role="button" aria-label="Show the Sauvignon Blanc" title="Next wine — Sauvignon Blanc" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">→</div>
-            <div style="display: flex; align-items: center; gap: clamp(8px, 0.7vw, 13px); margin-left: clamp(4px, 0.6vw, 12px)">
-              <div onClick="{{ showWine0 }}" role="button" aria-label="Show the Chardonnay" title="Chardonnay" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot0 }}"></div>
-              <div onClick="{{ showWine1 }}" role="button" aria-label="Show the Sauvignon Blanc" title="Sauvignon Blanc" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot1 }}"></div>
-            </div>
-          </div>
-        </div>
+        <a href="blends.html" style="background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block; transition: transform 0.25s" style-hover="transform: scale(1.06)">See both blends &amp; tasting notes</a>
       </div>
-      <div data-bb-bottle="" style="display: flex; justify-content: center; align-items: center; min-height: 0">
+      <div data-bb-bottle="" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(16px, 1.8vw, 28px); min-height: 0">
         <sc-if value="{{ isWine0 }}" hint-placeholder-val="{{ true }}">
           <img src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="height: clamp(360px, 52vw, 1000px); filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25)); animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
         </sc-if>
         <sc-if value="{{ isWine1 }}" hint-placeholder-val="{{ false }}">
           <img src="assets/web2/bottle-sauvblanc.png" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="height: clamp(360px, 52vw, 1000px); filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25)); animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
         </sc-if>
+        <div style="display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.4vw, 26px)">
+          <span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.15vw, 22px); letter-spacing: 0.08em; color: rgba(87,84,74,0.6)">SWITCH WINE</span>
+          <div onClick="{{ prevWine }}" role="button" aria-label="Show the Chardonnay" title="Previous wine — Chardonnay" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">←</div>
+          <div onClick="{{ nextWine }}" role="button" aria-label="Show the Sauvignon Blanc" title="Next wine — Sauvignon Blanc" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: #9ac21e; box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #eeeee4; font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">→</div>
+          <div style="display: flex; align-items: center; gap: clamp(8px, 0.7vw, 13px); margin-left: clamp(4px, 0.6vw, 12px)">
+            <div onClick="{{ showWine0 }}" role="button" aria-label="Show the Chardonnay" title="Chardonnay" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot0 }}"></div>
+            <div onClick="{{ showWine1 }}" role="button" aria-label="Show the Sauvignon Blanc" title="Sauvignon Blanc" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot1 }}"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SKIP THE CELLAR ================= -->
+  <div data-bb-skip-scroll="" data-screen-label="Skip the Cellar">
+    <div data-bb-skip-pin="">
+      <div data-bb-skip-inner="">
+        <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: #5b584e; letter-spacing: 0.03em; text-wrap: balance">Skip the Cellar.<br>Find a Bottle.</h2>
+        <div data-bb-skip="">
+          <span data-bb-skip-rule="" aria-hidden="true"></span>
+          <p data-bb-skip-lead="">No wine snobs. No pretense. No occasion required.</p>
+          <p data-bb-skip-body="">We skip the barriers to share the wines we love with anyone who wants to enjoy them. Find Brisa Bay at your favorite local spots.</p>
+          <a data-bb-skip-cta="" href="where-to-buy.html" style="background: #60b98f; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.45vw, 26px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; transition: transform 0.25s, background-color 0.25s, color 0.25s" style-hover="background: #f5d732; color: #e6393a; transform: scale(1.04)">Locate Brisa Bay</a>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ================= BOTTLED MOMENTS ================= -->
-  <div data-screen-label="Bottled Moments" style="position: relative; z-index: 3">
+  <div data-screen-label="Bottled Moments">
     <img data-bb-deco="" src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
-    <div style="background: #60b98f; text-align: center; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); position: relative">
-      <h2 style="margin: 0 0 clamp(12px, 1.15vw, 22px); font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.6vw, 88px); font-weight: 400; color: #eeeee4; letter-spacing: 0.03em; text-wrap: balance">Bottled Moments</h2>
-      <p style="margin: 0 auto clamp(14px, 1.2vw, 22px); max-width: 46ch; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 2.1vw, 40px); color: #eeeee4; text-wrap: pretty">A gallery of real afternoons, sent in by the people drinking them.</p>
-      <p style="margin: 0 auto; max-width: 54ch; font-size: clamp(16px, 1.7vw, 32px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">Want yours up here? Post your pour with <strong>#BrisaBay</strong> and tag <a href="https://www.instagram.com/brisabay" target="_blank" rel="noopener" style="color: #f5d732">@brisabay</a> — we add new moments every month.</p>
+    <div data-bb-moments-intro="" style="background: #60b98f; position: relative; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: center; column-gap: clamp(28px, 4vw, 72px); padding: clamp(48px, 6vh, 110px) clamp(20px, 5vw, 160px); box-sizing: border-box">
+      <div data-bb-moments-copy="" style="text-align: left; min-width: 0; display: flex; flex-direction: column; gap: clamp(16px, 1.6vw, 28px)">
+        <div data-bb-moments-headline="" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(12px, 1.4vw, 28px) clamp(16px, 2vw, 36px)">
+          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.6vw, 84px); font-weight: 400; color: #eeeee4; letter-spacing: 0.03em; white-space: nowrap">Bottled Moments</h2>
+          <p style="margin: 0; flex: 1 1 16ch; min-width: min(100%, 16ch); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.9vw, 32px); line-height: 1.3; color: #eeeee4; text-wrap: pretty">A gallery of real afternoons, sent in by the people drinking them.</p>
+        </div>
+        <p data-bb-moments-cta="" style="margin: 0; font-size: clamp(15px, 1.5vw, 26px); line-height: 1.5; color: rgba(238,238,228,0.92); white-space: nowrap">Want yours up here? Post your pour with <strong>#BrisaBay</strong> and tag <a href="https://www.instagram.com/brisabay" target="_blank" rel="noopener" style="color: #f5d732">@brisabay</a> — we add new moments every month.</p>
+      </div>
+      <div data-bb-moments-logo="" style="display: flex; align-items: center; justify-content: center; min-width: 0">
+        <div data-bb-stamp="" style="position: relative; width: min(100%, clamp(180px, 24vw, 340px)); aspect-ratio: 1; z-index: 2">
+          <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
+          <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
+            <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
+            <span style="position: relative; font-size: clamp(20px, 2.4vw, 40px); color: #eeeee4">Brisa Bay</span>
+          </div>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
+            <defs><path id="homeStampCircleR" d="M 230,230 m -230,0 a 230,230 0 1,1 460,0 a 230,230 0 1,1 -460,0"></path></defs>
+            <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#e6393a" font-weight="600"><textPath href="#homeStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
+          </svg>
+        </div>
+      </div>
     </div>
 
     <div style="position: relative; background: #eeeee4; padding: clamp(18px, 2vw, 36px) 0 clamp(28px, 3vw, 56px)">
@@ -318,46 +459,6 @@
           <div onClick="{{ dot.go }}" role="button" aria-label="{{ dot.label }}" title="{{ dot.label }}" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot.bg }}"></div>
         </sc-for>
       </div>
-    </div>
-  </div>
-
-  <!-- ================= SKIP THE CELLAR ================= -->
-  <div data-screen-label="Skip the Cellar" style="position: relative; background: #eeeee4; padding: clamp(40px, 4.2vw, 80px) clamp(20px, 5vw, 190px); box-sizing: border-box">
-    <div style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); align-items: center; gap: clamp(34px, 4vw, 80px)">
-      <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 6vw, 116px); line-height: 1.25; font-weight: 400; color: #5b584e; letter-spacing: 0.03em">Skip the Cellar. <br>Find a Bottle.</h2>
-      <div data-bb-skip="" style="display: flex; flex-direction: column; align-items: flex-end; gap: clamp(26px, 2.7vw, 52px)">
-        <p style="margin: 0; max-width: 620px; font-size: clamp(19px, 1.9vw, 36px); line-height: 1.35; text-align: right; font-style: italic; font-weight: 700; color: #5b584e; text-wrap: pretty">No wine snobs. No pretense. No occasion required.</p>
-        <p style="margin: 0; max-width: 620px; font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: right; text-wrap: pretty">We skip the barriers to share the wines we love with anyone who wants to enjoy them. Find Brisa Bay at your favorite local spots.</p>
-        <a href="where-to-buy.html" style="background: #60b98f; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block" style-hover="background: #f5d732; color: #e6393a">Locate Brisa Bay</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= COLLAGE ================= -->
-  <div data-screen-label="Vibrant Collage" style="position: relative; background: #eeeee4; z-index: 14; padding: clamp(30px, 3vw, 60px) clamp(16px, 3.4vw, 66px) clamp(40px, 4.2vw, 80px); box-sizing: border-box; overflow: hidden">
-
-    <div data-bb-collage="" style="position: relative; width: 100%; aspect-ratio: 1440 / 1150">
-
-      <img data-bb-deco="" src="assets/brush/swoosh-lime.png" alt="" style="position: absolute; left: -1%; top: -4%; width: 44%; z-index: 2; pointer-events: none">
-      <img data-bb-deco="" src="assets/brush/splash-yellow.png" alt="" style="position: absolute; left: 42%; top: 24%; width: 27%; transform: rotate(184deg); z-index: 1; pointer-events: none">
-      <img data-bb-deco="" src="assets/brush/splash-yellow.png" alt="" style="position: absolute; left: -7%; top: 54%; width: 18%; transform: rotate(204deg); z-index: 1; pointer-events: none">
-
-      <div data-bb-collage-item="" style="position: absolute; left: 7%; top: 44%; width: 42%; aspect-ratio: 1; z-index: 3">
-        <img src="assets/web2/collage-a.jpg" alt="Two friends clinking glasses of Brisa Bay over a picnic blanket with bottles and a tray of fruit" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-      </div>
-      <div data-bb-collage-item="" style="position: absolute; left: 56%; top: 4%; width: 38%; aspect-ratio: 1 / 1.07; z-index: 3">
-        <img src="assets/web2/collage-b.jpg" alt="A restaurant table set with bottles of Brisa Bay, glasses of white wine, a charcuterie board and bruschetta" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-      </div>
-      <div data-bb-collage-item="" style="position: absolute; left: 51.5%; top: 54%; width: 35.5%; aspect-ratio: 1.48; z-index: 4">
-        <img src="assets/web2/collage-c.jpg" alt="Overhead shot of a woman on a yellow pool float holding a glass of rosé and a bottle of Brisa Bay Sauvignon Blanc" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-      </div>
-
-      
-
-      <div data-bb-collage-copy="" style="position: absolute; left: 2%; top: 20%; width: 52%; z-index: 7">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 3.5vw, 68px); line-height: 1.26; font-weight: 400; color: #5b584e; text-align: center; letter-spacing: 0.03em; text-wrap: balance">Vibrant, beautifully balanced, and made for real life.</h2>
-      </div>
-
     </div>
   </div>
 
@@ -442,27 +543,147 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
 class Component extends DCLogic {
-  state = { wine: 0, moment: 0, ageOk: false, faqOpen: false, gateDenied: false, heroPlaying: true, moments: null, narrow: false };
+  state = { wine: 0, moment: 0, ageOk: false, faqOpen: false, gateDenied: false, moments: null, narrow: false };
+  _skipRaf = 0;
+  _skipCleanup = null;
+
   componentDidMount() {
     try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
     const v = document.getElementById('bb-hero-video');
-    if (v) {
-      const sync = () => this.setState({ heroPlaying: !v.paused });
-      v.addEventListener('play', sync);
-      v.addEventListener('pause', sync);
-      v.play().then(() => this.setState({ heroPlaying: true })).catch(() => this.setState({ heroPlaying: false }));
-    }
+    if (v && v.paused) v.play().catch(() => {});
     this._mq = window.matchMedia('(max-width: 900px)');
     this._onMq = () => this.setState({ narrow: !!this._mq.matches, moment: 0 });
     this._onMq();
     if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
     else if (this._mq.addListener) this._mq.addListener(this._onMq);
     this.loadMoments();
+    requestAnimationFrame(() => this._bindSkipScroll());
   }
   componentWillUnmount() {
+    if (this._skipCleanup) this._skipCleanup();
     if (!this._mq) return;
     if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
     else if (this._mq.removeListener) this._mq.removeListener(this._onMq);
+  }
+
+  _bindSkipScroll() {
+    if (this._skipCleanup) this._skipCleanup();
+    const scrollEl = document.querySelector('[data-bb-skip-scroll]');
+    const pinEl = document.querySelector('[data-bb-skip-pin]');
+    const inner = document.querySelector('[data-bb-skip-inner]');
+    const title = document.querySelector('[data-bb-skip-title]');
+    const rule = document.querySelector('[data-bb-skip-rule]');
+    const lead = document.querySelector('[data-bb-skip-lead]');
+    const body = document.querySelector('[data-bb-skip-body]');
+    const cta = document.querySelector('[data-bb-skip-cta]');
+    const momentsSection = document.querySelector('[data-screen-label="Bottled Moments"]');
+    if (!scrollEl || !pinEl || !title) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motionOn = this.props.motion ?? true;
+    const setReveal = (el, t, rise = 18) => {
+      if (!el) return;
+      const v = Math.min(1, Math.max(0, t));
+      el.style.opacity = String(v);
+      el.style.transform = v >= 0.999 ? 'none' : `translate3d(0, ${(1 - v) * rise}px, 0)`;
+    };
+    const showAll = () => {
+      title.style.opacity = '1';
+      title.style.transform = 'none';
+      if (inner) { inner.style.opacity = '1'; inner.style.transform = 'none'; }
+      if (rule) { rule.style.opacity = '1'; rule.style.transform = 'scaleX(1)'; }
+      setReveal(lead, 1);
+      setReveal(body, 1);
+      setReveal(cta, 1);
+    };
+    if (reduceMotion || !motionOn) {
+      showAll();
+      return;
+    }
+
+    const clamp01 = (n) => Math.min(1, Math.max(0, n));
+    const range = (p, a, b) => clamp01((p - a) / (b - a));
+    const ease = (t) => t * t * (3 - 2 * t);
+
+    let current = 0;
+    let running = false;
+
+    const progress = () => {
+      const total = Math.max(1, scrollEl.offsetHeight - pinEl.offsetHeight);
+      return clamp01(-scrollEl.getBoundingClientRect().top / total);
+    };
+
+    // Fade starts as Bottled Moments approaches; finishes before it fully covers the type
+    const coverProgress = () => {
+      if (!momentsSection) return 0;
+      const top = momentsSection.getBoundingClientRect().top;
+      const h = window.innerHeight || 1;
+      const start = h * 0.92;
+      const end = h * 0.28;
+      return clamp01((start - top) / Math.max(1, start - end));
+    };
+
+    const apply = (p, cover) => {
+      const titleT = ease(range(p, 0, 0.2));
+      const leadT = ease(range(p, 0.16, 0.42));
+      const bodyT = ease(range(p, 0.3, 0.56));
+      const ctaT = ease(range(p, 0.46, 0.72));
+      const ruleT = ease(range(p, 0.12, 0.38));
+
+      // Entrance only — do not mix exit into these transforms (that caused the jitter)
+      title.style.opacity = String(titleT);
+      title.style.transform = titleT >= 0.999 ? 'none' : `scale(${1.04 - 0.04 * titleT})`;
+      if (rule) {
+        rule.style.opacity = String(ruleT);
+        rule.style.transform = `scaleX(${ruleT})`;
+      }
+      setReveal(lead, leadT, 18);
+      setReveal(body, bodyT, 18);
+      setReveal(cta, ctaT, 14);
+
+      // Soft dissolve at end of pin, then finish as Moments covers — never blank cream
+      const exit = Math.min(1, ease(range(p, 0.8, 1)) * 0.4 + ease(cover));
+      if (inner) {
+        inner.style.opacity = String(1 - exit);
+        inner.style.transform = exit > 0.001
+          ? `translate3d(0, ${exit * -72}px, 0)`
+          : 'none';
+      }
+    };
+
+    const tick = () => {
+      const target = progress();
+      // Cover tracks scroll directly so the fade does not lag under the next section
+      const cover = coverProgress();
+      current += (target - current) * 0.16;
+      if (Math.abs(target - current) < 0.001) current = target;
+      apply(current, cover);
+      if (Math.abs(target - current) >= 0.001) {
+        this._skipRaf = requestAnimationFrame(tick);
+      } else {
+        running = false;
+        this._skipRaf = 0;
+      }
+    };
+
+    const onScroll = () => {
+      if (running) return;
+      running = true;
+      this._skipRaf = requestAnimationFrame(tick);
+    };
+
+    current = progress();
+    apply(current, coverProgress());
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    this._skipCleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (this._skipRaf) cancelAnimationFrame(this._skipRaf);
+      this._skipRaf = 0;
+      running = false;
+      this._skipCleanup = null;
+    };
   }
   loadMoments() {
     fetch('/api/instagram/moments?limit=10')
@@ -476,7 +697,6 @@ class Component extends DCLogic {
   renderVals() {
     const w = this.state.wine;
     const setWine = (n) => this.setState({ wine: n });
-    const heroPlaying = !!this.state.heroPlaying;
     const fallbackMoments = [
       { src: 'assets/web2/story-photo.jpg', alt: 'Friends on a beach blanket pouring Brisa Bay Chardonnay', permalink: 'https://www.instagram.com/brisabay' },
       { src: 'assets/web2/collage-a.jpg', alt: 'Friends clinking glasses of Brisa Bay over a picnic blanket', permalink: 'https://www.instagram.com/brisabay' },
@@ -528,14 +748,6 @@ class Component extends DCLogic {
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
       closeFaq: () => this.setState({ faqOpen: false }),
-      heroPlaying,
-      heroPaused: !heroPlaying,
-      heroPlayLabel: heroPlaying ? 'Pause video' : 'Play video',
-      toggleHeroVideo: () => {
-        const v = document.getElementById('bb-hero-video');
-        if (!v) return;
-        if (v.paused) v.play(); else v.pause();
-      },
       faqItems: [
         { q: 'Where can I buy Brisa Bay?', a: 'Use the store locator on our Where to Buy page to find the shops, bars and restaurants closest to you. If your favourite spot does not carry us yet, ask them to order it.' },
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
