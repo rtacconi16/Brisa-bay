@@ -55,6 +55,134 @@
       z-index: 5;
     }
 
+    /* The Brisa Way — photo holds, text reveals, then next photo */
+    [data-bb-way-scroll] {
+      position: relative;
+      z-index: 4;
+      height: 620vh;
+      background: #eeeee4;
+      box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55);
+    }
+    [data-bb-way-pin] {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+      background: #eeeee4;
+      box-sizing: border-box;
+    }
+    [data-bb-way-pin] > [data-bb-stamp] {
+      will-change: transform;
+      transform-origin: 50% 50%;
+    }
+    [data-bb-way-track] {
+      display: flex;
+      height: 100%;
+      will-change: transform;
+    }
+    [data-bb-way-panel] {
+      flex: 0 0 100%;
+      height: 100%;
+      display: flex;
+      align-items: stretch;
+      padding: clamp(72px, 10vh, 120px) clamp(20px, 5vw, 190px) clamp(56px, 8vh, 96px);
+      box-sizing: border-box;
+    }
+    [data-bb-way-row] {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(18px, 2.4vw, 48px);
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      align-items: center;
+    }
+    [data-bb-way-photo] {
+      height: min(72vh, 100%);
+      min-height: 0;
+      overflow: hidden;
+    }
+    [data-bb-way-photo] img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+    [data-bb-way-copy] {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(16px, 2vw, 32px);
+      padding: 0;
+      box-sizing: border-box;
+      min-height: 0;
+      background: transparent;
+    }
+    [data-bb-way-title] {
+      margin: 0;
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(28px, 3.8vw, 72px);
+      line-height: 1.05;
+      font-weight: 400;
+      font-style: normal;
+      letter-spacing: 0.05em;
+      color: #57544a;
+      opacity: 0;
+      transform: translate3d(0, 26px, 0);
+      will-change: opacity, transform;
+    }
+    [data-bb-way-body] {
+      margin: 0;
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(15px, 1.55vw, 28px);
+      line-height: 1.45;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: #606060;
+      text-wrap: pretty;
+      max-width: 28ch;
+    }
+    [data-bb-way-word] {
+      display: inline-block;
+      opacity: 0;
+      transform: translate3d(0, 0.45em, 0);
+      will-change: opacity, transform;
+    }
+    [data-bb-way-progress] {
+      position: absolute;
+      left: clamp(20px, 5vw, 190px);
+      bottom: clamp(16px, 2.6vh, 32px);
+      z-index: 8;
+      pointer-events: none;
+      display: flex;
+      align-items: baseline;
+      gap: clamp(10px, 1.2vw, 18px);
+      color: #57544a;
+      font-family: 'Old Newspaper', serif;
+      letter-spacing: 0.05em;
+    }
+    [data-bb-way-progress-num] {
+      font-size: clamp(15px, 1.35vw, 22px);
+      color: #e6393a;
+      min-width: 1.6em;
+    }
+    [data-bb-way-progress-rule] {
+      display: block;
+      width: clamp(28px, 3vw, 48px);
+      height: 1px;
+      background: rgba(87, 84, 74, 0.45);
+      align-self: center;
+      transform-origin: left center;
+    }
+    [data-bb-way-progress-label] {
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(14px, 1.25vw, 20px);
+      letter-spacing: 0.04em;
+      color: #57544a;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       [data-curtain] { position: static !important; height: auto !important; min-height: 0 !important; box-shadow: none !important; overflow: visible !important; }
       [data-curtain] [data-curtain-fit] { max-height: none !important; }
@@ -63,6 +191,15 @@
       [data-bb-roots] { position: relative !important; height: auto !important; min-height: 0 !important; }
       [data-bb-hello] { height: auto !important; overflow: visible !important; }
       [data-bb-hello] [data-screen-label="Say Hello"] { flex: none !important; min-height: 52svh !important; }
+      [data-bb-way-scroll] { height: auto !important; }
+      [data-bb-way-pin] { position: relative !important; height: auto !important; overflow: visible !important; background: #eeeee4 !important; }
+      [data-bb-way-track] { display: grid !important; width: 100% !important; height: auto !important; transform: none !important; gap: clamp(16px, 2vw, 30px); padding: clamp(60px, 7vw, 130px) clamp(20px, 5vw, 190px) clamp(70px, 11vw, 200px); box-sizing: border-box; }
+      [data-bb-way-panel] { width: 100% !important; flex: none !important; height: auto !important; padding: 0 !important; }
+      [data-bb-way-title] { opacity: 1 !important; transform: none !important; }
+      [data-bb-way-word] { opacity: 1 !important; transform: none !important; }
+      [data-bb-way-photo] img { transform: none !important; }
+      [data-bb-way-pin] > [data-bb-stamp] { transform: none !important; }
+      [data-bb-way-progress] { display: none !important; }
     }
     @media (max-width: 900px) {
       [data-bb-nav] > div:last-child { font-size: 14px !important; gap: 4px !important; }
@@ -70,23 +207,28 @@
       [data-bb-roots] { padding: clamp(64px, 10vh, 96px) 16px 24px !important; }
       [data-bb-roots-card] { padding: clamp(22px, 4vh, 32px) 18px !important; gap: 14px !important; }
       [data-bb-roots-card] p { font-size: clamp(16px, 4.2vw, 19px) !important; line-height: 1.45 !important; }
-      [data-screen-label="The Brisa Way"] { padding: 72px 16px 64px !important; }
-      [data-bb-way-row] { grid-template-columns: 1fr 1fr !important; }
+      [data-bb-way-panel] { padding: 72px 16px 56px !important; }
+      [data-bb-way-row] {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+      }
       [data-bb-way-photo] {
         aspect-ratio: 3 / 4 !important;
         max-height: 46svh !important;
+        height: auto !important;
         overflow: hidden !important;
       }
-      [data-bb-way-copy] { padding: 18px 14px !important; gap: 10px !important; }
-      [data-bb-way-row] h3 { font-size: clamp(18px, 4.6vw, 24px) !important; }
-      [data-bb-way-row] p { font-size: clamp(13px, 3.4vw, 16px) !important; line-height: 1.4 !important; }
+      [data-bb-way-copy] { padding: 0 !important; gap: 10px !important; }
+      [data-bb-way-title] { font-size: clamp(20px, 5.2vw, 28px) !important; }
+      [data-bb-way-body] { font-size: clamp(12px, 3.2vw, 15px) !important; line-height: 1.4 !important; max-width: none !important; }
+      [data-bb-way-progress] { left: 16px !important; bottom: 14px !important; }
       [data-bb-stamp] {
         width: clamp(118px, 34vw, 168px) !important;
         left: 6px !important;
-        top: -40px !important;
+        top: clamp(12px, 2vh, 28px) !important;
       }
       [data-bb-stamp] span { font-size: clamp(12px, 3.4vw, 16px) !important; }
-      [data-screen-label="The Brisa Way"] > [data-bb-deco] {
+      [data-bb-way-pin] > [data-bb-deco] {
         display: block !important;
         width: 160% !important;
         left: -30% !important;
@@ -152,59 +294,76 @@
     </div>
   </div>
 
-  <!-- ================= PANEL 4: THE BRISA WAY — GRID (slides over the band) ================= -->
-  <div data-screen-label="The Brisa Way" style="position: relative; z-index: 4; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55); padding: clamp(60px, 7vw, 130px) clamp(20px, 5vw, 190px) clamp(70px, 11vw, 200px); box-sizing: border-box">
+  <!-- ================= THE BRISA WAY — horizontal pin-scrub ================= -->
+  <div data-bb-way-scroll="" data-screen-label="The Brisa Way">
+    <div data-bb-way-pin="">
 
-    <img data-bb-deco="" src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
+      <img data-bb-deco="" src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
 
-    <!-- rotating stamp -->
-    <div data-bb-stamp="" style="position: absolute; left: clamp(-14px, 1.5vw, 46px); top: clamp(-120px, -9vw, -46px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 7">
-      <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
-        <img src="assets/brush/asterisk-sage-centered.png" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
-      </div>
-      <div style="position: absolute; left: 8%; top: 38%; width: 82%; transform: rotate(-13deg); display: flex; align-items: center; justify-content: center">
-        <span style="font-size: clamp(20px, 2.6vw, 48px); color: #eeeee4; white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
-      </div>
-      <div style="position: absolute; inset: 7%; transform: rotate(-50deg)">
-        <svg aria-hidden="true" focusable="false" viewBox="0 0 440 440" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
-          <defs><path id="aboutStampCircleR" d="M 220,220 m -205,0 a 205,205 0 1,1 410,0 a 205,205 0 1,1 -410,0"></path></defs>
-          <text font-family="Old Newspaper, serif" font-size="30" letter-spacing="13" fill="#60b98f"><textPath href="#aboutStampCircleR" startOffset="0%">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-        </svg>
-      </div>
-    </div>
-
-    <div style="display: grid; gap: clamp(16px, 2vw, 30px)">
-
-      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
-        <div data-bb-way-copy="" style="background: #e6393a; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
-          <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">The Un-Occasion</h3>
-          <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">Forget the calendar milestones. Great wine is for the spontaneous moments, Opened just because the sun is out, the music is good, or simply because you're together.</p>
+      <!-- rotating stamp -->
+      <div data-bb-stamp="" style="position: absolute; left: clamp(-14px, 1.5vw, 46px); top: clamp(8px, 2vh, 28px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 7">
+        <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
+          <img src="assets/brush/asterisk-sage-centered.png" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
+        </div>
+        <div style="position: absolute; left: 8%; top: 38%; width: 82%; transform: rotate(-13deg); display: flex; align-items: center; justify-content: center">
+          <span style="font-size: clamp(20px, 2.6vw, 48px); color: #eeeee4; white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
+        </div>
+        <div style="position: absolute; inset: 7%; transform: rotate(-50deg)">
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 440 440" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
+            <defs><path id="aboutStampCircleR" d="M 220,220 m -205,0 a 205,205 0 1,1 410,0 a 205,205 0 1,1 -410,0"></path></defs>
+            <text font-family="Old Newspaper, serif" font-size="30" letter-spacing="13" fill="#60b98f"><textPath href="#aboutStampCircleR" startOffset="0%">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
+          </svg>
         </div>
       </div>
 
-      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div data-bb-way-copy="" style="background: #f2500a; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
-          <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">Freshness First</h3>
-          <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">Shaped by the cool winds of San Pablo Bay, we show a brighter side of Napa Valley. No heavy flavors here; just crisp, light, and refreshing wine full of life.</p>
+      <div data-bb-way-track="">
+
+        <div data-bb-way-panel="" data-label="The Un-Occasion">
+          <div data-bb-way-row="">
+            <div data-bb-way-photo=""><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky"></div>
+            <div data-bb-way-copy="">
+              <h3 data-bb-way-title="">The Un-Occasion</h3>
+              <p data-bb-way-body="">Forget the calendar milestones. Great wine is for the spontaneous moments, Opened just because the sun is out, the music is good, or simply because you're together.</p>
+            </div>
+          </div>
         </div>
-        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 3522 / 5290"><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
+
+        <div data-bb-way-panel="" data-label="Freshness First">
+          <div data-bb-way-row="">
+            <div data-bb-way-photo=""><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice"></div>
+            <div data-bb-way-copy="">
+              <h3 data-bb-way-title="">Freshness First</h3>
+              <p data-bb-way-body="">Shaped by the cool winds of San Pablo Bay, we show a brighter side of Napa Valley. No heavy flavors here; just crisp, light, and refreshing wine full of life.</p>
+            </div>
+          </div>
+        </div>
+
+        <div data-bb-way-panel="" data-label="Better Together">
+          <div data-bb-way-row="">
+            <div data-bb-way-photo=""><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water"></div>
+            <div data-bb-way-copy="">
+              <h3 data-bb-way-title="">Better Together</h3>
+              <p data-bb-way-body="">This wine isn't meant for a dark cellar or silent analysis. It's a bridge between people: the perfect excuse for a long lunch that rolls right into dinner with friends.</p>
+            </div>
+          </div>
+        </div>
+
+        <div data-bb-way-panel="" data-label="Keeping it Simple">
+          <div data-bb-way-row="">
+            <div data-bb-way-photo=""><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines"></div>
+            <div data-bb-way-copy="">
+              <h3 data-bb-way-title="">Keeping it Simple</h3>
+              <p data-bb-way-body="">We've stripped away the complex terminology and unwritten rules. No pretense, no pressure, just great Napa wine made to let you focus entirely on the moment.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
-        <div data-bb-way-copy="" style="background: #9ac21e; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 74px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
-          <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">Better Together</h3>
-          <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">This wine isn't meant for a dark cellar or silent analysis. It's a bridge between people: the perfect excuse for a long lunch that rolls right into dinner with friends.</p>
-        </div>
-      </div>
-
-      <div data-bb-way-row="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr))">
-        <div data-bb-way-copy="" style="background: #60b98f; padding: clamp(26px, 3.4vw, 58px) clamp(24px, 4vw, 90px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(14px, 2.4vw, 44px)">
-          <h3 style="margin: 0; font-size: clamp(24px, 2.9vw, 54px); font-style: italic; font-weight: 700; color: #eeeee4">Keeping it Simple</h3>
-          <p style="margin: 0; font-size: clamp(16px, 1.95vw, 38px); line-height: 1.45; color: #eeeee4; text-wrap: pretty">We've stripped away the complex terminology and unwritten rules. No pretense, no pressure, just great Napa wine made to let you focus entirely on the moment.</p>
-        </div>
-        <div data-bb-way-photo="" style="width: 100%; aspect-ratio: 4000 / 6000"><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines" style="display: block; width: 100%; height: 100%; object-fit: cover"></div>
+      <div data-bb-way-progress="" aria-live="polite">
+        <span data-bb-way-progress-num="">01</span>
+        <span data-bb-way-progress-rule="" aria-hidden="true"></span>
+        <span data-bb-way-progress-label="">The Un-Occasion</span>
       </div>
 
     </div>
@@ -310,7 +469,234 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;asteriskAngle&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:8,&quot;min&quot;:-180,&quot;max&quot;:180,&quot;step&quot;:1,&quot;unit&quot;:&quot;deg&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;The Brisa Way&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
 class Component extends DCLogic {
   state = { ageOk: false, faqOpen: false, gateDenied: false };
-  componentDidMount() { try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {} }
+  _wayRaf = 0;
+  _wayCleanup = null;
+
+  componentDidMount() {
+    try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
+    // Defer so the DC template DOM is painted before measuring.
+    requestAnimationFrame(() => this._bindWayScroll());
+  }
+
+  componentWillUnmount() {
+    if (this._wayCleanup) this._wayCleanup();
+  }
+
+  _bindWayScroll() {
+    if (this._wayCleanup) this._wayCleanup();
+    const scrollEl = document.querySelector('[data-bb-way-scroll]');
+    const pinEl = document.querySelector('[data-bb-way-pin]');
+    const track = document.querySelector('[data-bb-way-track]');
+    const stamp = pinEl && pinEl.querySelector('[data-bb-stamp]');
+    const progNum = document.querySelector('[data-bb-way-progress-num]');
+    const progLabel = document.querySelector('[data-bb-way-progress-label]');
+    const progRule = document.querySelector('[data-bb-way-progress-rule]');
+    if (!scrollEl || !pinEl || !track) return;
+
+    const panels = Array.from(track.children);
+    const labels = panels.map((p) => p.getAttribute('data-label') || '');
+    const n = panels.length;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motionOn = this.props.motion ?? true;
+
+    const splitWords = (el) => {
+      if (!el || el.dataset.wordsReady === '1') return Array.from(el.querySelectorAll('[data-bb-way-word]'));
+      const text = el.textContent || '';
+      el.textContent = '';
+      text.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          el.appendChild(document.createTextNode(part));
+          return;
+        }
+        const span = document.createElement('span');
+        span.setAttribute('data-bb-way-word', '');
+        span.textContent = part;
+        el.appendChild(span);
+      });
+      el.dataset.wordsReady = '1';
+      return Array.from(el.querySelectorAll('[data-bb-way-word]'));
+    };
+
+    const panelMeta = panels.map((panel) => ({
+      panel,
+      title: panel.querySelector('[data-bb-way-title]'),
+      words: splitWords(panel.querySelector('[data-bb-way-body]')),
+      img: panel.querySelector('[data-bb-way-photo] img')
+    }));
+
+    const setTextReveal = (meta, amount) => {
+      const a = Math.min(1, Math.max(0, amount));
+      if (meta.title) {
+        const t = Math.min(1, Math.max(0, a / 0.28));
+        meta.title.style.opacity = String(t);
+        meta.title.style.transform = `translate3d(0, ${(1 - t) * 26}px, 0)`;
+      }
+      const words = meta.words || [];
+      const count = Math.max(1, words.length);
+      words.forEach((word, i) => {
+        const start = 0.22 + (i / count) * 0.72;
+        const end = start + 0.1;
+        const wt = Math.min(1, Math.max(0, (a - start) / (end - start)));
+        word.style.opacity = String(wt);
+        word.style.transform = `translate3d(0, ${(1 - wt) * 0.4}em, 0)`;
+      });
+    };
+
+    if (reduceMotion || !motionOn) {
+      track.style.transform = '';
+      panelMeta.forEach((meta) => {
+        setTextReveal(meta, 1);
+        if (meta.img) meta.img.style.transform = '';
+      });
+      if (stamp) stamp.style.transform = '';
+      return;
+    }
+
+    // Timeline: reveal text on a held photo, then slide to the next photo.
+    const REVEAL_W = 1.55;
+    const SLIDE_W = 0.55;
+    const segments = [];
+    for (let i = 0; i < n; i++) {
+      segments.push({ type: 'reveal', panel: i, weight: REVEAL_W });
+      if (i < n - 1) segments.push({ type: 'slide', from: i, to: i + 1, weight: SLIDE_W });
+    }
+    const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
+
+    const mapProgress = (p) => {
+      let u = Math.min(1, Math.max(0, p)) * totalWeight;
+      for (let i = 0; i < segments.length; i++) {
+        const seg = segments[i];
+        if (u <= seg.weight || i === segments.length - 1) {
+          return { seg, local: Math.min(1, Math.max(0, u / seg.weight)) };
+        }
+        u -= seg.weight;
+      }
+      const last = segments[segments.length - 1];
+      return { seg: last, local: 1 };
+    };
+
+    let target = 0;
+    let current = 0;
+    let active = -1;
+    let sized = false;
+    let panelW = 0;
+
+    const sizePanels = () => {
+      panelW = pinEl.clientWidth;
+      panels.forEach((panel) => {
+        panel.style.flex = `0 0 ${panelW}px`;
+        panel.style.width = `${panelW}px`;
+      });
+      sized = true;
+    };
+
+    const readTarget = () => {
+      const total = Math.max(1, scrollEl.offsetHeight - pinEl.offsetHeight);
+      const top = scrollEl.getBoundingClientRect().top;
+      target = Math.min(1, Math.max(0, -top / total));
+    };
+
+    const apply = (p) => {
+      if (!sized) sizePanels();
+      const { seg, local } = mapProgress(p);
+
+      let xIndex = 0;
+      let revealPanel = 0;
+      let revealAmt = 0;
+
+      if (seg.type === 'reveal') {
+        xIndex = seg.panel;
+        revealPanel = seg.panel;
+        revealAmt = local;
+      } else {
+        xIndex = seg.from + local;
+        revealPanel = local < 0.5 ? seg.from : seg.to;
+        revealAmt = local < 0.5 ? 1 : 0;
+      }
+
+      track.style.transform = `translate3d(${-xIndex * panelW}px, 0, 0)`;
+
+      panelMeta.forEach((meta, i) => {
+        if (seg.type === 'reveal') {
+          setTextReveal(meta, i === seg.panel ? revealAmt : (i < seg.panel ? 1 : 0));
+        } else {
+          if (i === seg.from) setTextReveal(meta, Math.max(0, 1 - local * 1.15));
+          else if (i === seg.to) setTextReveal(meta, 0);
+          else setTextReveal(meta, i < seg.from ? 1 : 0);
+        }
+
+        if (meta.img) {
+          const dist = Math.abs(xIndex - i);
+          const focus = Math.max(0, 1 - dist);
+          const scale = 1 + 0.05 * focus;
+          const parallax = (xIndex - i) * -18;
+          meta.img.style.transform = `translate3d(${parallax}px, 0, 0) scale(${scale})`;
+        }
+      });
+
+      const nextActive = Math.min(n - 1, Math.max(0, revealPanel));
+      if (nextActive !== active) {
+        active = nextActive;
+        if (progNum) progNum.textContent = String(active + 1).padStart(2, '0');
+        if (progLabel) progLabel.textContent = labels[active] || '';
+      }
+      if (progRule) {
+        const rule = seg.type === 'reveal' ? 0.35 + local * 0.65 : 1;
+        progRule.style.transform = `scaleX(${rule})`;
+      }
+
+      if (stamp) {
+        const tx = Math.sin(p * Math.PI) * 10;
+        const ty = p * -8;
+        const rot = p * 12;
+        stamp.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${rot}deg)`;
+      }
+    };
+
+    const tick = () => {
+      readTarget();
+      current += (target - current) * 0.08;
+      if (Math.abs(target - current) < 0.0004) current = target;
+      apply(current);
+
+      const rect = scrollEl.getBoundingClientRect();
+      const near = rect.bottom > -200 && rect.top < window.innerHeight + 200;
+      const moving = Math.abs(target - current) > 0.0004;
+      if (near || moving) {
+        this._wayRaf = requestAnimationFrame(tick);
+      } else {
+        this._wayRaf = 0;
+      }
+    };
+
+    const kick = () => {
+      if (!this._wayRaf) this._wayRaf = requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      sized = false;
+      sizePanels();
+      kick();
+    };
+
+    sizePanels();
+    readTarget();
+    current = target;
+    apply(current);
+    kick();
+
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', onResize);
+    this._wayCleanup = () => {
+      window.removeEventListener('scroll', kick);
+      window.removeEventListener('resize', onResize);
+      if (this._wayRaf) cancelAnimationFrame(this._wayRaf);
+      this._wayRaf = 0;
+      this._wayCleanup = null;
+    };
+  }
+
   renderVals() {
     return {
       play: (this.props.motion ?? true) ? 'running' : 'paused',
