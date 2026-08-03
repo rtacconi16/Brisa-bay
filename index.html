@@ -17,6 +17,67 @@
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+    @media (min-width: 901px) {
+      [data-bb-opening] {
+        height: 100svh;
+        display: flex;
+        flex-direction: column;
+      }
+      [data-bb-hero] {
+        flex: 1 1 auto;
+        min-height: 0;
+        aspect-ratio: auto;
+        height: auto;
+      }
+      [data-bb-wines-section] {
+        height: 100svh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: clamp(32px, 4vh, 56px);
+        padding-bottom: clamp(32px, 4vh, 56px);
+        box-sizing: border-box;
+      }
+      [data-bb-wines-section] [data-bb-stamp] {
+        width: clamp(140px, 16vw, 260px);
+        top: clamp(-12px, -0.5vh, 8px);
+      }
+      [data-bb-wines-section] [data-bb-stamp] span {
+        font-size: clamp(14px, 1.6vw, 28px) !important;
+      }
+      [data-bb-wines] {
+        margin-top: 0;
+        min-height: 0;
+        flex: 1 1 auto;
+        height: 100%;
+        align-items: center;
+        align-content: center;
+      }
+      [data-bb-wines] h2 {
+        margin-bottom: clamp(16px, 2.2vh, 36px) !important;
+        font-size: clamp(36px, 4.4vw, 72px) !important;
+      }
+      [data-bb-wines] h3 {
+        margin-bottom: clamp(10px, 1.2vh, 18px) !important;
+        font-size: clamp(20px, 1.8vw, 32px) !important;
+      }
+      [data-bb-wines] p {
+        font-size: clamp(15px, 1.35vw, 24px) !important;
+        margin-bottom: clamp(10px, 1.4vh, 20px) !important;
+      }
+      [data-bb-bottle] {
+        align-self: center;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      [data-bb-wines] img[alt*="bottle"] {
+        height: min(68vh, 620px);
+        max-height: 100%;
+      }
+    }
     @media (max-width: 900px) {
       [data-bb-hero] {
         aspect-ratio: auto !important;
@@ -67,7 +128,15 @@
       [data-bb-nav] { row-gap: 10px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
       [data-bb-section] { padding-left: 20px !important; padding-right: 20px !important; overflow: hidden !important; }
-      [data-screen-label="Our Story"] > div:last-child { padding: 36px 22px !important; }
+      [data-bb-story] {
+        height: auto !important;
+        min-height: 72svh !important;
+      }
+      [data-bb-story-copy] {
+        max-width: none !important;
+        padding: 36px 22px !important;
+        justify-content: flex-end !important;
+      }
       [data-screen-label="Skip the Cellar"] { padding-left: 20px !important; padding-right: 20px !important; }
       [data-screen-label="Footer"] { padding-left: 20px !important; padding-right: 20px !important; }
       [data-screen-label="Bottled Moments"] > div:first-of-type { padding-left: 20px !important; padding-right: 20px !important; }
@@ -90,76 +159,76 @@
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
 
-  <!-- ================= HERO ================= -->
-  <div data-screen-label="Hero" data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
-    <video id="bb-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
-      <source src="assets/web2/hero-video.mp4" type="video/mp4">
-    </video>
-    <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
+  <!-- ================= OPENING VIEWPORT: HERO + TICKER ================= -->
+  <div data-bb-opening="">
+    <div data-screen-label="Hero" data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
+      <video id="bb-hero-video" autoplay muted loop playsinline preload="metadata" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+        <source src="assets/web2/hero-video.mp4" type="video/mp4">
+      </video>
+      <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
 
-    <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
-      <div style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em">Brisa Bay</div>
-      <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
-        <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
-        <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-        <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+      <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
+        <div style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em">Brisa Bay</div>
+        <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
+          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
+          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
+          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+        </div>
+      </div>
+
+      <div style="position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none">
+        <div onClick="{{ toggleHeroVideo }}" role="button" aria-label="{{ heroPlayLabel }}" title="{{ heroPlayLabel }}" style="pointer-events: auto; width: clamp(64px, 5.7vw, 110px); height: clamp(64px, 5.7vw, 110px); border-radius: 50%; background: rgba(52,52,48,0.82); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.1)">
+          <sc-if value="{{ heroPlaying }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; align-items: center; gap: clamp(5px, 0.45vw, 8px)">
+              <div style="width: clamp(5px, 0.45vw, 8px); height: clamp(22px, 2vw, 38px); background: #eeeee4; border-radius: 1px"></div>
+              <div style="width: clamp(5px, 0.45vw, 8px); height: clamp(22px, 2vw, 38px); background: #eeeee4; border-radius: 1px"></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ heroPaused }}" hint-placeholder-val="{{ false }}">
+            <div style="width: 0; height: 0; border-left: clamp(20px, 1.8vw, 34px) solid #eeeee4; border-top: clamp(12px, 1.1vw, 21px) solid transparent; border-bottom: clamp(12px, 1.1vw, 21px) solid transparent; margin-left: clamp(5px, 0.5vw, 9px)"></div>
+          </sc-if>
+        </div>
       </div>
     </div>
 
-    <div style="position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none">
-      <div onClick="{{ toggleHeroVideo }}" role="button" aria-label="{{ heroPlayLabel }}" title="{{ heroPlayLabel }}" style="pointer-events: auto; width: clamp(64px, 5.7vw, 110px); height: clamp(64px, 5.7vw, 110px); border-radius: 50%; background: rgba(52,52,48,0.82); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.1)">
-        <sc-if value="{{ heroPlaying }}" hint-placeholder-val="{{ true }}">
-          <div style="display: flex; align-items: center; gap: clamp(5px, 0.45vw, 8px)">
-            <div style="width: clamp(5px, 0.45vw, 8px); height: clamp(22px, 2vw, 38px); background: #eeeee4; border-radius: 1px"></div>
-            <div style="width: clamp(5px, 0.45vw, 8px); height: clamp(22px, 2vw, 38px); background: #eeeee4; border-radius: 1px"></div>
-          </div>
-        </sc-if>
-        <sc-if value="{{ heroPaused }}" hint-placeholder-val="{{ false }}">
-          <div style="width: 0; height: 0; border-left: clamp(20px, 1.8vw, 34px) solid #eeeee4; border-top: clamp(12px, 1.1vw, 21px) solid transparent; border-bottom: clamp(12px, 1.1vw, 21px) solid transparent; margin-left: clamp(5px, 0.5vw, 9px)"></div>
-        </sc-if>
+    <!-- ================= TICKER ================= -->
+    <div data-screen-label="Ticker" data-bb-ticker="" aria-hidden="true" style="flex: none; background: #60b98f; overflow: hidden; padding: clamp(8px, 0.75vw, 14px) 0">
+      <div style="display: flex; align-items: center; white-space: nowrap; width: max-content; animation: bb-marquee 28s linear infinite; animation-play-state: {{ play }}">
+        <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
+          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
+          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
+          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
+          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+        </span>
+        <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
+          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
+          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
+          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+          <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
+          <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
+        </span>
       </div>
     </div>
   </div>
 
-  <!-- ================= TICKER ================= -->
-  <div data-screen-label="Ticker" aria-hidden="true" style="background: #60b98f; overflow: hidden; padding: clamp(8px, 0.75vw, 14px) 0">
-    <div style="display: flex; align-items: center; white-space: nowrap; width: max-content; animation: bb-marquee 28s linear infinite; animation-play-state: {{ play }}">
-      <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
-        <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
-        <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-        <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
-        <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-        <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
-        <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-      </span>
-      <span style="display: flex; align-items: center; gap: clamp(16px, 1.6vw, 30px); padding-right: clamp(16px, 1.6vw, 30px)">
-        <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">This is the feeling of Brisa. This is Brisa Bay.</em>
-        <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-        <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">Bright, unpretentious Napa Valley wine.</em>
-        <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-        <em style="font-size: clamp(18px, 1.9vw, 36px); color: #eeeee4; font-style: italic">No wine snobs. No pretense. No occasion required.</em>
-        <span aria-hidden="true" style="font-size: clamp(18px, 1.9vw, 36px); color: rgba(238,238,228,0.55)">/</span>
-      </span>
-    </div>
-  </div>
-
-  <!-- ================= STORY SPLIT ================= -->
-  <div data-screen-label="Our Story" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); position: relative; z-index: 1">
-    <div style="position: relative; min-height: clamp(280px, 33.34vw, 700px); background: #d9d9d4">
-      <img src="assets/web2/story-photo.jpg" alt="Friends sitting on a beach blanket pouring Brisa Bay Chardonnay, glasses of wine and a tray of fruit in the sun" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-    </div>
-    <div style="background: #e6393a; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 9.9vw, 190px) clamp(40px, 4.2vw, 80px) clamp(22px, 5.7vw, 110px); box-sizing: border-box">
+  <!-- ================= OUR STORY VIEWPORT ================= -->
+  <div data-screen-label="Our Story" data-bb-story="" style="position: relative; z-index: 1; height: 100svh; overflow: hidden; background: #3c3a34">
+    <img src="assets/web2/story-photo.jpg" alt="Friends sitting on a beach blanket pouring Brisa Bay Chardonnay, glasses of wine and a tray of fruit in the sun" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+    <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,45,42,0.15) 0%, rgba(45,45,42,0.35) 42%, rgba(45,45,42,0.72) 100%); pointer-events: none; z-index: 2"></div>
+    <div data-bb-story-copy="" style="position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 5vw, 110px); box-sizing: border-box; max-width: min(720px, 52%); margin-left: auto">
       <p style="margin: 0; font-size: clamp(17px, 1.9vw, 36px); line-height: 1.42; color: #eeeee4; text-align: justify; text-wrap: pretty">Where the water meets the vines, the San Pablo Bay breeze inspired our family to take our deep Napa roots in a fresh direction. Working with growers who put their hearts into the soil, we craft vibrant wines with no barriers or exclusivity.</p>
       <p style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); color: #eeeee4; font-style: italic; font-weight: 700">This is wine meant to be lived.</p>
       <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 1.9vw, 36px)">
         <a href="about.html" style="background: #f5d732; color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1.05vw, 20px); border-radius: 30px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Learn the Brisa Way</a>
-        
       </div>
     </div>
   </div>
 
-  <!-- ================= OUR WINES ================= -->
-  <div data-screen-label="Our Wines" data-bb-section="" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
+  <!-- ================= OUR WINES VIEWPORT ================= -->
+  <div data-screen-label="Our Wines" data-bb-section="" data-bb-wines-section="" style="position: relative; background: #eeeee4; z-index: 6; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
 
     <img data-bb-deco="" src="assets/brush/wave-lime.png" alt="" style="position: absolute; left: 27%; top: clamp(-120px, -10vw, -40px); width: 93%; height: clamp(200px, 32vw, 624px); z-index: 8; pointer-events: none">
     <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -6%; top: 30%; width: clamp(300px, 43vw, 820px); z-index: 1; pointer-events: none">
@@ -172,7 +241,7 @@
       </div>
       <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
         <defs><path id="homeStampCircleR" d="M 230,230 m -230,0 a 230,230 0 1,1 460,0 a 230,230 0 1,1 -460,0"></path></defs>
-        <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#f5d732" font-weight="600"><textPath href="#homeStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
+        <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#e6393a" font-weight="600"><textPath href="#homeStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
       </svg>
     </div>
 
@@ -207,7 +276,7 @@
           </div>
         </div>
       </div>
-      <div style="display: flex; justify-content: center">
+      <div data-bb-bottle="" style="display: flex; justify-content: center; align-items: center; min-height: 0">
         <sc-if value="{{ isWine0 }}" hint-placeholder-val="{{ true }}">
           <img src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="height: clamp(360px, 52vw, 1000px); filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25)); animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
         </sc-if>

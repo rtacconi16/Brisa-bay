@@ -17,21 +17,7 @@
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-rise { from { opacity: 0; transform: translateY(70px) scale(0.975) } to { opacity: 1; transform: none } }
 
-    /* Shared flow (desktop + mobile): Hero → Brisa Way → Our Roots over band → Way cards */
-    [data-bb-hero-grid] {
-      grid-template-columns: 1fr;
-      gap: clamp(18px, 2.4vw, 36px);
-      align-content: center;
-      justify-items: stretch;
-    }
-    [data-bb-hero-photo] {
-      width: 100%;
-      max-height: min(52svh, 620px);
-      aspect-ratio: 4 / 3;
-    }
-    [data-bb-hero-grid] h1 {
-      max-width: none;
-    }
+    /* Shared flow (desktop + mobile): Brisa Way → Our Roots over band → Way cards */
     [data-bb-roots] {
       display: flex;
       position: sticky;
@@ -73,7 +59,6 @@
       [data-curtain] { position: static !important; height: auto !important; min-height: 0 !important; box-shadow: none !important; overflow: visible !important; }
       [data-curtain] [data-curtain-fit] { max-height: none !important; }
       [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
-      [data-bb-hero-inner] { height: auto !important; min-height: 0 !important; }
       [data-curtain][data-bb-band] { min-height: 42svh !important; height: 42svh !important; }
       [data-bb-roots] { position: relative !important; height: auto !important; min-height: 0 !important; }
       [data-bb-hello] { height: auto !important; overflow: visible !important; }
@@ -81,23 +66,6 @@
     }
     @media (max-width: 900px) {
       [data-bb-nav] > div:last-child { font-size: 14px !important; gap: 4px !important; }
-      [data-bb-hero-inner] { padding-bottom: 18px !important; }
-      [data-bb-hero-grid] { gap: 18px !important; padding-top: 14px !important; }
-      [data-bb-hero-photo] { max-height: 42svh !important; }
-      [data-bb-hero-grid] h1 {
-        font-size: clamp(32px, 8.5vw, 44px) !important;
-        line-height: 1.1 !important;
-      }
-      [data-screen-label="Hero"] > [data-bb-deco]:nth-of-type(1) {
-        width: clamp(150px, 44vw, 240px) !important;
-        left: -20% !important;
-        bottom: -12% !important;
-      }
-      [data-screen-label="Hero"] > [data-bb-deco]:nth-of-type(2) {
-        width: clamp(130px, 38vw, 210px) !important;
-        right: -18% !important;
-        bottom: -8% !important;
-      }
       [data-bb-band] h2 { font-size: clamp(40px, 12vw, 72px) !important; }
       [data-bb-roots] { padding: clamp(64px, 10vh, 96px) 16px 24px !important; }
       [data-bb-roots-card] { padding: clamp(22px, 4vh, 32px) 18px !important; gap: 14px !important; }
@@ -157,41 +125,22 @@
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: clip; font-family: 'Garamond Pro', serif; color: #606060">
 
-  <!-- ================= HERO ================= -->
-  <div data-screen-label="Hero" data-curtain="" style="position: sticky; top: 0; z-index: 1; height: 100svh; background: #e6393a; padding: 0 clamp(20px, 4.7vw, 90px); box-sizing: border-box; overflow: hidden">
-
-    <img data-bb-deco="" src="assets/brush/circle-yellow.png" alt="" style="position: absolute; left: -13%; bottom: -16%; width: clamp(200px, 30vw, 560px); pointer-events: none; z-index: 1">
-    <img data-bb-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -14%; bottom: -10%; width: clamp(180px, 26vw, 500px); pointer-events: none; z-index: 1">
-    
-
-    <!-- first viewport: nav + headline + photo only -->
-    <div data-bb-hero-inner="" style="position: relative; z-index: 5; height: 100%; min-height: 100svh; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) 0 clamp(24px, 3vw, 50px); box-sizing: border-box">
-
-    <div data-bb-nav="" style="position: relative; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
-      <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
-      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(8px, 1.4vw, 26px); font-size: clamp(15px, 2.1vw, 40px); color: #eeeee4">
-        <span style="padding: 0.12em 0.7em; border-radius: 999px; color: #f5d732; cursor: default">About us</span>
-        <a href="blends.html" style="padding: 0.12em 0.7em; border-radius: 999px; color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-        <a href="where-to-buy.html" style="padding: 0.12em 0.7em; border-radius: 999px; color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
-      </div>
-    </div>
-
-    <div data-bb-hero-grid="" style="position: relative; z-index: 3; flex: 1; min-height: 0; display: grid; gap: clamp(18px, 2.4vw, 36px); align-items: center; padding: clamp(24px, 4vw, 70px) 0 0">
-      <div data-bb-hero-photo="" style="width: 100%; aspect-ratio: 4 / 3; max-height: min(52svh, 620px)">
-        <img src="assets/web/about-hero.jpg" alt="Friends clinking glasses of Brisa Bay over a table of food on a sunlit deck" style="display: block; width: 100%; height: 100%; object-fit: cover">
-      </div>
-      <h1 style="position: relative; z-index: 4; margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(32px, 5.8vw, 112px); line-height: 1.12; font-weight: 400; color: #eeeee4; text-wrap: balance">Where the wine meets the breeze.</h1>
-    </div>
-
-    </div>
-  </div>
-
   <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
-  <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
+  <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden">
     <img src="assets/web/way-band.jpg" alt="Wide view of Napa Valley vineyard rows with cypress trees and hills beyond" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(60,58,52,0.28) 0%, rgba(60,58,52,0) 55%)"></div>
-    <div style="position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 clamp(20px, 5vw, 90px); box-sizing: border-box">
-      <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 6vw, 120px); line-height: 1.05; font-weight: 400; letter-spacing: 0.05em; color: #eeeee4; text-align: center; text-shadow: 0 2px 18px rgba(60,58,52,0.35)">The Brisa Way</h2>
+    <div style="position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(24px, 3vw, 50px); box-sizing: border-box">
+      <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
+        <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(8px, 1.4vw, 26px); font-size: clamp(15px, 2.1vw, 40px); color: #eeeee4">
+          <span style="padding: 0.12em 0.7em; border-radius: 999px; color: #f5d732; cursor: default">About us</span>
+          <a href="blends.html" style="padding: 0.12em 0.7em; border-radius: 999px; color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
+          <a href="where-to-buy.html" style="padding: 0.12em 0.7em; border-radius: 999px; color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+        </div>
+      </div>
+      <div style="flex: 1; display: flex; align-items: center; justify-content: center">
+        <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 6vw, 120px); line-height: 1.05; font-weight: 400; letter-spacing: 0.05em; color: #eeeee4; text-align: center; text-shadow: 0 2px 18px rgba(60,58,52,0.35)">The Brisa Way</h1>
+      </div>
     </div>
   </div>
 
