@@ -16,7 +16,7 @@
     a:hover { color: #f5d732; }
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
-    @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+    @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
 
     /* Hero → Story cinematic scrub */
     [data-bb-hero-scroll] {
@@ -82,7 +82,7 @@
     [data-bb-wines-scroll] {
       position: relative;
       z-index: 6;
-      height: 200vh;
+      height: 140vh;
       background: #eeeee4;
     }
     [data-bb-wines-pin] {
@@ -119,7 +119,7 @@
     }
     [data-bb-wine-panel] {
       grid-area: 1 / 1;
-      transition: opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+      transition: opacity 0.32s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.36s cubic-bezier(0.22, 0.61, 0.36, 1);
       will-change: opacity, transform;
     }
     [data-bb-bottle-layer] {
@@ -127,23 +127,47 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.65s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1);
+      transition: opacity 0.38s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
       will-change: opacity, transform;
       justify-self: center;
+    }
+    [data-bb-bottle-hover] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: 50% 85%;
+      transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+      will-change: transform;
+      cursor: pointer;
     }
     [data-bb-bottle-img] {
       display: block;
       height: clamp(360px, 52vw, 1000px);
       filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25));
-      animation: bb-floaty 7s ease-in-out infinite;
+      animation: bb-floaty 5.5s ease-in-out infinite;
+      transition: filter 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      [data-bb-bottle-stage]:hover [data-bb-bottle-hover] {
+        transform: translate3d(0, -18px, 0) rotate(-4deg) scale(1.05);
+      }
+      [data-bb-bottle-stage]:hover [data-bb-bottle-img] {
+        filter: drop-shadow(0 42px 48px rgba(87,84,74,0.32));
+        animation-duration: 3.2s;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       [data-bb-wine-panel],
-      [data-bb-bottle-layer] {
+      [data-bb-bottle-layer],
+      [data-bb-bottle-hover],
+      [data-bb-bottle-img] {
         transition: none !important;
       }
       [data-bb-bottle-img] {
         animation: none !important;
+      }
+      [data-bb-bottle-stage]:hover [data-bb-bottle-hover] {
+        transform: none !important;
       }
     }
 
@@ -174,11 +198,21 @@
     [data-bb-moments-intro] {
       will-change: transform;
     }
-    [data-bb-moments-line],
-    [data-bb-moments-stamp] {
+    [data-bb-moments-line] {
       opacity: 0;
       transform: translate3d(0, 28px, 0);
       will-change: opacity, transform;
+    }
+    [data-bb-skip-stamp] {
+      grid-column: 1;
+      grid-row: 2;
+      align-self: end;
+      justify-self: start;
+      position: relative;
+      width: min(100%, clamp(180px, 22vw, 320px));
+      aspect-ratio: 1;
+      z-index: 2;
+      pointer-events: none;
     }
     [data-bb-moments-bar] {
       will-change: transform;
@@ -193,8 +227,10 @@
       max-width: none;
       height: 100%;
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-      column-gap: clamp(56px, 9vw, 160px);
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      column-gap: clamp(24px, 3.5vw, 56px);
+      row-gap: clamp(16px, 2.5vh, 32px);
       align-items: stretch;
       will-change: opacity, transform;
     }
@@ -202,29 +238,36 @@
       margin: 0;
       max-width: none;
       white-space: nowrap;
-      opacity: 0;
+      text-wrap: nowrap;
+      opacity: 1;
       transform-origin: left top;
+      grid-column: 1 / -1;
+      grid-row: 1;
       align-self: start;
       justify-self: start;
-      will-change: opacity, transform;
     }
     [data-bb-skip] {
-      max-width: 32ch;
+      grid-column: 2;
+      grid-row: 2;
+      width: 100%;
+      max-width: none;
+      height: 100%;
+      min-height: 0;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: clamp(16px, 2.2vh, 26px);
-      align-self: end;
-      justify-self: end;
+      justify-content: flex-end;
+      gap: clamp(14px, 1.8vh, 24px);
     }
     [data-bb-skip-rule] {
       display: block;
-      width: clamp(48px, 5vw, 88px);
+      width: clamp(56px, 6vw, 104px);
       height: 2px;
       background: #60b98f;
       transform-origin: left center;
       transform: scaleX(0);
-      margin-bottom: clamp(4px, 0.8vh, 10px);
+      margin-bottom: clamp(2px, 0.6vh, 8px);
       will-change: transform;
     }
     [data-bb-skip-lead],
@@ -236,17 +279,19 @@
     }
     [data-bb-skip-lead] {
       margin: 0;
-      font-size: clamp(18px, 1.55vw, 28px);
-      line-height: 1.35;
+      width: 100%;
+      font-size: clamp(26px, 2.6vw, 46px);
+      line-height: 1.25;
       font-style: italic;
       font-weight: 700;
       color: #5b584e;
-      text-wrap: pretty;
     }
     [data-bb-skip-body] {
       margin: 0;
-      font-size: clamp(16px, 1.35vw, 24px);
-      line-height: 1.5;
+      width: 100%;
+      max-width: 34em;
+      font-size: clamp(22px, 2.15vw, 38px);
+      line-height: 1.35;
       color: #606060;
       text-wrap: pretty;
     }
@@ -272,9 +317,8 @@
       }
       [data-bb-moments-intro] {
         display: grid;
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
         align-items: center;
-        column-gap: clamp(32px, 5vw, 80px);
         padding: clamp(56px, 7vh, 120px) clamp(40px, 6vw, 160px);
       }
       [data-bb-moments-copy] {
@@ -292,18 +336,6 @@
       [data-bb-moments-cta] {
         font-size: clamp(15px, 1.35vw, 24px) !important;
         white-space: nowrap;
-      }
-      [data-bb-moments-logo] {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: clamp(200px, 28vh, 360px);
-      }
-      [data-bb-moments-intro] [data-bb-stamp] {
-        width: min(100%, clamp(200px, 22vw, 340px));
-      }
-      [data-bb-moments-intro] [data-bb-stamp] span {
-        font-size: clamp(18px, 2vw, 36px) !important;
       }
       [data-bb-wines] h2 {
         margin-bottom: clamp(16px, 2.2vh, 36px) !important;
@@ -353,7 +385,6 @@
       [data-bb-wines-pin],
       [data-bb-bottle-stage],
       [data-bb-moments-line],
-      [data-bb-moments-stamp],
       [data-bb-moments-gallery],
       [data-bb-moments-intro],
       [data-bb-moments-bar],
@@ -452,11 +483,13 @@
       }
       [data-bb-skip-inner] {
         grid-template-columns: 1fr !important;
-        row-gap: 28px !important;
+        grid-template-rows: auto auto 1fr !important;
+        row-gap: 24px !important;
         align-items: stretch !important;
         height: 100% !important;
       }
       [data-bb-skip-title] {
+        grid-column: 1 !important;
         max-width: none !important;
         white-space: nowrap !important;
         font-size: clamp(28px, 8.5vw, 44px) !important;
@@ -465,12 +498,25 @@
         justify-self: start !important;
       }
       [data-bb-skip] {
-        align-self: end !important;
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        justify-content: flex-end !important;
+      }
+      [data-bb-skip-stamp] {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        width: clamp(140px, 42vw, 200px) !important;
         justify-self: start !important;
+        align-self: center !important;
+      }
+      [data-bb-skip-lead] { font-size: 20px !important; }
+      [data-bb-skip-body] {
+        font-size: 18px !important;
         max-width: none !important;
       }
-      [data-bb-skip-lead] { font-size: 17px !important; }
-      [data-bb-skip-body] { font-size: 15px !important; }
 
       /* Nav */
       [data-bb-nav] {
@@ -527,11 +573,6 @@
         font-size: 15px !important;
         margin-left: auto !important;
         margin-right: auto !important;
-      }
-      [data-bb-moments-logo] { min-height: 0 !important; }
-      [data-bb-moments-intro] [data-bb-stamp] {
-        width: clamp(130px, 38vw, 180px) !important;
-        margin: 0 auto !important;
       }
       [data-bb-moments-gallery] {
         padding: 16px 8px 28px !important;
@@ -598,7 +639,7 @@
     <div data-bb-hero-pin="">
       <div data-bb-opening="">
         <div data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
-          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline preload="metadata" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
             <source src="assets/web2/hero-video.mp4" type="video/mp4">
           </video>
           <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
@@ -681,10 +722,14 @@
         <div data-bb-bottle="" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(16px, 1.8vw, 28px); min-height: 0">
           <div data-bb-bottle-stage="">
             <div data-bb-bottle-layer="" style="{{ wine0Bottle }}" aria-hidden="{{ wine0Hidden }}">
-              <img data-bb-bottle-img="" src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="animation-play-state: {{ wine0Play }}">
+              <div data-bb-bottle-hover="">
+                <img data-bb-bottle-img="" src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="animation-play-state: {{ wine0Play }}">
+              </div>
             </div>
             <div data-bb-bottle-layer="" style="{{ wine1Bottle }}" aria-hidden="{{ wine1Hidden }}">
-              <img data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc.png" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="animation-play-state: {{ wine1Play }}">
+              <div data-bb-bottle-hover="">
+                <img data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc.png" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="animation-play-state: {{ wine1Play }}">
+              </div>
             </div>
           </div>
           <div data-bb-wines-controls="" style="display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.4vw, 26px)">
@@ -705,12 +750,23 @@
   <div data-bb-skip-scroll="" data-screen-label="Skip the Cellar">
     <div data-bb-skip-pin="">
       <div data-bb-skip-inner="">
-        <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: #5b584e; letter-spacing: 0.03em; text-wrap: balance">Skip the Cellar.<br>Find a Bottle.</h2>
+        <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: #5b584e; letter-spacing: 0.03em">Skip&nbsp;the&nbsp;Cellar<br>Find&nbsp;a&nbsp;Bottle</h2>
+        <div data-bb-stamp="" data-bb-skip-stamp="" aria-hidden="true">
+          <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
+          <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
+            <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
+            <span style="position: relative; font-size: clamp(22px, 2.6vw, 44px); color: #eeeee4">Brisa Bay</span>
+          </div>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
+            <defs><path id="skipStampCircleR" d="M 230,230 m -230,0 a 230,230 0 1,1 460,0 a 230,230 0 1,1 -460,0"></path></defs>
+            <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#e6393a" font-weight="600"><textPath href="#skipStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
+          </svg>
+        </div>
         <div data-bb-skip="">
           <span data-bb-skip-rule="" aria-hidden="true"></span>
-          <p data-bb-skip-lead="">No wine snobs. No pretense. No occasion required.</p>
+          <p data-bb-skip-lead="">No pretense<br>No wine snobs<br>No occasion required</p>
           <p data-bb-skip-body="">We skip the barriers to share the wines we love with anyone who wants to enjoy them. Find Brisa Bay at your favorite local spots.</p>
-          <a data-bb-skip-cta="" href="where-to-buy.html" style="background: #60b98f; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.45vw, 26px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; transition: transform 0.25s, background-color 0.25s, color 0.25s" style-hover="background: #f5d732; color: #e6393a; transform: scale(1.04)">Locate Brisa Bay</a>
+          <a data-bb-skip-cta="" href="where-to-buy.html" style="background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(20px, 1.9vw, 34px); padding: clamp(12px, 1vw, 18px) clamp(30px, 2.8vw, 52px) clamp(15px, 1.2vw, 22px); border-radius: 999px; text-decoration: none; transition: transform 0.25s, background-color 0.25s, color 0.25s" style-hover="background: #f5d732; color: #e6393a; transform: scale(1.04)">Locate Brisa Bay</a>
         </div>
       </div>
     </div>
@@ -719,26 +775,13 @@
   <!-- ================= BOTTLED MOMENTS ================= -->
   <div data-bb-moments="" data-screen-label="Bottled Moments">
     <img data-bb-deco="" data-bb-moments-bar="" src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
-    <div data-bb-moments-intro="" style="background: #60b98f; position: relative; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: center; column-gap: clamp(28px, 4vw, 72px); padding: clamp(48px, 6vh, 110px) clamp(20px, 5vw, 160px); box-sizing: border-box">
-      <div data-bb-moments-copy="" style="text-align: left; min-width: 0; display: flex; flex-direction: column; gap: clamp(16px, 1.6vw, 28px)">
+    <div data-bb-moments-intro="" style="background: #60b98f; position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding: clamp(48px, 6vh, 110px) clamp(20px, 5vw, 160px); box-sizing: border-box">
+      <div data-bb-moments-copy="" style="text-align: left; min-width: 0; display: flex; flex-direction: column; gap: clamp(16px, 1.6vw, 28px); max-width: 72ch">
         <div data-bb-moments-headline="" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(12px, 1.4vw, 28px) clamp(16px, 2vw, 36px)">
           <h2 data-bb-moments-line="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.6vw, 84px); font-weight: 400; color: #eeeee4; letter-spacing: 0.03em; white-space: nowrap">Bottled Moments</h2>
           <p data-bb-moments-line="" style="margin: 0; flex: 1 1 16ch; min-width: min(100%, 16ch); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.9vw, 32px); line-height: 1.3; color: #eeeee4; text-wrap: pretty">A gallery of real afternoons, sent in by the people drinking them.</p>
         </div>
         <p data-bb-moments-cta="" data-bb-moments-line="" style="margin: 0; font-size: clamp(15px, 1.5vw, 26px); line-height: 1.5; color: rgba(238,238,228,0.92); white-space: nowrap">Want yours up here? Post your pour with <strong>#BrisaBay</strong> and tag <a href="https://www.instagram.com/brisabay" target="_blank" rel="noopener" style="color: #f5d732">@brisabay</a> — we add new moments every month.</p>
-      </div>
-      <div data-bb-moments-logo="" style="display: flex; align-items: center; justify-content: center; min-width: 0">
-        <div data-bb-stamp="" data-bb-moments-stamp="" style="position: relative; width: min(100%, clamp(180px, 24vw, 340px)); aspect-ratio: 1; z-index: 2">
-          <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
-          <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
-            <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
-            <span style="position: relative; font-size: clamp(20px, 2.4vw, 40px); color: #eeeee4">Brisa Bay</span>
-          </div>
-          <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
-            <defs><path id="homeStampCircleR" d="M 230,230 m -230,0 a 230,230 0 1,1 460,0 a 230,230 0 1,1 -460,0"></path></defs>
-            <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#e6393a" font-weight="600"><textPath href="#homeStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-          </svg>
-        </div>
       </div>
     </div>
 
@@ -860,8 +903,7 @@ class Component extends DCLogic {
 
   componentDidMount() {
     try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
-    const v = document.getElementById('bb-hero-video');
-    if (v && v.paused) v.play().catch(() => {});
+    this._kickHeroVideo();
     this._mq = window.matchMedia('(max-width: 900px)');
     this._onMq = () => this.setState({ narrow: !!this._mq.matches, moment: 0 });
     this._onMq();
@@ -880,6 +922,7 @@ class Component extends DCLogic {
     if (this._winesCleanup) this._winesCleanup();
     if (this._skipCleanup) this._skipCleanup();
     if (this._momentsCleanup) this._momentsCleanup();
+    if (this._heroVisKick) document.removeEventListener('visibilitychange', this._heroVisKick);
     if (!this._mq) return;
     if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
     else if (this._mq.removeListener) this._mq.removeListener(this._onMq);
@@ -888,6 +931,26 @@ class Component extends DCLogic {
   _motionEnabled() {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     return !reduceMotion && (this.props.motion ?? true);
+  }
+
+  _kickHeroVideo() {
+    const v = document.getElementById('bb-hero-video');
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute('muted', '');
+    v.playsInline = true;
+    const tryPlay = () => {
+      if (v.paused) v.play().catch(() => {});
+    };
+    tryPlay();
+    ['loadeddata', 'canplay', 'canplaythrough'].forEach((evt) => {
+      v.addEventListener(evt, tryPlay, { once: true });
+    });
+    if (!this._heroVisKick) {
+      this._heroVisKick = () => { if (!document.hidden) tryPlay(); };
+      document.addEventListener('visibilitychange', this._heroVisKick);
+    }
   }
 
   _bindHeroScroll() {
@@ -1047,68 +1110,66 @@ class Component extends DCLogic {
 
     const scrubRoom = () => Math.max(0, scrollEl.offsetHeight - pinEl.offsetHeight);
 
-    const progress = () => {
-      const total = scrubRoom();
-      // Mobile uses auto-height (no pin scrub) — drive reveal from arrival instead
-      if (total < 24) return 0;
-      return clamp01(-scrollEl.getBoundingClientRect().top / total);
-    };
-
-    // How far Wines has covered Story (before the pin scrub really starts)
-    const arrival = () => {
+    // Blend cover-handoff + a short pin settle into one crisp entrance.
+    const driveProgress = () => {
       const top = scrollEl.getBoundingClientRect().top;
       const h = window.innerHeight || 1;
-      const start = h * 0.95;
-      const end = h * 0.08;
-      return clamp01((start - top) / Math.max(1, start - end));
+      const arrive = clamp01((h * 0.92 - top) / Math.max(1, h * 0.72));
+      const total = scrubRoom();
+      const scrub = total < 24 ? 0 : clamp01(-top / total);
+      // Arrival does most of the work; scrub only finishes the last beat.
+      return clamp01(Math.max(arrive, scrub * 0.55 + 0.45 * arrive));
     };
 
-    const apply = (p, arrive) => {
-      const handoff = ease(arrive);
-      const drive = Math.max(p, handoff);
-      const enter = ease(range(drive, 0, 0.42));
-      const settle = ease(range(drive, 0.18, 0.7));
-      const exit = scrubRoom() < 24 ? 0 : ease(range(p, 0.78, 1));
+    const apply = (p) => {
+      const enter = ease(range(p, 0, 0.38));
+      const settle = ease(range(p, 0.12, 0.62));
+      const controlsIn = ease(range(p, 0.22, 0.58));
 
-      // Soft lift of wines content as cream panel covers Story (not the sticky pin)
       if (winesGrid) {
-        winesGrid.style.transform = handoff < 0.999
-          ? `translate3d(0, ${(1 - handoff) * 40}px, 0)`
+        winesGrid.style.transform = enter < 0.999
+          ? `translate3d(0, ${(1 - enter) * 28}px, 0)`
           : 'none';
       }
 
       if (copy) {
-        copy.style.opacity = String(enter * (1 - exit * 0.25));
-        copy.style.transform = enter >= 0.999 && exit < 0.001
+        copy.style.opacity = String(enter);
+        copy.style.transform = enter >= 0.999
           ? 'none'
-          : `translate3d(0, ${(1 - enter) * 48 - exit * 20}px, 0)`;
+          : `translate3d(0, ${(1 - enter) * 28}px, 0)`;
       }
 
       if (stage) {
-        const y = (1 - ease(range(drive, 0.05, 0.55))) * 120 - exit * 28;
-        const rot = (1 - settle) * -7 + exit * 2;
-        const scale = 0.88 + settle * 0.14 - exit * 0.03;
-        stage.style.transform = `translate3d(0, ${y}px, 0) rotate(${rot}deg) scale(${scale})`;
+        if (settle >= 0.999) {
+          stage.style.transform = 'none';
+        } else {
+          const y = (1 - ease(range(p, 0.04, 0.5))) * 56;
+          const rot = (1 - settle) * -3.5;
+          const scale = 0.94 + settle * 0.06;
+          stage.style.transform = `translate3d(0, ${y}px, 0) rotate(${rot}deg) scale(${scale})`;
+        }
       }
 
       if (controls) {
-        const c = ease(range(drive, 0.28, 0.62));
-        controls.style.opacity = String(c * (1 - exit * 0.35));
-        controls.style.transform = c >= 0.999 ? 'none' : `translate3d(0, ${(1 - c) * 18}px, 0)`;
+        controls.style.opacity = String(controlsIn);
+        controls.style.transform = controlsIn >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - controlsIn) * 12}px, 0)`;
       }
 
       if (deco) {
-        deco.style.transform = `translate3d(${(1 - settle) * 40 + exit * 24}px, ${(1 - enter) * 60 - exit * 30}px, 0) rotate(${(1 - settle) * -6}deg)`;
+        deco.style.transform = settle >= 0.999
+          ? 'none'
+          : `translate3d(${(1 - settle) * 24}px, ${(1 - enter) * 36}px, 0) rotate(${(1 - settle) * -4}deg)`;
       }
     };
 
     const tick = () => {
-      const target = progress();
-      const arrive = arrival();
-      current += (target - current) * 0.14;
-      if (Math.abs(target - current) < 0.001) current = target;
-      apply(current, arrive);
-      if (Math.abs(target - current) >= 0.001) {
+      const target = driveProgress();
+      current += (target - current) * 0.28;
+      if (Math.abs(target - current) < 0.0008) current = target;
+      apply(current);
+      if (Math.abs(target - current) >= 0.0008) {
         this._winesRaf = requestAnimationFrame(tick);
       } else {
         running = false;
@@ -1122,8 +1183,8 @@ class Component extends DCLogic {
       this._winesRaf = requestAnimationFrame(tick);
     };
 
-    current = progress();
-    apply(current, arrival());
+    current = driveProgress();
+    apply(current);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     this._winesCleanup = () => {
@@ -1157,9 +1218,11 @@ class Component extends DCLogic {
       el.style.opacity = String(v);
       el.style.transform = v >= 0.999 ? 'none' : `translate3d(0, ${(1 - v) * rise}px, 0)`;
     };
+    // Title stays put; only the supporting copy animates in.
+    title.style.opacity = '1';
+    title.style.transform = 'none';
+
     const showAll = () => {
-      title.style.opacity = '1';
-      title.style.transform = 'none';
       if (inner) { inner.style.opacity = '1'; inner.style.transform = 'none'; }
       if (rule) { rule.style.opacity = '1'; rule.style.transform = 'scaleX(1)'; }
       setReveal(lead, 1);
@@ -1194,15 +1257,11 @@ class Component extends DCLogic {
     };
 
     const apply = (p, cover) => {
-      const titleT = ease(range(p, 0, 0.2));
-      const leadT = ease(range(p, 0.16, 0.42));
-      const bodyT = ease(range(p, 0.3, 0.56));
-      const ctaT = ease(range(p, 0.46, 0.72));
-      const ruleT = ease(range(p, 0.12, 0.38));
+      const leadT = ease(range(p, 0.05, 0.36));
+      const bodyT = ease(range(p, 0.18, 0.5));
+      const ctaT = ease(range(p, 0.34, 0.66));
+      const ruleT = ease(range(p, 0.02, 0.3));
 
-      // Entrance only — do not mix exit into these transforms (that caused the jitter)
-      title.style.opacity = String(titleT);
-      title.style.transform = titleT >= 0.999 ? 'none' : `scale(${1.04 - 0.04 * titleT})`;
       if (rule) {
         rule.style.opacity = String(ruleT);
         rule.style.transform = `scaleX(${ruleT})`;
@@ -1261,7 +1320,6 @@ class Component extends DCLogic {
     const section = document.querySelector('[data-bb-moments]');
     const intro = document.querySelector('[data-bb-moments-intro]');
     const bar = document.querySelector('[data-bb-moments-bar]');
-    const stamp = document.querySelector('[data-bb-moments-stamp]');
     const gallery = document.querySelector('[data-bb-moments-gallery]');
     const lines = Array.from(document.querySelectorAll('[data-bb-moments-line]'));
     if (!section || !intro) return;
@@ -1273,7 +1331,6 @@ class Component extends DCLogic {
     const showAll = () => {
       intro.style.transform = 'none';
       if (bar) bar.style.transform = 'none';
-      if (stamp) { stamp.style.opacity = '1'; stamp.style.transform = 'none'; }
       if (gallery) { gallery.style.opacity = '1'; gallery.style.transform = 'none'; }
       lines.forEach((el) => {
         el.style.opacity = '1';
@@ -1319,14 +1376,6 @@ class Component extends DCLogic {
         el.style.opacity = String(t);
         el.style.transform = t >= 0.999 ? 'none' : `translate3d(0, ${(1 - t) * 26}px, 0)`;
       });
-
-      if (stamp) {
-        const t = ease(range(cover, 0.28, 0.72));
-        stamp.style.opacity = String(t);
-        stamp.style.transform = t >= 0.999
-          ? 'none'
-          : `translate3d(0, ${(1 - t) * 40}px, 0) rotate(${(1 - t) * -12}deg) scale(${0.88 + t * 0.12})`;
-      }
 
       if (gallery) {
         const g = ease(Math.max(gal, range(cover, 0.55, 1)));
@@ -1382,10 +1431,10 @@ class Component extends DCLogic {
     const play = motionOn ? 'running' : 'paused';
     const winePanel = (active, fromX) => active
       ? 'opacity:1;transform:none;pointer-events:auto;z-index:2'
-      : `opacity:0;transform:translate3d(${fromX}px,14px,0);pointer-events:none;z-index:1`;
+      : `opacity:0;transform:translate3d(${fromX}px,8px,0);pointer-events:none;z-index:1`;
     const wineBottle = (active, fromX, fromRot) => active
       ? 'opacity:1;transform:none;z-index:2'
-      : `opacity:0;transform:translate3d(${fromX}px,24px,0) rotate(${fromRot}deg) scale(0.94);z-index:1;pointer-events:none`;
+      : `opacity:0;transform:translate3d(${fromX}px,16px,0) rotate(${fromRot}deg) scale(0.96);z-index:1;pointer-events:none`;
     const fallbackMoments = [
       { src: 'assets/web2/story-photo.jpg', alt: 'Friends on a beach blanket pouring Brisa Bay Chardonnay', permalink: 'https://www.instagram.com/brisabay' },
       { src: 'assets/web2/collage-a.jpg', alt: 'Friends clinking glasses of Brisa Bay over a picnic blanket', permalink: 'https://www.instagram.com/brisabay' },
@@ -1406,17 +1455,17 @@ class Component extends DCLogic {
     const setMoment = (n) => this.setState({ moment: ((n % (maxMoment + 1)) + (maxMoment + 1)) % (maxMoment + 1) });
     const gap = 'clamp(8px, 0.75vw, 14px)';
     return {
-      wine0Panel: winePanel(w === 0, -22),
-      wine1Panel: winePanel(w === 1, 22),
-      wine0Bottle: wineBottle(w === 0, -40, -7),
-      wine1Bottle: wineBottle(w === 1, 40, 7),
+      wine0Panel: winePanel(w === 0, -14),
+      wine1Panel: winePanel(w === 1, 14),
+      wine0Bottle: wineBottle(w === 0, -28, -4),
+      wine1Bottle: wineBottle(w === 1, 28, 4),
       wine0Play: w === 0 && motionOn ? 'running' : 'paused',
       wine1Play: w === 1 && motionOn ? 'running' : 'paused',
       wine0Hidden: w !== 0,
       wine1Hidden: w !== 1,
       dot0: w === 0 ? '#e6393a' : 'rgba(87,84,74,0.28)',
       dot1: w === 1 ? '#e6393a' : 'rgba(87,84,74,0.28)',
-      prevWine: () => setWine(w + 1),
+      prevWine: () => setWine(w - 1),
       nextWine: () => setWine(w + 1),
       showWine0: () => setWine(0),
       showWine1: () => setWine(1),
@@ -1438,7 +1487,7 @@ class Component extends DCLogic {
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
-      acceptAge: () => { try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {} this.setState({ ageOk: true }); },
+      acceptAge: () => { try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {} this.setState({ ageOk: true }); this._kickHeroVideo(); },
       denyAge: () => this.setState({ gateDenied: true }),
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
