@@ -55,7 +55,7 @@
       z-index: 5;
     }
 
-    /* The Brisa Way — photo holds, text reveals, then next photo */
+    /* The Brisa Way — photo + title arrive, body reveals, then next photo */
     [data-bb-way-scroll] {
       position: relative;
       z-index: 4;
@@ -525,18 +525,21 @@ class Component extends DCLogic {
       img: panel.querySelector('[data-bb-way-photo] img')
     }));
 
-    const setTextReveal = (meta, amount) => {
+    // Title rides with the photo; body text reveals on scroll after arrival.
+    const setTitle = (meta, amount) => {
+      if (!meta.title) return;
+      const t = Math.min(1, Math.max(0, amount));
+      meta.title.style.opacity = String(t);
+      meta.title.style.transform = `translate3d(0, ${(1 - t) * 26}px, 0)`;
+    };
+
+    const setBodyReveal = (meta, amount) => {
       const a = Math.min(1, Math.max(0, amount));
-      if (meta.title) {
-        const t = Math.min(1, Math.max(0, a / 0.28));
-        meta.title.style.opacity = String(t);
-        meta.title.style.transform = `translate3d(0, ${(1 - t) * 26}px, 0)`;
-      }
       const words = meta.words || [];
       const count = Math.max(1, words.length);
       words.forEach((word, i) => {
-        const start = 0.22 + (i / count) * 0.72;
-        const end = start + 0.1;
+        const start = (i / count) * 0.82;
+        const end = start + 0.18;
         const wt = Math.min(1, Math.max(0, (a - start) / (end - start)));
         word.style.opacity = String(wt);
         word.style.transform = `translate3d(0, ${(1 - wt) * 0.4}em, 0)`;
@@ -546,14 +549,15 @@ class Component extends DCLogic {
     if (reduceMotion || !motionOn) {
       track.style.transform = '';
       panelMeta.forEach((meta) => {
-        setTextReveal(meta, 1);
+        setTitle(meta, 1);
+        setBodyReveal(meta, 1);
         if (meta.img) meta.img.style.transform = '';
       });
       if (stamp) stamp.style.transform = '';
       return;
     }
 
-    // Timeline: reveal text on a held photo, then slide to the next photo.
+    // Timeline: photo + title arrive together, body reveals, then slide to next.
     const REVEAL_W = 1.55;
     const SLIDE_W = 0.55;
     const segments = [];
@@ -603,28 +607,46 @@ class Component extends DCLogic {
 
       let xIndex = 0;
       let revealPanel = 0;
-      let revealAmt = 0;
 
       if (seg.type === 'reveal') {
         xIndex = seg.panel;
         revealPanel = seg.panel;
-        revealAmt = local;
       } else {
         xIndex = seg.from + local;
         revealPanel = local < 0.5 ? seg.from : seg.to;
-        revealAmt = local < 0.5 ? 1 : 0;
       }
 
       track.style.transform = `translate3d(${-xIndex * panelW}px, 0, 0)`;
 
       panelMeta.forEach((meta, i) => {
+        let titleAmt = 0;
+        let bodyAmt = 0;
+
         if (seg.type === 'reveal') {
-          setTextReveal(meta, i === seg.panel ? revealAmt : (i < seg.panel ? 1 : 0));
+          // Photo is already held — title is fully on; body scrolls in.
+          if (i === seg.panel) {
+            titleAmt = 1;
+            bodyAmt = local;
+          } else if (i < seg.panel) {
+            titleAmt = 1;
+            bodyAmt = 1;
+          }
         } else {
-          if (i === seg.from) setTextReveal(meta, Math.max(0, 1 - local * 1.15));
-          else if (i === seg.to) setTextReveal(meta, 0);
-          else setTextReveal(meta, i < seg.from ? 1 : 0);
+          // Slide: outgoing fades out; incoming title arrives with the photo.
+          if (i === seg.from) {
+            titleAmt = Math.max(0, 1 - local * 1.2);
+            bodyAmt = Math.max(0, 1 - local * 1.6);
+          } else if (i === seg.to) {
+            titleAmt = Math.min(1, Math.max(0, (local - 0.15) / 0.55));
+            bodyAmt = 0;
+          } else if (i < seg.from) {
+            titleAmt = 1;
+            bodyAmt = 1;
+          }
         }
+
+        setTitle(meta, titleAmt);
+        setBodyReveal(meta, bodyAmt);
 
         if (meta.img) {
           const dist = Math.abs(xIndex - i);
