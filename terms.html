@@ -13,6 +13,10 @@
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
     @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
     body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and <strong> by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
   </style>

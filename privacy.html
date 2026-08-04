@@ -12,6 +12,10 @@
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
     @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
     body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and <strong> by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
   </style>
@@ -74,61 +78,61 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">1.1 Information You Provide Directly</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">1.1 Information You Provide Directly</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Account Registration:</strong> Name, email address, phone number, date of birth, and address when you create an account.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Account Registration:</strong> Name, email address, phone number, date of birth, and address when you create an account.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Age Verification:</strong> Government-issued ID or other proof of age to verify you are 21 years or older for purchase of alcoholic beverages.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Age Verification:</strong> Government-issued ID or other proof of age to verify you are 21 years or older for purchase of alcoholic beverages.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Order Information:</strong> Billing address, shipping address, payment method, and purchase history.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Order Information:</strong> Billing address, shipping address, payment method, and purchase history.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Customer Service:</strong> Communications with our support team, including emails, chat messages, and customer feedback.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Customer Service:</strong> Communications with our support team, including emails, chat messages, and customer feedback.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Marketing Communications:</strong> Preferences regarding promotional emails, newsletters, and special offers.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Marketing Communications:</strong> Preferences regarding promotional emails, newsletters, and special offers.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Voluntary Information:</strong> Comments, reviews, testimonials, or other content you choose to submit.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Voluntary Information:</strong> Comments, reviews, testimonials, or other content you choose to submit.</p>
             </div>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">1.2 Information Collected Automatically</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">1.2 Information Collected Automatically</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Cookies:</strong> Small data files stored on your device that track browsing patterns, preferences, and login status.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Cookies:</strong> Small data files stored on your device that track browsing patterns, preferences, and login status.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Web Beacons &amp; Pixels:</strong> Tracking technologies that monitor how users interact with our Site.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Web Beacons &amp; Pixels:</strong> Tracking technologies that monitor how users interact with our Site.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Log Data:</strong> IP address, browser type, operating system, pages visited, time spent, and referring website.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Log Data:</strong> IP address, browser type, operating system, pages visited, time spent, and referring website.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Device Information:</strong> Device type, unique device identifiers, and mobile network information.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Device Information:</strong> Device type, unique device identifiers, and mobile network information.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Location Data:</strong> Geographic location based on IP address or GPS coordinates (with your consent).</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Location Data:</strong> Geographic location based on IP address or GPS coordinates (with your consent).</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Analytics:</strong> User behavior data collected through Google Analytics and similar tools to understand usage patterns.</p>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Analytics:</strong> User behavior data collected through Google Analytics and similar tools to understand usage patterns.</p>
             </div>
           </div>
         </div>
@@ -141,7 +145,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">2.1 Core Business Operations</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">2.1 Core Business Operations</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
@@ -163,7 +167,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">2.2 Marketing &amp; Communications</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">2.2 Marketing &amp; Communications</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
@@ -181,7 +185,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">2.3 Analytics &amp; Improvement</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">2.3 Analytics &amp; Improvement</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
@@ -199,7 +203,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">2.4 Legal &amp; Compliance</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">2.4 Legal &amp; Compliance</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
@@ -228,7 +232,7 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">3.1 Service Providers</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">3.1 Service Providers</h3>
           <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #60b98f; margin-top: clamp(8px, 0.8vw, 14px)"></div>
@@ -254,17 +258,17 @@
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">3.2 Business Partners</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">3.2 Business Partners</h3>
           <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">Partners and affiliates for joint marketing initiatives (only with your consent).</p>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">3.3 Legal Requirements</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">3.3 Legal Requirements</h3>
           <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">Law enforcement, government agencies, or other third parties if required by law or to protect our legal rights.</p>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">3.4 Sale or Merger</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">3.4 Sale or Merger</h3>
           <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">In the event of a sale, merger, or acquisition, your information may be transferred as part of that transaction. You will be notified of any such change.</p>
         </div>
       </div>
@@ -277,15 +281,15 @@
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
             <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-            <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Essential Cookies:</strong> Required for Site functionality and security.</p>
+            <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Essential Cookies:</strong> Required for Site functionality and security.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
             <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-            <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Performance Cookies:</strong> Help us understand how users interact with our Site.</p>
+            <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Performance Cookies:</strong> Help us understand how users interact with our Site.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
             <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
-            <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-weight: 700">Marketing Cookies:</strong> Track marketing effectiveness and personalize advertising.</p>
+            <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Marketing Cookies:</strong> Track marketing effectiveness and personalize advertising.</p>
           </div>
         </div>
       </div>
@@ -293,10 +297,10 @@
       <div id="rights" style="display: flex; flex-direction: column; gap: clamp(20px, 2vw, 38px)">
         <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">5. Your Rights &amp; Choices</h2>
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-weight: 700">5.1 Access &amp; Correction:</strong> Request a copy of your personal data or update inaccurate information.</p>
-          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-weight: 700">5.2 Opt-Out of Marketing:</strong> Unsubscribe from promotional communications by clicking &ldquo;unsubscribe&rdquo; in any email or by contacting us.</p>
-          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-weight: 700">5.3 Deletion:</strong> Request deletion of your account and personal data, subject to legal retention requirements.</p>
-          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-weight: 700">5.4 Do Not Track:</strong> Some browsers include Do Not Track features; we honor these signals to the extent legally required.</p>
+          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">5.1 Access &amp; Correction:</strong> Request a copy of your personal data or update inaccurate information.</p>
+          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">5.2 Opt-Out of Marketing:</strong> Unsubscribe from promotional communications by clicking &ldquo;unsubscribe&rdquo; in any email or by contacting us.</p>
+          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">5.3 Deletion:</strong> Request deletion of your account and personal data, subject to legal retention requirements.</p>
+          <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">5.4 Do Not Track:</strong> Some browsers include Do Not Track features; we honor these signals to the extent legally required.</p>
         </div>
       </div>
 
@@ -334,11 +338,11 @@
       <div id="compliance" style="display: flex; flex-direction: column; gap: clamp(20px, 2vw, 38px)">
         <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">9. Regulatory Compliance (GDPR &amp; CCPA)</h2>
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">9.1 GDPR (European Users)</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">9.1 GDPR (European Users)</h3>
           <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty">If you are located in the EU, you have rights under the General Data Protection Regulation, including the right to access, correct, delete, and port your data. Our legal basis for processing is typically your consent or our legitimate business interests.</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
-          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; font-weight: 700; color: #57544a">9.2 CCPA (California Users)</h3>
+          <h3 style="margin: 0; font-size: clamp(20px, 2vw, 38px); font-style: italic; color: #57544a">9.2 CCPA (California Users)</h3>
           <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55; text-wrap: pretty">If you are a California resident, you have rights under the California Consumer Privacy Act (CCPA), including the right to know, delete, and opt-out of the sale or sharing of your personal information. We do not sell your information without explicit consent.</p>
         </div>
       </div>
