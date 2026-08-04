@@ -20,6 +20,27 @@
     @keyframes bb-fade { from { opacity: 0 } to { opacity: 1 } }
     @keyframes bb-wipe { from { opacity: 0; transform: translateY(0.22em) } to { opacity: 1; transform: none } }
 
+    /* Scroll-driven headline exit. The keyframe percentages map 1:1 onto the pinned scrub,
+       because `contain 0% → 100%` on the 280vh track covers exactly the 180vh the pin is
+       active for — the same range the JS fallback computes as its progress `p`. */
+    @keyframes bb-headline-exit {
+      0%   { transform: translateY(0); visibility: visible }
+      5%   { transform: translateY(0); visibility: visible; animation-timing-function: ease-in-out }
+      34%  { transform: translateY(-112vh); visibility: visible }
+      35%  { transform: translateY(-112vh); visibility: hidden }
+      100% { transform: translateY(-112vh); visibility: hidden }
+    }
+    @supports (animation-timeline: view()) {
+      @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+        [data-bb-blend-scroll] { view-timeline-name: --bb-blend-scrub }
+        [data-bb-blend-hero-copy] h1 {
+          animation: bb-headline-exit linear both;
+          animation-timeline: --bb-blend-scrub;
+          animation-range: contain 0% contain 100%;
+        }
+      }
+    }
+
     /* Hero image pins; headline exits up; bottles + wine names rise in */
     [data-bb-blend-scroll] {
       position: relative;
@@ -268,7 +289,7 @@
       <img data-bb-blend-photo="" src="assets/web/blends-hero.jpg" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit">
       <div style="position: absolute; left: 0; right: 0; top: 0; height: 42%; background: linear-gradient(to bottom, rgba(45,45,42,0.62), rgba(45,45,42,0)); pointer-events: none; z-index: 3"></div>
       <div data-bb-blend-bottom-veil="" style="position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: linear-gradient(to top, rgba(45,45,42,0.58), rgba(45,45,42,0)); pointer-events: none; z-index: 3; will-change: opacity"></div>
-      <div data-bb-blend-stage-veil="" style="position: absolute; inset: 0; background: rgba(45,45,42,0.28); pointer-events: none; z-index: 3; opacity: 0; will-change: opacity"></div>
+      <div data-bb-blend-stage-veil="" style="position: absolute; inset: 0; background: rgba(45,45,42,0.52); pointer-events: none; z-index: 3; opacity: 0; will-change: opacity"></div>
 
       <div data-bb-nav="" style="position: absolute; z-index: 8; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px); box-sizing: border-box">
         <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
@@ -280,7 +301,7 @@
       </div>
 
       <div data-bb-blend-hero-copy="">
-        <h1 style="margin: 0; max-width: 20ch; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5.6vw, 108px); line-height: 1.08; font-weight: 400; color: #eeeee4; text-wrap: balance; animation: bb-wipe 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both">Two bottles, one breeze.</h1>
+        <h1 style="margin: 0; max-width: 20ch; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5.6vw, 108px); line-height: 1.08; font-weight: 400; color: #eeeee4; text-wrap: balance"><span style="display: block; animation: bb-wipe 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both">Two bottles, one breeze.</span></h1>
         <div data-bb-blend-scroll-cue="" style="display: flex; align-items: center; gap: 0.6em; font-size: clamp(14px, 1.35vw, 26px); color: rgba(238,238,228,0.85); animation: bb-fade 1.4s ease 0.4s both">
           <span>Scroll</span>
           <svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="#eeeee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: bb-floaty 2.6s ease-in-out infinite; animation-play-state: {{ play }}"><line x1="12" y1="4" x2="12" y2="19"></line><polyline points="5 12 12 19 19 12"></polyline></svg>
@@ -559,6 +580,11 @@ class Component extends DCLogic {
     const first = els();
     if (!first.scrollEl || !first.pinEl || !first.heroCopy || !first.stage) return false;
 
+    // Where scroll-driven CSS animations exist, `bb-headline-exit` owns the headline outright.
+    // Skip it here so we are not writing inline styles every frame that CSS would override anyway.
+    const cssHeadline = typeof CSS !== 'undefined' && !!CSS.supports
+      && CSS.supports('animation-timeline: view()');
+
     const clamp01 = (n) => Math.min(1, Math.max(0, n));
     const range = (p, a, b) => clamp01((p - a) / Math.max(0.0001, b - a));
     const ease = (t) => t * t * (3 - 2 * t); // smoothstep
@@ -571,12 +597,17 @@ class Component extends DCLogic {
       node.style.transform = '';
       node.style.filter = '';
       node.style.pointerEvents = '';
+      node.style.visibility = '';
     };
 
     if (!motionOn()) {
-      const { photo, heroCopy, stage, copy, row, arrows, veil, stageVeil } = els();
-      [photo, heroCopy, stage, copy, row, veil, stageVeil].forEach(resetMotion);
+      const { photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil, stageVeil } = els();
+      [photo, heroCopy, heroTitle, scrollCue, stage, copy, row, veil].forEach(resetMotion);
       arrows.forEach(resetMotion);
+      // The stage veil only exists to lift the copy off the photo during the desktop scrub.
+      // Clearing its inline opacity would default it to 1, laying a scrim over the whole
+      // mobile hero — and the mobile stage already has its own solid background.
+      if (stageVeil) stageVeil.style.opacity = '0';
       if (stage) stage.classList.add('is-live');
       const onResize = () => { if (motionOn()) bind(); };
       window.addEventListener('resize', onResize);
@@ -600,16 +631,17 @@ class Component extends DCLogic {
       } = els();
       if (!heroCopy || !stage) return;
 
-      // Headline holds, then scrolls horizontally off as the wine stage arrives
-      const exit = easeInOut(range(p, 0.08, 0.55));
-      const cueExit = easeOut(range(p, 0.0, 0.3));
-      if (heroTitle) {
+      // Headline rides straight up and off the top edge — fully gone before the wine stage starts.
+      // No fade: it disappears purely by travelling out, clipped by the pin's overflow.
+      const exit = easeInOut(range(p, 0.05, 0.34));
+      const cueExit = easeOut(range(p, 0.0, 0.2));
+      if (heroTitle && !cssHeadline) {
         const titleGone = exit >= 0.995;
-        heroTitle.style.opacity = titleGone ? '0' : String(1 - easeOut(exit));
+        heroTitle.style.opacity = titleGone ? '0' : '1';
         heroTitle.style.transform = exit < 0.001
           ? 'none'
-          : `translate3d(${exit * -72}vw, ${exit * -8}vh, 0)`;
-        heroTitle.style.filter = (!titleGone && exit > 0.08) ? `blur(${Math.min(2.5, exit * 2)}px)` : 'none';
+          : `translate3d(0, ${exit * -112}vh, 0)`;
+        heroTitle.style.filter = 'none';
         heroTitle.style.visibility = titleGone ? 'hidden' : 'visible';
       }
       if (scrollCue) {
@@ -617,7 +649,7 @@ class Component extends DCLogic {
         scrollCue.style.opacity = cueGone ? '0' : String(1 - cueExit);
         scrollCue.style.transform = cueExit < 0.001
           ? 'none'
-          : `translate3d(${cueExit * 18}vw, 0, 0)`;
+          : `translate3d(0, ${cueExit * 40}px, 0)`;
         scrollCue.style.visibility = cueGone ? 'hidden' : 'visible';
       }
       heroCopy.style.pointerEvents = exit > 0.45 ? 'none' : 'auto';
@@ -631,18 +663,18 @@ class Component extends DCLogic {
         photo.style.filter = photoP > 0.01 ? `saturate(${1 - photoP * 0.12})` : 'none';
       }
 
-      const deepen = ease(range(p, 0.12, 0.58));
+      const deepen = ease(range(p, 0.2, 0.58));
       if (veil) veil.style.opacity = String(0.8 + deepen * 0.2);
-      if (stageVeil) stageVeil.style.opacity = String(deepen * 0.42);
+      if (stageVeil) stageVeil.style.opacity = String(deepen);
 
-      // Stage fades in while the headline is still sliding away
-      const stageFade = ease(range(p, 0.16, 0.5));
+      // Stage only begins once the headline has fully left the screen (exit completes at p = 0.34)
+      const stageFade = ease(range(p, 0.36, 0.58));
       stage.style.opacity = String(stageFade);
       if (stageFade > 0.58) stage.classList.add('is-live');
       else stage.classList.remove('is-live');
 
-      // Wine title/copy arrives from the left as hero text leaves leftward
-      const copyIn = easeOut(range(p, 0.24, 0.62));
+      // Wine title/copy arrives from the left, after the hero headline is gone
+      const copyIn = easeOut(range(p, 0.4, 0.7));
       if (copy) {
         copy.style.opacity = String(copyIn);
         copy.style.transform = copyIn >= 0.999
@@ -650,8 +682,8 @@ class Component extends DCLogic {
           : `translate3d(${(1 - copyIn) * -56}px, ${(1 - copyIn) * 24}px, 0)`;
       }
 
-      // Bottle rises as the headline finishes exiting
-      const bottleIn = easeOut(range(p, 0.32, 0.74));
+      // Bottle rises just behind the wine copy
+      const bottleIn = easeOut(range(p, 0.44, 0.8));
       if (row) {
         const y = (1 - bottleIn) * 48;
         const scale = 0.9 + bottleIn * 0.1;
@@ -662,7 +694,7 @@ class Component extends DCLogic {
       }
 
       // Arrows settle last
-      const arrowsIn = easeOut(range(p, 0.54, 0.8));
+      const arrowsIn = easeOut(range(p, 0.66, 0.88));
       arrows.forEach((btn, i) => {
         const t = clamp01(arrowsIn - i * 0.05);
         btn.style.opacity = String(t);
