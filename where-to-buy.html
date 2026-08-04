@@ -58,21 +58,154 @@
     }
     .leaflet-control-attribution a { color: rgba(87,84,74,0.7) !important; }
 
+    /* Locator runs on two voices only: Garamond for the headline, mono for every
+       piece of data. Matches the reference's structure without borrowing its brand. */
+    [data-bb-toolbar] {
+      flex: 0 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(10px, 1.2vw, 20px);
+      padding: 0 clamp(20px, 3.4vw, 64px) clamp(12px, 1.4vh, 20px);
+      border-bottom: 1px solid rgba(87, 84, 74, 0.16);
+      background: #eeeee4;
+    }
+    [data-bb-search-wrap] {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 260px;
+      max-width: 420px;
+      padding: 10px 12px;
+      border: 1px solid rgba(87, 84, 74, 0.22);
+      background: rgba(255, 255, 255, 0.5);
+    }
+    [data-bb-search-wrap] > svg { width: 16px; height: 16px; flex: none; color: rgba(87, 84, 74, 0.5); }
+    [data-bb-search-wrap] input {
+      flex: 1 1 auto;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: clamp(16px, 1.15vw, 20px);
+      color: #3c3a34;
+    }
+    [data-bb-search-wrap] input::placeholder { color: rgba(87, 84, 74, 0.45); }
+    [data-bb-locate] {
+      display: flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; flex: none; cursor: pointer;
+      color: rgba(87, 84, 74, 0.55); transition: color 0.2s;
+    }
+    [data-bb-locate]:hover { color: #e6393a; }
+    [data-bb-locate] svg { width: 16px; height: 16px; }
+
+    [data-bb-radius] { flex: none; display: block; }
+    [data-bb-radius] select {
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: clamp(15px, 1.05vw, 19px);
+      color: #3c3a34;
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(87, 84, 74, 0.22);
+      padding: 10px 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    [data-bb-toolbar-status] {
+      margin-left: auto;
+      font-size: clamp(12px, 0.85vw, 14px);
+      color: rgba(87, 84, 74, 0.62);
+      white-space: nowrap;
+    }
+
+    [data-bb-featured-name] {
+      margin-top: 8px;
+      font-size: clamp(20px, 1.5vw, 28px);
+      color: #3c3a34;
+      line-height: 1.2;
+    }
+    [data-bb-featured-line] {
+      margin-top: 6px;
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87, 84, 74, 0.78);
+    }
+
+    /* ---- rows: compact, mono, with a real directions button ---- */
+    [data-bb-store-main] { min-width: 0; }
+    [data-bb-store-name] {
+      font-size: clamp(18px, 1.35vw, 26px);
+      letter-spacing: 0.01em;
+      color: #3c3a34;
+      line-height: 1.2;
+    }
+    [data-bb-store-addr] {
+      margin-top: 5px;
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87, 84, 74, 0.78);
+    }
+    [data-bb-directions] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: #eeeee4;
+      background: #3c3a34;
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    [data-bb-directions]:hover { background: #e6393a; color: #eeeee4; }
+    [data-bb-store-side] {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right;
+    }
+    [data-bb-store-dist] {
+      font-size: clamp(11px, 0.8vw, 13px);
+      color: rgba(87, 84, 74, 0.55);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Shared editorial furniture — same system as the wine stage on blends.html. */
+    [data-bb-label] {
+      font-size: clamp(10px, 0.72vw, 13px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: rgba(87, 84, 74, 0.55);
+    }
+    /* Numbered rows — a directory should read as an index, not a list of cards. */
+    [data-bb-store-index] {
+      font-size: clamp(10px, 0.7vw, 12px);
+      letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
+      color: rgba(87, 84, 74, 0.35);
+    }
+    [data-bb-store-row][data-active="true"] [data-bb-store-index] { color: #e6393a; }
+    /* The city is scannable content, not just a label — give it a touch more size. */
+    [data-bb-store-row] [data-bb-label] {
+      font-size: clamp(11px, 0.78vw, 13px);
+      letter-spacing: 0.13em;
+      color: rgba(87, 84, 74, 0.62);
+    }
+
     [data-bb-type-filters] {
       display: flex;
       flex-wrap: nowrap;
       align-items: baseline;
       gap: 0.35em 0.55em;
-      margin-top: clamp(14px, 1.2vw, 20px);
-      padding-bottom: 2px;
-      border-bottom: 1px solid rgba(87,84,74,0.14);
+      flex: 1 1 auto;
+      min-width: 0;
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
     [data-bb-type-filters]::-webkit-scrollbar { display: none; }
     [data-bb-type-filter] {
-      font-size: clamp(13px, 0.9vw, 16px);
+      font-size: clamp(12px, 0.85vw, 14px);
       letter-spacing: 0.02em;
       color: rgba(87,84,74,0.55);
       cursor: pointer;
@@ -97,8 +230,8 @@
 
     [data-bb-store-row] {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px 18px;
+      grid-template-columns: auto 1fr auto;
+      gap: 6px clamp(12px, 1.1vw, 18px);
       padding: clamp(18px, 1.35vw, 28px) clamp(20px, 1.9vw, 38px);
       border-top: 1px solid rgba(87,84,74,0.12);
       cursor: pointer;
@@ -123,7 +256,7 @@
       from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    [data-bb-mast-copy] { animation: bb-mast-in 0.7s ease both; }
+    [data-bb-masthead] h1 { animation: bb-mast-in 0.7s ease both; }
     [data-bb-featured] { animation: bb-row-in 0.5s ease both; }
 
     [data-bb-sheet-handle] { display: none; }
@@ -135,8 +268,8 @@
         overflow: visible !important;
       }
       [data-bb-masthead] {
-        min-height: 26svh !important;
-        height: 26svh !important;
+        min-height: 0 !important;
+        height: auto !important;
       }
       [data-bb-locator-body] {
         flex-direction: column !important;
@@ -195,16 +328,16 @@
       }
     }
   </style>
-  <title>Where to Buy Brisa Bay | Store locator</title>
+  <title>Store Locator | Brisa Bay</title>
   <meta name="description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
   <meta name="theme-color" content="#3c3a34">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Brisa Bay">
-  <meta property="og:title" content="Where to Buy Brisa Bay | Store locator">
+  <meta property="og:title" content="Store Locator | Brisa Bay">
   <meta property="og:description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
   <meta property="og:image" content="assets/web2/bottle.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Where to Buy Brisa Bay | Store locator">
+  <meta name="twitter:title" content="Store Locator | Brisa Bay">
   <meta name="twitter:description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
 </helmet>
 
@@ -222,55 +355,61 @@
       </div>
     </div>
 
-    <div data-bb-masthead="" style="flex: 0 0 auto; position: relative; height: clamp(148px, 22vh, 220px); min-height: 148px; overflow: hidden; background: #3c3a34">
-      <img src="assets/web2/every-occasion.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; filter: saturate(0.85) brightness(0.92)">
-      <div style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(60,58,52,0.72) 0%, rgba(60,58,52,0.28) 55%, rgba(60,58,52,0.12) 100%)"></div>
-      <div data-bb-mast-copy="" style="position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(22px, 2.4vw, 42px) clamp(20px, 3.4vw, 64px) clamp(20px, 2.2vw, 36px); box-sizing: border-box; max-width: 720px">
-        <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.2vw, 72px); font-weight: 400; line-height: 0.98; color: #eeeee4; letter-spacing: 0.03em; text-shadow: 0 2px 18px rgba(60,58,52,0.35)">Where to buy</h1>
-        <p style="margin: 8px 0 0; font-size: clamp(15px, 1.15vw, 22px); line-height: 1.35; color: rgba(238,238,228,0.88); text-wrap: pretty">{{ introCopy }}</p>
+    <div data-bb-masthead="" style="flex: 0 0 auto; background: #eeeee4; padding: clamp(26px, 3.4vh, 52px) clamp(20px, 3.4vw, 64px) clamp(18px, 2.2vh, 30px); box-sizing: border-box; text-align: center">
+      <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(28px, 3.2vw, 54px); font-weight: 400; line-height: 1.02; color: #3c3a34; letter-spacing: 0.02em">Find the Brisa near you</h1>
+    </div>
+
+    <div data-bb-toolbar="">
+      <div data-bb-search-wrap="">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="20" y1="20" x2="16.2" y2="16.2"></line></svg>
+        <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
+          <input type="search" placeholder="search" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}">
+        </sc-if>
+        <div data-bb-locate="" role="button" aria-label="Use my current location" onClick="{{ requestLoc }}" title="{{ locPromptLabel }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
+        </div>
       </div>
+
+      <label data-bb-radius="" aria-label="Search radius">
+        <select value="{{ radius }}" onChange="{{ onRadius }}">
+          <sc-for list="{{ radiusOptions }}" as="opt" hint-placeholder-count="4">
+            <option value="{{ opt.value }}" selected="{{ opt.selected }}">{{ opt.label }}</option>
+          </sc-for>
+        </select>
+      </label>
+
+      <div data-bb-type-filters="" role="group" aria-label="Filter by type">
+        <sc-for list="{{ typeFilters }}" as="chip" hint-placeholder-count="4">
+          <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}">{{ chip.label }}</div>
+        </sc-for>
+      </div>
+
+      <div data-bb-toolbar-status="">{{ statusCopy }}</div>
     </div>
 
     <div data-bb-locator-body="" style="flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch">
 
       <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
-        <div data-bb-locator-list="" data-sheet="{{ sheetState }}" style="flex: 0 0 clamp(320px, 28vw, 480px); display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.14)">
+        <div data-bb-locator-list="" data-sheet="{{ sheetState }}" style="flex: 0 0 clamp(320px, 40vw, 620px); display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.14)">
           <div data-bb-sheet-handle="" role="button" aria-label="Expand or collapse stockist list" onClick="{{ toggleSheet }}"></div>
-          <div data-bb-list-head="" style="flex: 0 0 auto; padding: clamp(16px, 1.5vw, 28px) clamp(20px, 1.9vw, 38px) clamp(10px, 1vw, 16px)">
-            <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px">
-              <p style="margin: 0; font-size: clamp(14px, 0.98vw, 18px); line-height: 1.35; color: rgba(87,84,74,0.7); text-wrap: pretty">{{ statusCopy }}</p>
-              <sc-if value="{{ showLocPrompt }}" hint-placeholder-val="{{ true }}">
-                <div onClick="{{ requestLoc }}" role="button" style="font-size: clamp(14px, 0.98vw, 18px); color: #e6393a; cursor: pointer; text-decoration: none; white-space: nowrap; transition: color 0.2s" style-hover="color: #60b98f">{{ locPromptLabel }}</div>
-              </sc-if>
-            </div>
-            <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
-              <input type="search" placeholder="Search name, city, ZIP, or address" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}" style="margin-top: clamp(12px, 1.1vw, 18px); width: 100%; box-sizing: border-box; background: transparent; border: none; border-bottom: 1px solid rgba(87,84,74,0.32); padding: 8px 2px 10px; font-family: 'Garamond Pro', Garamond, serif; font-size: clamp(16px, 1.1vw, 22px); color: #3c3a34; outline: none">
-            </sc-if>
-            <div data-bb-type-filters="" role="group" aria-label="Filter by type">
-              <sc-for list="{{ typeFilters }}" as="chip" hint-placeholder-count="4">
-                <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}">{{ chip.label }}</div>
-              </sc-for>
-            </div>
-          </div>
-
           <div data-bb-store-scroll="" style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
             <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ false }}">
               <div data-bb-featured="" role="button" onClick="{{ featured.onSelect }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
-                <div style="font-size: clamp(11px, 0.72vw, 13px); letter-spacing: 0.16em; text-transform: uppercase; color: #60b98f">{{ featured.eyebrow }}</div>
-                <div style="margin-top: 6px; font-size: clamp(22px, 1.55vw, 30px); font-style: italic; font-weight: 700; color: #3c3a34; line-height: 1.15">{{ featured.name }}</div>
-                <div style="margin-top: 6px; font-size: clamp(14px, 0.98vw, 18px); line-height: 1.35; color: rgba(87,84,74,0.8)">{{ featured.line }}</div>
+                <div data-bb-label="" style="color: #60b98f">{{ featured.eyebrow }}</div>
+                <div data-bb-featured-name="">{{ featured.name }}</div>
+                <div data-bb-featured-line="">{{ featured.line }}</div>
               </div>
             </sc-if>
             <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
               <div data-bb-store-row="" data-store-id="{{ store.id }}" data-active="{{ store.isActive }}" data-hover="{{ store.isHover }}" role="button" onClick="{{ store.onSelect }}" onMouseEnter="{{ store.onHover }}" onMouseLeave="{{ store.onLeave }}" style="animation-delay: {{ store.delay }}">
-                <div style="min-width: 0">
-                  <div style="font-size: clamp(17px, 1.2vw, 24px); font-style: italic; font-weight: 700; color: #3c3a34; line-height: 1.2">{{ store.name }}</div>
-                  <div style="margin-top: 4px; font-size: clamp(13px, 0.9vw, 16px); line-height: 1.35; color: rgba(87,84,74,0.72)">{{ store.type }} · {{ store.city }}</div>
-                  <div style="margin-top: 2px; font-size: clamp(14px, 0.95vw, 17px); line-height: 1.35; color: rgba(87,84,74,0.88)">{{ store.address }}</div>
+                <div data-bb-store-main="">
+                  <div data-bb-store-name="">{{ store.name }}</div>
+                  <div data-bb-store-addr="">{{ store.address }}<br>{{ store.city }}</div>
+                  <a data-bb-directions="" href="{{ store.directions }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Get Directions</a>
                 </div>
-                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; text-align: right">
-                  <div style="font-size: clamp(13px, 0.9vw, 16px); letter-spacing: 0.03em; color: rgba(87,84,74,0.55); white-space: nowrap; font-variant-numeric: tabular-nums">{{ store.distance }}</div>
-                  <a href="{{ store.directions }}" target="_blank" rel="noopener" style="font-size: clamp(13px, 0.9vw, 16px); color: #e6393a; text-decoration: none; white-space: nowrap" style-hover="color: #60b98f">Directions</a>
+                <div data-bb-store-side="">
+                  <div data-bb-store-index="" aria-hidden="true">{{ store.index }}</div>
+                  <div data-bb-store-dist="">{{ store.distance }}</div>
                 </div>
               </div>
             </sc-for>
@@ -330,7 +469,7 @@
       <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
       <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
         <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
-          <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; font-weight: 700; color: #57544a">{{ item.q }}</h3>
+          <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: #57544a">{{ item.q }}</h3>
           <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
         </div>
       </sc-for>
@@ -530,7 +669,8 @@ class Component extends DCLogic {
     query: '', typeFilter: null, active: null,
     userLoc: null, locStatus: 'idle',
     searchLoc: null, geoStatus: 'idle', geoQuery: '',
-    sheetOpen: false, hoverId: null
+    sheetOpen: false, hoverId: null,
+    radius: 0
   };
   _geoTimer = null;
   _geoSeq = 0;
@@ -712,6 +852,10 @@ class Component extends DCLogic {
     });
     if (loc) matches.sort((a, b) => a.mi - b.mi);
 
+    // Radius only means something once we have somewhere to measure from.
+    const radius = Number(this.state.radius) || 0;
+    if (loc && radius > 0) matches = matches.filter((s) => s.mi != null && s.mi <= radius);
+
     // When searching by place, prefer stores within range; otherwise keep closest few
     if (q && !pool.some((s) => textMatchesQuery(s, q)) && this.state.searchLoc && matches.length) {
       const near = matches.filter((s) => s.mi != null && s.mi <= NEARBY_MI);
@@ -836,14 +980,21 @@ class Component extends DCLogic {
         this._scheduleGeocode(query.trim());
       },
       typeFilters,
+      radius: String(this.state.radius),
+      radiusOptions: [
+        { value: '0', label: 'Any distance' },
+        { value: '10', label: '10 mi' },
+        { value: '25', label: '25 mi' },
+        { value: '50', label: '50 mi' },
+        { value: '100', label: '100 mi' }
+      ].map((o) => ({ ...o, selected: String(this.state.radius) === o.value ? 'selected' : '' })),
+      onRadius: (e) => {
+        const v = e && e.target ? e.target.value : '0';
+        this.setState({ radius: Number(v) || 0 });
+      },
       noResults: matches.length === 0 && this.state.geoStatus !== 'pending',
       storesJson: JSON.stringify(mapStores),
       activeId: active || '',
-      introCopy: searchLoc
-        ? 'Stockists near your search — pick one to find it on the map.'
-        : (locReady
-          ? 'Nearest pours first. Search a city or ZIP to look farther afield.'
-          : 'A living directory of shops, bars, and tables pouring Brisa Bay.'),
       statusCopy,
       showFeatured,
       featured,
@@ -861,6 +1012,8 @@ class Component extends DCLogic {
           ...s,
           isActive: active === s.id ? 'true' : 'false',
           isHover: this.state.hoverId === s.id ? 'true' : 'false',
+          index: String(i + 1).padStart(2, '0'),
+          stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
           delay: Math.min(i, 8) * 0.04 + 's',
           distance: s.mi != null ? formatMiles(s.mi) : '',
           directions,
