@@ -382,8 +382,11 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: clamp(64px, 9vh, 120px) 0 clamp(56px, 7vh, 100px);
+      padding: 0 0 clamp(52px, 6.5vh, 96px);
       box-sizing: border-box;
+      /* One dial for the whole strip: photos grow with the window but stop
+         before the tallest portrait outgrows the viewport. */
+      --pour-w: clamp(240px, min(32vw, 50svh), 540px);
     }
     [data-bb-pour-line],
     [data-bb-pour-rail],
@@ -395,14 +398,22 @@
     [data-bb-pour][data-pour-in="0"] [data-bb-pour-card] {
       will-change: opacity, transform;
     }
+    /* Title and the Instagram pill read as one lockup, centred over the strip
+       rather than pushed to opposite edges of a full-bleed row. The head then
+       claims the whole band above the strip and centres itself inside it, so
+       the lockup sits midway between the top of the viewport and the first
+       photo. min-height keeps that gap alive on viewports too short to spare
+       any free space. */
     [data-bb-pour-head] {
+      flex: 1 1 auto;
+      min-height: clamp(110px, 16vh, 260px);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
-      gap: clamp(16px, 2vw, 28px);
+      align-content: center;
+      justify-content: center;
+      gap: clamp(16px, 1.9vw, 36px);
       padding: 0 clamp(20px, 5vw, 90px);
-      margin-bottom: clamp(28px, 3.6vh, 52px);
       box-sizing: border-box;
     }
     [data-bb-pour-head] h2 {
@@ -433,13 +444,10 @@
       color: #3c3a34;
       transform: scale(1.04);
     }
+    /* The desktop pill lives in the head lockup, so the foot is mobile-only
+       and must not reserve height on wide screens. */
     [data-bb-pour-cta-mob] { display: none; }
-    [data-bb-pour-foot] {
-      display: flex;
-      justify-content: center;
-      margin-top: clamp(24px, 2.6vw, 40px);
-      padding: 0 clamp(20px, 5vw, 40px);
-    }
+    [data-bb-pour-foot] { display: none; }
     @keyframes bb-pour-marquee {
       from { transform: translate3d(0, 0, 0); }
       to { transform: translate3d(-50%, 0, 0); }
@@ -451,8 +459,6 @@
     [data-bb-pour-window] {
       width: 100%;
       overflow: hidden;
-      mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
     }
     [data-bb-pour-track] {
       display: flex;
@@ -472,17 +478,17 @@
     [data-bb-pour-card] {
       /* Width varies; height follows each photo's native ratio — no cropping */
       flex: 0 0 auto;
-      width: clamp(200px, 20vw, 300px);
+      width: var(--pour-w);
       min-width: 0;
       margin-right: clamp(14px, 1.5vw, 28px);
       color: inherit;
       text-decoration: none;
       display: block;
     }
-    [data-bb-pour-card][data-size="sm"] { width: clamp(200px, 19vw, 280px); }
-    [data-bb-pour-card][data-size="md"] { width: clamp(220px, 21vw, 310px); }
-    [data-bb-pour-card][data-size="lg"] { width: clamp(240px, 23vw, 340px); }
-    [data-bb-pour-card][data-size="wide"] { width: clamp(260px, 26vw, 380px); }
+    [data-bb-pour-card][data-size="sm"] { width: calc(var(--pour-w) * 0.82); }
+    [data-bb-pour-card][data-size="md"] { width: calc(var(--pour-w) * 0.91); }
+    [data-bb-pour-card][data-size="lg"] { width: var(--pour-w); }
+    [data-bb-pour-card][data-size="wide"] { width: calc(var(--pour-w) * 1.14); }
     [data-bb-pour-card] .bb-pour-frame {
       width: 100%;
       overflow: hidden;
@@ -505,7 +511,11 @@
         min-height: 0;
         padding: clamp(48px, 8vh, 88px) 0 clamp(40px, 6vh, 72px);
       }
+      /* The section is content-height here, so there is no band to centre in:
+         back to a plain block with its own spacing. */
       [data-bb-pour-head] {
+        flex: 0 0 auto;
+        min-height: 0;
         flex-direction: column;
         align-items: center;
         text-align: center;
@@ -518,10 +528,13 @@
       }
       [data-bb-pour-cta-desk] { display: none; }
       [data-bb-pour-cta-mob] { display: inline-flex; }
-      [data-bb-pour-card][data-size="sm"] { width: clamp(180px, 52vw, 230px); }
-      [data-bb-pour-card][data-size="md"] { width: clamp(195px, 56vw, 250px); }
-      [data-bb-pour-card][data-size="lg"] { width: clamp(210px, 60vw, 270px); }
-      [data-bb-pour-card][data-size="wide"] { width: clamp(230px, 68vw, 300px); }
+      [data-bb-pour-foot] {
+        display: flex;
+        justify-content: center;
+        margin-top: clamp(24px, 4vw, 40px);
+        padding: 0 clamp(20px, 5vw, 40px);
+      }
+      [data-bb-pour] { --pour-w: clamp(230px, 64vw, 330px); }
       [data-bb-pour-track] { animation-duration: 56s; }
     }
   </style>
