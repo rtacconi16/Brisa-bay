@@ -434,8 +434,9 @@
       transform: scale(1.04);
     }
     [data-bb-pour-cta-mob] { display: none; }
+    /* Holds only the mobile CTA, so on desktop it would reserve empty space. */
     [data-bb-pour-foot] {
-      display: flex;
+      display: none;
       justify-content: center;
       margin-top: clamp(24px, 2.6vw, 40px);
       padding: 0 clamp(20px, 5vw, 40px);
@@ -445,6 +446,9 @@
       to { transform: translate3d(-50%, 0, 0); }
     }
     [data-bb-pour-rail] {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(12px, 1.6vh, 24px);
       padding: 0;
       box-sizing: border-box;
     }
@@ -456,10 +460,14 @@
     }
     [data-bb-pour-track] {
       display: flex;
-      align-items: flex-end;
       width: max-content;
       will-change: transform;
       animation: bb-pour-marquee 52s linear infinite;
+    }
+    /* Second row drifts the other way, on its own clock so the two never lock step. */
+    [data-bb-pour-window][data-row="b"] [data-bb-pour-track] {
+      animation-duration: 67s;
+      animation-direction: reverse;
     }
     /* Held still until the scroll entrance puts the strip on stage. */
     [data-bb-pour][data-pour-in="0"] [data-bb-pour-track] {
@@ -469,22 +477,18 @@
     [data-bb-pour-window]:has([data-bb-pour-card]:focus-within) [data-bb-pour-track] {
       animation-play-state: paused;
     }
+    /* Every card is the same height; width falls out of the photo's own ratio,
+       so the landscape shots read as wide breathers and both edges stay flush. */
     [data-bb-pour-card] {
-      /* Width varies; height follows each photo's native ratio — no cropping */
       flex: 0 0 auto;
-      width: clamp(200px, 20vw, 300px);
-      min-width: 0;
+      height: clamp(150px, 22vh, 300px);
       margin-right: clamp(14px, 1.5vw, 28px);
       color: inherit;
       text-decoration: none;
       display: block;
     }
-    [data-bb-pour-card][data-size="sm"] { width: clamp(200px, 19vw, 280px); }
-    [data-bb-pour-card][data-size="md"] { width: clamp(220px, 21vw, 310px); }
-    [data-bb-pour-card][data-size="lg"] { width: clamp(240px, 23vw, 340px); }
-    [data-bb-pour-card][data-size="wide"] { width: clamp(260px, 26vw, 380px); }
     [data-bb-pour-card] .bb-pour-frame {
-      width: 100%;
+      height: 100%;
       overflow: hidden;
       border-radius: clamp(14px, 1.4vw, 24px);
       background: transparent;
@@ -492,13 +496,21 @@
     }
     [data-bb-pour-card] img {
       display: block;
-      width: 100%;
-      height: auto;
+      height: 100%;
+      width: auto;
       transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     [data-bb-pour-card]:hover img { transform: scale(1.03); }
+
+    /* Without the drift the strip would strand 20-odd photos off-screen, so it
+       becomes a rail you scroll yourself. Same fallback serves touch below. */
     @media (prefers-reduced-motion: reduce) {
       [data-bb-pour-track] { animation: none; }
+      [data-bb-pour-window] {
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+      }
+      [data-bb-pour-card] { scroll-snap-align: center; }
     }
     @media (max-width: 900px) {
       [data-bb-pour] {
@@ -518,11 +530,20 @@
       }
       [data-bb-pour-cta-desk] { display: none; }
       [data-bb-pour-cta-mob] { display: inline-flex; }
-      [data-bb-pour-card][data-size="sm"] { width: clamp(180px, 52vw, 230px); }
-      [data-bb-pour-card][data-size="md"] { width: clamp(195px, 56vw, 250px); }
-      [data-bb-pour-card][data-size="lg"] { width: clamp(210px, 60vw, 270px); }
-      [data-bb-pour-card][data-size="wide"] { width: clamp(230px, 68vw, 300px); }
-      [data-bb-pour-track] { animation-duration: 56s; }
+      [data-bb-pour-foot] { display: flex; }
+      /* A marquee is a poor fit for a thumb: hand the strip over to the user. */
+      [data-bb-pour-track] { animation: none; }
+      [data-bb-pour-window] {
+        overflow-x: auto;
+        scroll-snap-type: x proximity;
+        mask-image: none;
+        -webkit-mask-image: none;
+      }
+      [data-bb-pour-card] {
+        height: clamp(200px, 46vw, 300px);
+        scroll-snap-align: center;
+      }
+      [data-bb-pour-track] > [data-bb-pour-card]:first-child { margin-left: clamp(20px, 5vw, 40px); }
     }
   </style>
   <title>Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc</title>
@@ -626,12 +647,23 @@
     </div>
 
     <div data-bb-pour-rail="">
-      <div data-bb-pour-window="">
+      <div data-bb-pour-window="" data-row="a">
         <div data-bb-pour-track="">
-          <sc-for list="{{ pourShots }}" as="shot" hint-placeholder-count="12">
-            <a data-bb-pour-card="" data-size="{{ shot.size }}" href="{{ shot.href }}" target="_blank" rel="noopener" aria-label="{{ shot.alt }}">
+          <sc-for list="{{ pourRowA }}" as="shot" hint-placeholder-count="8">
+            <a data-bb-pour-card="" href="{{ shot.href }}" target="_blank" rel="noopener" aria-label="{{ shot.alt }}" aria-hidden="{{ shot.clone }}" tabindex="{{ shot.tab }}">
               <div class="bb-pour-frame">
-                <img src="{{ shot.src }}" alt="{{ shot.alt }}" width="{{ shot.w }}" height="{{ shot.h }}" loading="lazy">
+                <img src="{{ shot.src }}" alt="{{ shot.alt }}" width="{{ shot.w }}" height="{{ shot.h }}" decoding="async">
+              </div>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+      <div data-bb-pour-window="" data-row="b">
+        <div data-bb-pour-track="">
+          <sc-for list="{{ pourRowB }}" as="shot" hint-placeholder-count="8">
+            <a data-bb-pour-card="" href="{{ shot.href }}" target="_blank" rel="noopener" aria-label="{{ shot.alt }}" aria-hidden="{{ shot.clone }}" tabindex="{{ shot.tab }}">
+              <div class="bb-pour-frame">
+                <img src="{{ shot.src }}" alt="{{ shot.alt }}" width="{{ shot.w }}" height="{{ shot.h }}" decoding="async">
               </div>
             </a>
           </sc-for>
@@ -727,27 +759,41 @@ class Component extends DCLogic {
   componentDidMount() {
     try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
   }
-  _pourShots() {
+  _pourRows() {
     const ig = 'https://www.instagram.com/brisabaywines';
-    // Order: lifestyle → breather → graphic, alternating cool/warm so the loop never clumps.
-    return [
-      { src: 'assets/web2/pour/15-posts-july-artboard-3.png', alt: 'Friends toasting with Brisa Bay at a picnic', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/01-3cd17d63-fdfd-431d-9ae8-edb566f92859.jpg', alt: 'Bird over a Brisa Bay vineyard', href: ig, size: 'wide', w: 2304, h: 1536 },
-      { src: 'assets/web2/pour/06-julio-artboard-4.png', alt: 'Pouring Brisa Bay by the pool', href: ig, size: 'md', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/08-julio-artboard-8.png', alt: 'Brisa Bay week of bottles graphic', href: ig, size: 'sm', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/12-post-10.png', alt: 'Brisa Bay bottle balanced on a cap', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/02-7e7103b6-0a1e-4d89-b2e9-365755455338.jpg', alt: 'Sunset over the vineyard', href: ig, size: 'wide', w: 2306, h: 1536 },
-      { src: 'assets/web2/pour/04-julio-artboard-12.jpg', alt: 'Made for the moments you do not plan', href: ig, size: 'md', w: 1080, h: 1350 },
-      { src: 'assets/web2/pour/10-julio-jumping-wine.jpg', alt: 'Surreal Brisa Bay collage', href: ig, size: 'sm', w: 1080, h: 1350 },
-      { src: 'assets/web2/pour/09-julio-dia-del-queso-2.png', alt: 'Brisa Bay with cheese outdoors', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/07-julio-artboard-7.png', alt: 'The Brisa Times newspaper graphic', href: ig, size: 'md', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/16-img-6287.jpg', alt: 'Pouring Brisa Bay at the table', href: ig, size: 'sm', w: 854, h: 1280 },
-      { src: 'assets/web2/pour/11-julio-polaroid.png', alt: 'Sauvignon Blanc polaroid vineyard', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/14-posts-july-artboard-1.png', alt: 'Opening a bottle of Brisa Bay', href: ig, size: 'md', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/05-julio-artboard-17.png', alt: 'Brisa Bay Chardonnay on corks', href: ig, size: 'sm', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/03-julio-artboard-11.png', alt: 'Beach-day emoji sticker graphic', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/13-post-8.png', alt: 'Wine pouring from a polaroid into a glass', href: ig, size: 'md', w: 1081, h: 1351 }
+    const P = 'assets/web2/pour/opt/';
+    // Order within each row: lifestyle -> breather -> graphic, alternating cool/warm
+    // so the loop never clumps. Each row carries one landscape shot, which at a
+    // fixed card height renders near double width and acts as the breather.
+    const a = [
+      { src: P + '15-posts-july-artboard-3.webp', alt: 'Friends toasting with Brisa Bay at a picnic', href: ig, w: 560, h: 700 },
+      { src: P + '01-3cd17d63-fdfd-431d-9ae8-edb566f92859.webp', alt: 'Bird over a Brisa Bay vineyard', href: ig, w: 1050, h: 700 },
+      { src: P + '06-julio-artboard-4.webp', alt: 'Pouring Brisa Bay by the pool', href: ig, w: 560, h: 700 },
+      { src: P + '12-post-10.webp', alt: 'Brisa Bay bottle balanced on a cap', href: ig, w: 560, h: 700 },
+      { src: P + '09-julio-dia-del-queso-2.webp', alt: 'Brisa Bay with cheese outdoors', href: ig, w: 560, h: 700 },
+      { src: P + '16-img-6287.webp', alt: 'Pouring Brisa Bay at the table', href: ig, w: 467, h: 700 },
+      { src: P + '14-posts-july-artboard-1.webp', alt: 'Opening a bottle of Brisa Bay', href: ig, w: 560, h: 700 },
+      { src: P + '03-julio-artboard-11.webp', alt: 'Beach-day emoji sticker graphic', href: ig, w: 560, h: 700 }
     ];
+    const b = [
+      { src: P + '04-julio-artboard-12.webp', alt: 'Made for the moments you do not plan', href: ig, w: 560, h: 700 },
+      { src: P + '10-julio-jumping-wine.webp', alt: 'Surreal Brisa Bay collage', href: ig, w: 560, h: 700 },
+      { src: P + '02-7e7103b6-0a1e-4d89-b2e9-365755455338.webp', alt: 'Sunset over the vineyard', href: ig, w: 1051, h: 700 },
+      { src: P + '07-julio-artboard-7.webp', alt: 'The Brisa Times newspaper graphic', href: ig, w: 560, h: 700 },
+      { src: P + '08-julio-artboard-8.webp', alt: 'Brisa Bay week of bottles graphic', href: ig, w: 560, h: 700 },
+      { src: P + '11-julio-polaroid.webp', alt: 'Sauvignon Blanc polaroid vineyard', href: ig, w: 560, h: 700 },
+      { src: P + '05-julio-artboard-17.webp', alt: 'Brisa Bay Chardonnay on corks', href: ig, w: 560, h: 700 },
+      { src: P + '13-post-8.webp', alt: 'Wine pouring from a polaroid into a glass', href: ig, w: 560, h: 700 }
+    ];
+    return { a, b };
+  }
+  // The marquee needs a second copy of the strip to loop seamlessly at -50%.
+  // That copy is decoration: assistive tech would otherwise meet every photo
+  // twice and find 32 links to one Instagram page, so it is hidden outright.
+  _loop(row) {
+    const real = row.map((shot) => ({ ...shot, clone: 'false', tab: '0' }));
+    const copy = row.map((shot) => ({ ...shot, clone: 'true', tab: '-1' }));
+    return real.concat(copy);
   }
   index() {
     if (this.state.blendIndex !== null) return this.state.blendIndex;
@@ -756,9 +802,9 @@ class Component extends DCLogic {
   renderVals() {
     const i = this.index();
     const flip = () => this.setState({ blendIndex: (i + 1) % 2 });
-    const base = this._pourShots();
-    // Duplicate the strip so the CSS marquee can loop seamlessly at -50%.
-    const pourShots = base.concat(base);
+    const rows = this._pourRows();
+    const pourRowA = this._loop(rows.a);
+    const pourRowB = this._loop(rows.b);
     return {
       play: (this.props.motion ?? true) ? 'running' : 'paused',
       blendAttr: String(i),
@@ -775,7 +821,8 @@ class Component extends DCLogic {
       bottleShift1: i === 1 ? 'none' : 'translateY(-5%) scale(0.95)',
       prevBlend: flip,
       nextBlend: flip,
-      pourShots,
+      pourRowA,
+      pourRowB,
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
