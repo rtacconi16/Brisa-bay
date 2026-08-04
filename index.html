@@ -12,6 +12,29 @@
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
     @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
     body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and <strong> by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
+    /* ---- Site header: one definition, used on every page ---- */
+    [data-bb-wordmark] {
+      font-size: clamp(26px, 2.8vw, 52px);
+      letter-spacing: 0.01em;
+      color: #eeeee4;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    [data-bb-nav] [role="navigation"] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(16px, 2.7vw, 52px);
+      font-size: clamp(15px, 1.6vw, 30px);
+      color: #eeeee4;
+    }
+    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
+    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
@@ -296,7 +319,6 @@
       font-size: clamp(26px, 2.6vw, 46px);
       line-height: 1.25;
       font-style: italic;
-      font-weight: 700;
       color: #5b584e;
     }
     [data-bb-skip-body] {
@@ -659,13 +681,13 @@
           <div data-bb-hero-veil="" aria-hidden="true"></div>
 
           <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
-            <div style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em">Brisa Bay</div>
-            <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
-              <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
-              <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-              <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
-            </div>
-          </div>
+        <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
+        <div role="navigation" aria-label="Main">
+          <a href="about.html" style-hover="color: #f5d732">About us</a>
+          <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
+          <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
+        </div>
+      </div>
         </div>
 
         <!-- ================= TICKER ================= -->
@@ -700,7 +722,7 @@
       <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,45,42,0.72) 0%, rgba(45,45,42,0.35) 48%, rgba(45,45,42,0.12) 100%); pointer-events: none; z-index: 2"></div>
       <div data-bb-story-copy="" style="position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 5vw, 110px); box-sizing: border-box; max-width: min(720px, 52%); margin-right: auto">
         <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.9vw, 36px); line-height: 1.42; color: #eeeee4; text-align: justify; text-wrap: pretty">Where the water meets the vines, the San Pablo Bay breeze inspired our family to take our deep Napa roots in a fresh direction. Working with growers who put their hearts into the soil, we craft vibrant wines with no barriers or exclusivity.</p>
-        <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); color: #eeeee4; font-style: italic; font-weight: 700">This is wine meant to be lived.</p>
+        <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); color: #eeeee4; font-style: italic">This is wine meant to be lived.</p>
         <div data-bb-story-line="" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 1.9vw, 36px)">
           <a href="about.html" style="background: #f5d732; color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1.05vw, 20px); border-radius: 30px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Learn the Brisa Way</a>
         </div>
@@ -718,16 +740,16 @@
           <h2 style="margin: 0 0 clamp(30px, 3.6vw, 70px); font-family: 'Old Newspaper', serif; font-size: clamp(40px, 5vw, 96px); font-weight: 400; color: #5b584e; letter-spacing: 0.04em">Our Wines</h2>
           <div data-bb-wine-swap="">
             <div data-bb-wine-panel="" style="{{ wine0Panel }}" aria-hidden="{{ wine0Hidden }}">
-              <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic; font-weight: 700">Brisa Bay Napa Valley Chardonnay</h3>
+              <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic">Brisa Bay Napa Valley Chardonnay</h3>
               <p style="margin: 0 0 clamp(16px, 1.5vw, 28px); font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: justify; text-wrap: pretty">A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
               <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px, 1.1vw, 20px); margin: 0 0 clamp(14px, 1.3vw, 24px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">NAPA VALLEY</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">2024 VINTAGE</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">13.5% ABV</span></div>
-              <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> grilled halibut, roast chicken, ripe peaches and soft cheeses.</p>
+              <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-style: italic">Pairs with</em> grilled halibut, roast chicken, ripe peaches and soft cheeses.</p>
             </div>
             <div data-bb-wine-panel="" style="{{ wine1Panel }}" aria-hidden="{{ wine1Hidden }}">
-              <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic; font-weight: 700">Brisa Bay Napa Valley Sauvignon Blanc</h3>
+              <h3 style="margin: 0 0 clamp(16px, 1.4vw, 26px); font-size: clamp(21px, 2.1vw, 40px); font-style: italic">Brisa Bay Napa Valley Sauvignon Blanc</h3>
               <p style="margin: 0 0 clamp(16px, 1.5vw, 28px); font-size: clamp(17px, 1.7vw, 33px); line-height: 1.45; text-align: justify; text-wrap: pretty">Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
               <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px, 1.1vw, 20px); margin: 0 0 clamp(14px, 1.3vw, 24px)"><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">NAPA VALLEY</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">2024 VINTAGE</span><span aria-hidden="true" style="font-size: clamp(14px, 1.2vw, 22px); color: rgba(87,84,74,0.45)">/</span><span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.09em; color: #9ac21e">13.0% ABV</span></div>
-              <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-weight: 700">Pairs with</em> oysters, ceviche, herby salads and fresh goat cheese.</p>
+              <p style="margin: 0 0 clamp(30px, 3vw, 56px); font-size: clamp(16px, 1.5vw, 29px); line-height: 1.45; text-wrap: pretty"><em style="font-style: italic">Pairs with</em> oysters, ceviche, herby salads and fresh goat cheese.</p>
             </div>
           </div>
           <a href="blends.html" style="background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block; transition: transform 0.25s" style-hover="transform: scale(1.06)">See both blends &amp; tasting notes</a>
@@ -867,7 +889,7 @@
         <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
         <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
           <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
-            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; font-weight: 700; color: #57544a">{{ item.q }}</h3>
+            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: #57544a">{{ item.q }}</h3>
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>

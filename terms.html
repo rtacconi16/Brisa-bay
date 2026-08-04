@@ -13,6 +13,29 @@
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
     @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
     body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and <strong> by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
+    /* ---- Site header: one definition, used on every page ---- */
+    [data-bb-wordmark] {
+      font-size: clamp(26px, 2.8vw, 52px);
+      letter-spacing: 0.01em;
+      color: #eeeee4;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    [data-bb-nav] [role="navigation"] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(16px, 2.7vw, 52px);
+      font-size: clamp(15px, 1.6vw, 30px);
+      color: #eeeee4;
+    }
+    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
+    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
   </style>
@@ -26,12 +49,12 @@
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
 
   <div data-screen-label="Terms Header" style="position: relative; background: #3c3a34; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(40px, 5vw, 96px); box-sizing: border-box">
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
-      <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
-      <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
-        <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
-        <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-        <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+    <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
+      <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
+      <div role="navigation" aria-label="Main">
+        <a href="about.html" style-hover="color: #f5d732">About us</a>
+        <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
+        <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
       </div>
     </div>
 

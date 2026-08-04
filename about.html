@@ -12,6 +12,29 @@
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
     @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
     body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and <strong> by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
+    /* ---- Site header: one definition, used on every page ---- */
+    [data-bb-wordmark] {
+      font-size: clamp(26px, 2.8vw, 52px);
+      letter-spacing: 0.01em;
+      color: #eeeee4;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    [data-bb-nav] [role="navigation"] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(16px, 2.7vw, 52px);
+      font-size: clamp(15px, 1.6vw, 30px);
+      color: #eeeee4;
+    }
+    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
+    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
@@ -350,11 +373,11 @@
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(60,58,52,0.28) 0%, rgba(60,58,52,0) 55%)"></div>
     <div style="position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(24px, 3vw, 50px); box-sizing: border-box">
       <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
-        <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(8px, 1.4vw, 26px); font-size: clamp(15px, 2.1vw, 40px); color: #eeeee4">
-          <span style="padding: 0.12em 0.7em; border-radius: 999px; color: #f5d732; cursor: default">About us</span>
-          <a href="blends.html" style="padding: 0.12em 0.7em; border-radius: 999px; color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-          <a href="where-to-buy.html" style="padding: 0.12em 0.7em; border-radius: 999px; color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+        <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
+        <div role="navigation" aria-label="Main">
+          <span data-bb-nav-active="">About us</span>
+          <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
+          <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
         </div>
       </div>
       <div style="flex: 1; display: flex; align-items: center; justify-content: center">
@@ -367,7 +390,7 @@
   <div data-bb-roots="" style="display: flex; position: sticky; top: 0; z-index: 4; height: 100svh; align-items: center; justify-content: center; padding: clamp(64px, 8vh, 150px) clamp(16px, 4.7vw, 90px) clamp(24px, 3vw, 60px); box-sizing: border-box; pointer-events: none">
     <div data-bb-roots-card="" data-screen-label="Our Roots" style="pointer-events: auto; width: 100%; max-width: 1240px; max-height: calc(100svh - 96px); background: rgba(247, 247, 242, 0.94); border-radius: clamp(22px, 2.8vw, 40px); border: 1px solid rgba(255, 255, 255, 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 4px 18px rgba(60, 58, 52, 0.08), 0 28px 70px rgba(60, 58, 52, 0.2); padding: clamp(28px, 3.2vw, 64px) clamp(20px, 3vw, 56px); box-sizing: border-box; display: grid; gap: clamp(14px, 1.7vw, 30px); overflow: auto">
       <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">We've always believed that certain places have a soul of their own: the power to bring back a memory, shift your mood, or simply ground you in the present. For us, that place is right at the edge of the San Pablo Bay.</p>
-      <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic; font-weight: 700">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive,&nbsp;and&nbsp;moving.</p>
+      <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive,&nbsp;and&nbsp;moving.</p>
     </div>
   </div>
 
@@ -454,7 +477,7 @@
     
     <div style="position: relative; z-index: 3; width: 100%; padding: clamp(24px, 3vw, 56px) clamp(20px, 5vw, 190px)">
       <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
-        <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; font-weight: 700; color: #606060">Say hello.</h2>
+        <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; color: #606060">Say hello.</h2>
         <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: #606060">
           <span>hello@brisabaywine.com</span>
           <span>Let's Work Together: partners@brisabaywine.com</span>
@@ -507,7 +530,7 @@
         <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
         <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
           <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
-            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; font-weight: 700; color: #57544a">{{ item.q }}</h3>
+            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: #57544a">{{ item.q }}</h3>
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>

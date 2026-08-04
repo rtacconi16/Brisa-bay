@@ -12,6 +12,29 @@
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
     @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
     body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and <strong> by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
+    /* ---- Site header: one definition, used on every page ---- */
+    [data-bb-wordmark] {
+      font-size: clamp(26px, 2.8vw, 52px);
+      letter-spacing: 0.01em;
+      color: #eeeee4;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    [data-bb-nav] [role="navigation"] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(16px, 2.7vw, 52px);
+      font-size: clamp(15px, 1.6vw, 30px);
+      color: #eeeee4;
+    }
+    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
+    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
@@ -108,12 +131,10 @@
     }
     [data-bb-blend-stage].is-live { pointer-events: auto; }
 
-    /* Small tracked uppercase furniture. A neutral grotesk here is deliberate:
-       it also sidesteps the faux-bold problem, since Garamond ships Regular only. */
+    /* Small tracked uppercase furniture, set in the brand serif like the rest of the
+       site. Sized up a little: Garamond needs more room than a grotesk at this scale. */
     [data-bb-label] {
-      font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
-      font-size: clamp(10px, 0.72vw, 13px);
-      font-weight: 500;
+      font-size: clamp(11px, 0.82vw, 15px);
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: rgba(238, 238, 228, 0.62);
@@ -184,9 +205,7 @@
       border-bottom: 1px solid rgba(238, 238, 228, 0.24);
     }
     [data-bb-spec] dt {
-      font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
-      font-size: clamp(9px, 0.66vw, 12px);
-      font-weight: 500;
+      font-size: clamp(11px, 0.76vw, 14px);
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: rgba(238, 238, 228, 0.58);
@@ -377,11 +396,11 @@
       <div data-bb-blend-bottom-veil="" style="position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: linear-gradient(to top, rgba(45,45,42,0.58), rgba(45,45,42,0)); pointer-events: none; z-index: 3; will-change: opacity"></div>
 
       <div data-bb-nav="" style="position: absolute; z-index: 8; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px); box-sizing: border-box">
-        <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); letter-spacing: 0.01em; text-decoration: none; color: #eeeee4">Brisa Bay</a>
-        <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
-          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
-          <span data-bb-nav-active="" style="cursor: default">Our Wines</span>
-          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
+        <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
+        <div role="navigation" aria-label="Main">
+          <a href="about.html" style-hover="color: #f5d732">About us</a>
+          <span data-bb-nav-active="">Our Wines</span>
+          <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
         </div>
       </div>
 
@@ -490,7 +509,7 @@
         <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
         <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
           <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
-            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; font-weight: 700; color: #57544a">{{ item.q }}</h3>
+            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: #57544a">{{ item.q }}</h3>
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>
