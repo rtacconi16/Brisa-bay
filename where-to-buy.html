@@ -14,33 +14,185 @@
     body { margin: 0; background: #eeeee4; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
-    .leaflet-popup-content-wrapper { border-radius: 2px; background: #eeeee4; }
-    .leaflet-container { font-family: 'Garamond Pro', Garamond, serif; }
+    .leaflet-popup-content-wrapper {
+      border-radius: 0;
+      background: #eeeee4;
+      box-shadow: 0 10px 28px rgba(60,58,52,0.18);
+      border: 1px solid rgba(87,84,74,0.12);
+    }
+    .leaflet-popup-tip { background: #eeeee4; }
+    .leaflet-container { font-family: 'Garamond Pro', Garamond, serif; background: #dfdfd6; }
+    .leaflet-popup-content a:hover { color: #60b98f !important; }
+    .leaflet-control-zoom {
+      border: 1px solid rgba(87,84,74,0.2) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: hidden;
+    }
+    .leaflet-control-zoom a {
+      background: #eeeee4 !important;
+      color: #3c3a34 !important;
+      border-bottom: 1px solid rgba(87,84,74,0.14) !important;
+      width: 32px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+      font-size: 16px !important;
+    }
+    .leaflet-control-zoom a:hover { background: #e4e4da !important; color: #e6393a !important; }
+    .bb-locate-control a {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 32px !important;
+      height: 32px !important;
+      background: #eeeee4 !important;
+      color: #3c3a34 !important;
+      border-radius: 0 !important;
+    }
+    .bb-locate-control a:hover { color: #e6393a !important; background: #e4e4da !important; }
+    .leaflet-control-attribution {
+      background: rgba(238,238,228,0.82) !important;
+      color: rgba(87,84,74,0.55) !important;
+      font-size: 10px !important;
+      letter-spacing: 0.02em;
+    }
+    .leaflet-control-attribution a { color: rgba(87,84,74,0.7) !important; }
+
+    [data-bb-type-filters] {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      gap: 0.35em 0.55em;
+      margin-top: clamp(14px, 1.2vw, 20px);
+      padding-bottom: 2px;
+      border-bottom: 1px solid rgba(87,84,74,0.14);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    [data-bb-type-filters]::-webkit-scrollbar { display: none; }
+    [data-bb-type-filter] {
+      font-size: clamp(13px, 0.9vw, 16px);
+      letter-spacing: 0.02em;
+      color: rgba(87,84,74,0.55);
+      cursor: pointer;
+      user-select: none;
+      padding: 0 0 8px;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.25s, border-color 0.25s;
+      white-space: nowrap;
+    }
+    [data-bb-type-filter]:hover { color: #3c3a34; }
+    [data-bb-type-filter][data-active="true"] {
+      color: #3c3a34;
+      border-bottom-color: #e6393a;
+    }
+    [data-bb-type-filters] > [data-bb-type-filter]:not(:first-child)::before {
+      content: '·';
+      margin-right: 0.55em;
+      color: rgba(87,84,74,0.28);
+      pointer-events: none;
+    }
+
+    [data-bb-store-row] {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 18px;
+      padding: clamp(18px, 1.35vw, 28px) clamp(20px, 1.9vw, 38px);
+      border-top: 1px solid rgba(87,84,74,0.12);
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.28s ease, box-shadow 0.28s ease;
+      animation: bb-row-in 0.45s ease both;
+    }
+    [data-bb-store-row]:hover { background: rgba(96,185,143,0.1); }
+    [data-bb-store-row][data-active="true"] {
+      background: rgba(245,215,50,0.16);
+      box-shadow: inset 3px 0 0 #e6393a;
+    }
+    [data-bb-store-row][data-hover="true"]:not([data-active="true"]) {
+      background: rgba(96,185,143,0.12);
+      box-shadow: inset 3px 0 0 rgba(96,185,143,0.7);
+    }
+    @keyframes bb-row-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bb-mast-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    [data-bb-mast-copy] { animation: bb-mast-in 0.7s ease both; }
+    [data-bb-featured] { animation: bb-row-in 0.5s ease both; }
+
+    [data-bb-sheet-handle] { display: none; }
+
     @media (max-width: 900px) {
       [data-bb-locator] {
         height: auto !important;
         min-height: 100svh !important;
         overflow: visible !important;
       }
+      [data-bb-masthead] {
+        min-height: 26svh !important;
+        height: 26svh !important;
+      }
       [data-bb-locator-body] {
         flex-direction: column !important;
         min-height: 0 !important;
       }
-      [data-bb-locator-list] {
-        flex: 0 0 auto !important;
-        width: 100% !important;
-        max-height: 42svh !important;
-        border-right: none !important;
-        border-bottom: 1px solid rgba(87,84,74,0.18) !important;
-      }
       [data-bb-locator-map] {
+        order: 1 !important;
         flex: 0 0 auto !important;
         width: 100% !important;
-        height: 58svh !important;
-        min-height: 280px !important;
+        height: 46svh !important;
+        min-height: 260px !important;
+      }
+      [data-bb-locator-list] {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-height: 48svh !important;
+        margin-top: -22px !important;
+        border-right: none !important;
+        border-radius: 20px 20px 0 0 !important;
+        box-shadow: 0 -12px 40px rgba(60,58,52,0.14) !important;
+        z-index: 20 !important;
+        transition: max-height 0.35s ease !important;
+      }
+      [data-bb-locator-list][data-sheet="open"] {
+        max-height: 72svh !important;
+      }
+      [data-bb-sheet-handle] {
+        display: flex !important;
+        justify-content: center;
+        padding: 10px 0 4px;
+        cursor: pointer;
+      }
+      [data-bb-sheet-handle]::before {
+        content: '';
+        width: 42px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(87,84,74,0.28);
+      }
+      [data-bb-list-head] {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #eeeee4;
+      }
+      [data-bb-store-row] {
+        padding: 14px 20px !important;
+        gap: 2px 12px !important;
       }
       [data-bb-nav] { row-gap: 8px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
+      [data-bb-see-all] {
+        top: 12px !important;
+        right: 12px !important;
+      }
     }
   </style>
   <title>Where to Buy Brisa Bay | Store locator</title>
@@ -59,9 +211,9 @@
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; font-family: 'Garamond Pro', Garamond, serif; color: #57544a">
 
   <!-- ================= LOCATOR VIEWPORT ================= -->
-  <div data-screen-label="Store Locator" data-bb-locator="" style="height: 100svh; min-height: 560px; display: flex; flex-direction: column; overflow: hidden">
+  <div data-screen-label="Store Locator" data-bb-locator="" style="height: 100svh; min-height: 640px; display: flex; flex-direction: column; overflow: hidden">
 
-    <div data-bb-nav="" style="flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(14px, 1.5vw, 28px) clamp(20px, 3.4vw, 64px); background: #3c3a34">
+    <div data-bb-nav="" style="flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(14px, 1.5vw, 28px) clamp(20px, 3.4vw, 64px); background: #3c3a34; position: relative; z-index: 5">
       <a href="index.html" style="font-size: clamp(22px, 1.9vw, 36px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
       <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2vw, 40px); font-size: clamp(15px, 1.25vw, 24px); color: #eeeee4">
         <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
@@ -70,40 +222,68 @@
       </div>
     </div>
 
+    <div data-bb-masthead="" style="flex: 0 0 auto; position: relative; height: clamp(148px, 22vh, 220px); min-height: 148px; overflow: hidden; background: #3c3a34">
+      <img src="assets/web2/every-occasion.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; filter: saturate(0.85) brightness(0.92)">
+      <div style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(60,58,52,0.72) 0%, rgba(60,58,52,0.28) 55%, rgba(60,58,52,0.12) 100%)"></div>
+      <div data-bb-mast-copy="" style="position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(22px, 2.4vw, 42px) clamp(20px, 3.4vw, 64px) clamp(20px, 2.2vw, 36px); box-sizing: border-box; max-width: 720px">
+        <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(34px, 4.2vw, 72px); font-weight: 400; line-height: 0.98; color: #eeeee4; letter-spacing: 0.03em; text-shadow: 0 2px 18px rgba(60,58,52,0.35)">Where to buy</h1>
+        <p style="margin: 8px 0 0; font-size: clamp(15px, 1.15vw, 22px); line-height: 1.35; color: rgba(238,238,228,0.88); text-wrap: pretty">{{ introCopy }}</p>
+      </div>
+    </div>
+
     <div data-bb-locator-body="" style="flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch">
 
       <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
-        <div data-bb-locator-list="" style="flex: 0 0 clamp(300px, 25vw, 460px); display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.18)">
-          <div style="flex: 0 0 auto; padding: clamp(20px, 1.9vw, 38px) clamp(20px, 1.9vw, 38px) clamp(14px, 1.2vw, 22px)">
-            <h1 style="margin: 0 0 6px; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.2vw, 44px); font-weight: 400; line-height: 1.05; color: #3c3a34; letter-spacing: 0.02em">Where to buy</h1>
-            <p style="margin: 0; font-size: clamp(15px, 1.05vw, 21px); line-height: 1.4; color: rgba(87,84,74,0.75); text-wrap: pretty">Shops, bars and restaurants pouring Brisa Bay. Pick one to find it on the map.</p>
+        <div data-bb-locator-list="" data-sheet="{{ sheetState }}" style="flex: 0 0 clamp(320px, 28vw, 480px); display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.14)">
+          <div data-bb-sheet-handle="" role="button" aria-label="Expand or collapse stockist list" onClick="{{ toggleSheet }}"></div>
+          <div data-bb-list-head="" style="flex: 0 0 auto; padding: clamp(16px, 1.5vw, 28px) clamp(20px, 1.9vw, 38px) clamp(10px, 1vw, 16px)">
+            <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px">
+              <p style="margin: 0; font-size: clamp(14px, 0.98vw, 18px); line-height: 1.35; color: rgba(87,84,74,0.7); text-wrap: pretty">{{ statusCopy }}</p>
+              <sc-if value="{{ showLocPrompt }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ requestLoc }}" role="button" style="font-size: clamp(14px, 0.98vw, 18px); color: #e6393a; cursor: pointer; text-decoration: none; white-space: nowrap; transition: color 0.2s" style-hover="color: #60b98f">{{ locPromptLabel }}</div>
+              </sc-if>
+            </div>
             <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
-              <input type="search" placeholder="Search by name or town" aria-label="Search stockists" value="{{ query }}" onChange="{{ onQuery }}" style="margin-top: clamp(14px, 1.2vw, 22px); width: 100%; box-sizing: border-box; background: transparent; border: none; border-bottom: 1px solid rgba(87,84,74,0.35); padding: 8px 2px 10px; font-family: 'Garamond Pro', Garamond, serif; font-size: clamp(15px, 1.05vw, 21px); color: #3c3a34; outline: none">
+              <input type="search" placeholder="Search name, city, ZIP, or address" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}" style="margin-top: clamp(12px, 1.1vw, 18px); width: 100%; box-sizing: border-box; background: transparent; border: none; border-bottom: 1px solid rgba(87,84,74,0.32); padding: 8px 2px 10px; font-family: 'Garamond Pro', Garamond, serif; font-size: clamp(16px, 1.1vw, 22px); color: #3c3a34; outline: none">
             </sc-if>
+            <div data-bb-type-filters="" role="group" aria-label="Filter by type">
+              <sc-for list="{{ typeFilters }}" as="chip" hint-placeholder-count="4">
+                <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}">{{ chip.label }}</div>
+              </sc-for>
+            </div>
           </div>
 
-          <div style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
+          <div data-bb-store-scroll="" style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
+            <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ false }}">
+              <div data-bb-featured="" role="button" onClick="{{ featured.onSelect }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
+                <div style="font-size: clamp(11px, 0.72vw, 13px); letter-spacing: 0.16em; text-transform: uppercase; color: #60b98f">{{ featured.eyebrow }}</div>
+                <div style="margin-top: 6px; font-size: clamp(22px, 1.55vw, 30px); font-style: italic; font-weight: 700; color: #3c3a34; line-height: 1.15">{{ featured.name }}</div>
+                <div style="margin-top: 6px; font-size: clamp(14px, 0.98vw, 18px); line-height: 1.35; color: rgba(87,84,74,0.8)">{{ featured.line }}</div>
+              </div>
+            </sc-if>
             <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
-              <div role="button" onClick="{{ store.onSelect }}" style="display: flex; gap: 14px; align-items: flex-start; padding: clamp(14px, 1.1vw, 22px) clamp(20px, 1.9vw, 38px); border-top: 1px solid rgba(87,84,74,0.14); cursor: pointer; transition: background 0.2s; background: {{ store.bg }}" style-hover="background: rgba(96,185,143,0.14)">
-                <div style="flex: 0 0 auto; width: 11px; height: 11px; margin-top: 8px; border-radius: 50%; background: {{ store.dot }}"></div>
-                <div style="flex: 1 1 auto; min-width: 0">
+              <div data-bb-store-row="" data-store-id="{{ store.id }}" data-active="{{ store.isActive }}" data-hover="{{ store.isHover }}" role="button" onClick="{{ store.onSelect }}" onMouseEnter="{{ store.onHover }}" onMouseLeave="{{ store.onLeave }}" style="animation-delay: {{ store.delay }}">
+                <div style="min-width: 0">
                   <div style="font-size: clamp(17px, 1.2vw, 24px); font-style: italic; font-weight: 700; color: #3c3a34; line-height: 1.2">{{ store.name }}</div>
-                  <div style="margin-top: 3px; font-size: clamp(11px, 0.72vw, 14px); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(87,84,74,0.6)">{{ store.type }}</div>
-                  <div style="margin-top: 5px; font-size: clamp(14px, 0.98vw, 19px); line-height: 1.35; color: rgba(87,84,74,0.85)">{{ store.address }}, {{ store.city }}</div>
-                  <a href="{{ store.directions }}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 6px; font-size: clamp(14px, 0.95vw, 18px); color: #e6393a; text-decoration: none" style-hover="color: #60b98f">Directions &rarr;</a>
+                  <div style="margin-top: 4px; font-size: clamp(13px, 0.9vw, 16px); line-height: 1.35; color: rgba(87,84,74,0.72)">{{ store.type }} · {{ store.city }}</div>
+                  <div style="margin-top: 2px; font-size: clamp(14px, 0.95vw, 17px); line-height: 1.35; color: rgba(87,84,74,0.88)">{{ store.address }}</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px; text-align: right">
+                  <div style="font-size: clamp(13px, 0.9vw, 16px); letter-spacing: 0.03em; color: rgba(87,84,74,0.55); white-space: nowrap; font-variant-numeric: tabular-nums">{{ store.distance }}</div>
+                  <a href="{{ store.directions }}" target="_blank" rel="noopener" style="font-size: clamp(13px, 0.9vw, 16px); color: #e6393a; text-decoration: none; white-space: nowrap" style-hover="color: #60b98f">Directions</a>
                 </div>
               </div>
             </sc-for>
             <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
-              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">Nothing here yet. Ask your local shop to order Brisa Bay, or email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</div>
+              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</div>
             </sc-if>
           </div>
         </div>
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 1 1 auto; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js" storesjson="{{ storesJson }}" hint-size="100%,100%"></x-import>
-        <div onClick="{{ resetView }}" role="button" style="position: absolute; top: clamp(14px, 1.2vw, 24px); right: clamp(14px, 1.2vw, 24px); z-index: 500; background: #eeeee4; color: #3c3a34; font-size: clamp(14px, 0.95vw, 18px); padding: 9px 18px 11px; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 10px rgba(60,58,52,0.25); transition: transform 0.2s" style-hover="transform: scale(1.05); color: #e6393a">See all</div>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=5" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <div data-bb-see-all="" onClick="{{ resetView }}" role="button" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
     </div>
@@ -188,68 +368,539 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;storeList&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;search&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
 const STORES = [
-  { id: 'oak-vine', name: 'Oak & Vine Market', type: 'Bottle shop', address: '1245 Main Street', city: 'Napa, CA', lat: 38.2975, lng: -122.2869 },
-  { id: 'yountville', name: 'Yountville Bottle Room', type: 'Bottle shop', address: '6525 Washington Street', city: 'Yountville, CA', lat: 38.4016, lng: -122.3608 },
-  { id: 'st-helena', name: 'St. Helena Provisions', type: 'Grocer', address: '1300 Main Street', city: 'St. Helena, CA', lat: 38.5052, lng: -122.4703 },
-  { id: 'calistoga', name: 'Corner Cellar', type: 'Wine bar', address: '1401 Lincoln Avenue', city: 'Calistoga, CA', lat: 38.5788, lng: -122.5797 },
-  { id: 'sonoma', name: 'Plaza Wine Co.', type: 'Bottle shop', address: '452 First Street East', city: 'Sonoma, CA', lat: 38.2930, lng: -122.4570 },
-  { id: 'healdsburg', name: 'Healdsburg Fine Wine', type: 'Bottle shop', address: '320 Center Street', city: 'Healdsburg, CA', lat: 38.6100, lng: -122.8690 },
-  { id: 'mill-valley', name: 'The Mill Valley Table', type: 'Restaurant', address: '100 Throckmorton Avenue', city: 'Mill Valley, CA', lat: 37.9060, lng: -122.5450 },
-  { id: 'ferry', name: 'Ferry Landing Cellar', type: 'Bottle shop', address: '1 Ferry Building', city: 'San Francisco, CA', lat: 37.7955, lng: -122.3937 },
-  { id: 'chestnut', name: 'Chestnut Street Bottles', type: 'Bottle shop', address: '2200 Chestnut Street', city: 'San Francisco, CA', lat: 37.8000, lng: -122.4400 },
-  { id: 'berkeley', name: 'North Berkeley Grocer', type: 'Grocer', address: '1500 Shattuck Avenue', city: 'Berkeley, CA', lat: 37.8800, lng: -122.2694 },
-  { id: 'oakland', name: 'Lakeside Supper Club', type: 'Restaurant', address: '2101 Lakeshore Avenue', city: 'Oakland, CA', lat: 37.8060, lng: -122.2470 },
-  { id: 'palo-alto', name: 'University Wine Merchant', type: 'Bottle shop', address: '345 University Avenue', city: 'Palo Alto, CA', lat: 37.4460, lng: -122.1610 }
+  { id: 'ke-uh', name: 'Ke-uH', type: 'Restaurant', address: '2278 Weston Rd', city: 'Weston, FL', lat: 26.091884, lng: -80.370623 },
+  { id: 'grand-vin', name: 'Grand Vin Wine Bar', type: 'Wine bar', address: '1107 Duval St', city: 'Key West, FL', lat: 24.549894, lng: -81.798362 },
+  { id: 'key-food-119th', name: 'Key Food Supermarket', type: 'Grocer', address: '1701 NW 119th St', city: 'Miami, FL', lat: 25.883151, lng: -80.227124 },
+  { id: 'price-choice-5', name: 'Price Choice Food Market #5', type: 'Grocer', address: '1851 NE 2nd Ave #5', city: 'Miami, FL', lat: 25.794358, lng: -80.190402 },
+  { id: 'seed-to-table', name: 'Seed to Table', type: 'Grocer', address: '4835 Immokalee Rd', city: 'Naples, FL', lat: 26.274556, lng: -81.752683 },
+  { id: 'royal-palm-yacht', name: 'Royal Palm Yacht & Country Club', type: 'Country club', address: '2425 W Maya Palm Dr', city: 'Boca Raton, FL', lat: 26.326229, lng: -80.087608 },
+  { id: 'meat-town', name: 'Meat Town Market', type: 'Grocer', address: '14225 S Dixie Hwy', city: 'Miami, FL', lat: 25.638038, lng: -80.336476 },
+  { id: 'golden-hog', name: 'The Golden Hog', type: 'Grocer', address: '91 Harbor Dr', city: 'Key Biscayne, FL', lat: 25.700209, lng: -80.162965 },
+  { id: 'super-liquors-fwb', name: 'Super Liquors', type: 'Bottle shop', address: '507 Mary Esther Cut Off NW', city: 'Fort Walton Beach, FL', lat: 30.423976, lng: -86.648154 },
+  { id: '1910-miami-lakes', name: '1910 Restaurant', type: 'Restaurant', address: '6743 Main St', city: 'Miami Lakes, FL', lat: 25.913297, lng: -80.310105 },
+  { id: 'paradise-liquors', name: 'Paradise Liquors & Wine', type: 'Bottle shop', address: '15928 W State Rd 84', city: 'Sunrise, FL', lat: 26.123451, lng: -80.358340 },
+  { id: 'carmines', name: "Carmine's Gourmet Market", type: 'Grocer', address: '2401 PGA Blvd, Suite 172', city: 'Palm Beach Gardens, FL', lat: 26.84512, lng: -80.07133 },
+  { id: 'carmela-avenir', name: 'Carmela Coffee - Avenir', type: 'Café', address: '12515 Northlake Blvd #110', city: 'Palm Beach Gardens, FL', lat: 26.812101, lng: -80.235739 },
+  { id: 'carmela-boynton', name: 'Carmela Coffee - Boynton Beach', type: 'Café', address: '1750 N Congress Ave STE 100', city: 'Boynton Beach, FL', lat: 26.541138, lng: -80.090380 },
+  { id: 'carmela-east-boca', name: 'Carmela Coffee - East Boca', type: 'Café', address: '3200 N Federal Hwy #106', city: 'Boca Raton, FL', lat: 26.380387, lng: -80.075979 },
+  { id: 'carmela-ft-lauderdale', name: 'Carmela Coffee - Fort Lauderdale', type: 'Café', address: '201 S Federal Hwy', city: 'Fort Lauderdale, FL', lat: 26.120232, lng: -80.137340 },
+  { id: 'carmela-parkland', name: 'Carmela Coffee - Parkland', type: 'Café', address: '7967 N University Dr', city: 'Parkland, FL', lat: 26.328910, lng: -80.252956 },
+  { id: 'carmela-port-st-lucie', name: 'Carmela Coffee - Port St Lucie', type: 'Café', address: '10308 SW Discovery Wy', city: 'Port St. Lucie, FL', lat: 27.253052, lng: -80.429607 },
+  { id: 'carmela-uptown-boca', name: 'Carmela Coffee - Uptown Boca', type: 'Café', address: '9658 Glades Rd', city: 'Boca Raton, FL', lat: 26.366308, lng: -80.197914 },
+  { id: 'carmela-wellington', name: 'Carmela Coffee - Wellington', type: 'Café', address: '10630 Forest Hill Blvd, Suite 60', city: 'Wellington, FL', lat: 26.649942, lng: -80.215376 },
+  { id: 'carmela-westlake', name: 'Carmela Coffee - Westlake', type: 'Café', address: '16881 Persimmon Blvd', city: 'Loxahatchee, FL', lat: 26.755276, lng: -80.309470 },
+  { id: 'carmela-bric', name: 'Carmela Coffee - BRIC', type: 'Café', address: '4800 T-Rex Ave Suite #150', city: 'Boca Raton, FL', lat: 26.389761, lng: -80.107600 },
+  { id: 'carmela-clematis', name: 'Carmela Coffee - Clematis St', type: 'Café', address: '319 Clematis St', city: 'West Palm Beach, FL', lat: 26.713360, lng: -80.052723 },
+  { id: 'carmela-east-delray', name: 'Carmela Coffee - East Delray', type: 'Café', address: '247 SE 6th Ave', city: 'Delray Beach, FL', lat: 26.457066, lng: -80.066652 },
+  { id: 'carmela-park-place', name: 'Carmela Coffee - Park Place', type: 'Café', address: '5560 N Military Trl', city: 'Boca Raton, FL', lat: 26.400409, lng: -80.121369 },
+  { id: 'carmela-pompano', name: 'Carmela Coffee - Pompano Beach', type: 'Café', address: '1182 S Powerline Rd', city: 'Pompano Beach, FL', lat: 26.214616, lng: -80.156098 },
+  { id: 'carmela-stuart', name: 'Carmela Coffee - Stuart', type: 'Café', address: '2644 SE Federal Hwy', city: 'Stuart, FL', lat: 27.172151, lng: -80.232487 },
+  { id: 'carmela-village-commons', name: 'Carmela Coffee - Village Commons', type: 'Café', address: '711 Village Blvd', city: 'West Palm Beach, FL', lat: 26.713401, lng: -80.100278 },
+  { id: 'carmela-west-delray', name: 'Carmela Coffee - West Delray', type: 'Café', address: '8918 W Atlantic Ave', city: 'Delray Beach, FL', lat: 26.453189, lng: -80.186247 },
+  { id: 'carmela-west-village', name: 'Carmela Coffee - West Village', type: 'Café', address: '10 5th Ave', city: 'New York, NY', lat: 40.732373, lng: -73.996640 },
+  { id: 'bobby-jones-golf', name: 'Bobby Jones Golf Course', type: 'Golf course', address: '2205 Northside Dr NW', city: 'Atlanta, GA', lat: 33.814733, lng: -84.407632 },
+  { id: 'cafe-lily', name: 'Cafe Lily', type: 'Café', address: '308 W Ponce De Leon Ave Ste B', city: 'Decatur, GA', lat: 33.775531, lng: -84.300287 },
+  { id: 'candler-park-market', name: 'Candler Park Market', type: 'Grocer', address: '1642 Mclendon Ave NE', city: 'Atlanta, GA', lat: 33.764902, lng: -84.333862 },
+  { id: 'enso-izakaya', name: 'Enso Izakaya Restaurant', type: 'Restaurant', address: '6 Olive St Ste 105B', city: 'Avondale Estates, GA', lat: 33.775944, lng: -84.274260 },
+  { id: 'ruths-chris-kennesaw', name: "Ruth's Chris Steak House Kennesaw", type: 'Restaurant', address: '620 Chastain Rd NW', city: 'Kennesaw, GA', lat: 34.037429, lng: -84.566570 },
+  { id: 'seasons-52-dunwoody', name: 'Seasons 52', type: 'Restaurant', address: '90 Perimeter Center West', city: 'Dunwoody, GA', lat: 33.926904, lng: -84.341085 },
+  { id: 'the-james-room', name: 'The James Room', type: 'Restaurant', address: '661 Auburn Ave NE Ste 280', city: 'Atlanta, GA', lat: 33.756983, lng: -84.366275 },
+  { id: 'the-stratford', name: 'The Stratford Restaurant', type: 'Restaurant', address: '17 North Avondale Plaza', city: 'Avondale Estates, GA', lat: 33.776194, lng: -84.266595 },
+  { id: 'capitol-grille-buckhead', name: 'Capitol Grille Buckhead', type: 'Restaurant', address: '255 E Paces Ferry Rd NE', city: 'Atlanta, GA', lat: 33.839138, lng: -84.378819 },
+  { id: 'cumming-beverage-mart', name: 'Cumming Beverage Mart', type: 'Bottle shop', address: '1770 Buford Hwy Ste A', city: 'Cumming, GA', lat: 34.159723, lng: -84.112107 },
+  { id: 'eddie-vs-alpharetta', name: "Eddie V's", type: 'Restaurant', address: '11405 Haynes Bridge Rd', city: 'Alpharetta, GA', lat: 34.058746, lng: -84.287454 },
+  { id: 'lake-pointe-package', name: 'Lake Pointe Package', type: 'Bottle shop', address: '5285 Lake Pointe Center Dr Ste G', city: 'Cumming, GA', lat: 34.249274, lng: -84.051541 },
+  { id: 'oakhurst-market', name: 'Oakhurst Market', type: 'Grocer', address: '650 E Lake Dr Ste A', city: 'Decatur, GA', lat: 33.759746, lng: -84.304501 },
+  { id: 'rox-wine-cumming', name: 'Rox Wine & Spirits', type: 'Bottle shop', address: '910 Peachtree Pkwy', city: 'Cumming, GA', lat: 34.140841, lng: -84.172883 },
+  { id: 'savi-decatur', name: 'Savi Decatur', type: 'Grocer', address: '180 W Ponce De Leon Ave', city: 'Decatur, GA', lat: 33.775505, lng: -84.298469 },
+  { id: 'savi-midtown', name: 'Savi Midtown', type: 'Grocer', address: '988 Peachtree St NE', city: 'Atlanta, GA', lat: 33.780739, lng: -84.384164 },
+  { id: 'suds-bottles', name: 'Suds & Bottles', type: 'Bottle shop', address: '225 Reformation Pkwy Ste 104A', city: 'Canton, GA', lat: 34.235167, lng: -84.495195 },
+  { id: 'the-imperial-decatur', name: 'The Imperial', type: 'Restaurant', address: '724 and 726 West College Ave', city: 'Decatur, GA', lat: 33.766415, lng: -84.305727 },
+  { id: 'tuxedo-wine', name: 'Tuxedo Wine & Spirits', type: 'Bottle shop', address: '3861 Roswell Rd NE Ste A', city: 'Atlanta, GA', lat: 33.860158, lng: -84.380488 },
+  { id: 'deep-roots-marietta', name: 'Deep Roots - Market Square', type: 'Grocer', address: '107 Church St', city: 'Marietta, GA', lat: 33.954729, lng: -84.550245 },
+  { id: 'mcloones-asbury', name: "McLoone's Asbury Park", type: 'Restaurant', address: '1200 Ocean Ave', city: 'Asbury Park, NJ', lat: 40.222525, lng: -73.999484 },
+  { id: 'iron-whale', name: 'Iron Whale', type: 'Restaurant', address: '1200 Ocean Ave', city: 'Asbury Park, NJ', lat: 40.222525, lng: -73.999484 },
+  { id: 'saltwater-liquors', name: 'Saltwater Liquors', type: 'Bottle shop', address: '9 1st Ave', city: 'Atlantic Highlands, NJ', lat: 40.415836, lng: -74.037165 },
+  { id: 'brant-beach-yacht', name: 'Brant Beach Yacht Club', type: 'Yacht club', address: 'Brant Beach', city: 'Beach Haven, NJ', lat: 39.6015, lng: -74.204 },
+  { id: 'manasquan-river-golf', name: 'Manasquan River Golf Club', type: 'Golf course', address: 'Riverview Dr', city: 'Brielle, NJ', lat: 40.103848, lng: -74.067199 },
+  { id: 'national-hotel-frenchtown', name: 'National Hotel', type: 'Restaurant', address: '31 Race St', city: 'Frenchtown, NJ', lat: 40.527046, lng: -75.060305 },
+  { id: 'butchers-block-long-branch', name: "The Butcher's Block", type: 'Restaurant', address: '237 Broadway', city: 'Long Branch, NJ', lat: 40.304233, lng: -73.989137 },
+  { id: 'mcloones-pier-house', name: "McLoone's Pier House", type: 'Restaurant', address: '1 Ocean Ave', city: 'Long Branch, NJ', lat: 40.310431, lng: -73.977065 },
+  { id: 'robinson-ale-long-branch', name: 'The Robinson Ale House', type: 'Restaurant', address: '68 Ocean Ave', city: 'Long Branch, NJ', lat: 40.307193, lng: -73.977926 },
+  { id: 'manasquan-liquors', name: 'Manasquan Liquors', type: 'Bottle shop', address: '137 Main St', city: 'Manasquan, NJ', lat: 40.123356, lng: -74.050894 },
+  { id: 'canals-bottlestop', name: "Canal's Bottlestop", type: 'Bottle shop', address: '10 Route 70 W', city: 'Marlton, NJ', lat: 39.894025, lng: -74.921661 },
+  { id: 'liquor-city-south', name: 'Liquor City South', type: 'Bottle shop', address: 'North Brunswick', city: 'North Brunswick, NJ', lat: 40.4544, lng: -74.4821 },
+  { id: 'troy-social', name: 'Troy Social Restaurant & Bar', type: 'Restaurant', address: 'Parsippany', city: 'Parsippany, NJ', lat: 40.8579, lng: -74.4254 },
+  { id: 'catezza', name: 'Catezza', type: 'Restaurant', address: '19 Broad St', city: 'Red Bank, NJ', lat: 40.351583, lng: -74.065381 },
+  { id: 'cafe-pari', name: 'Cafe Pari', type: 'Café', address: '29 Monmouth St', city: 'Red Bank, NJ', lat: 40.349507, lng: -74.066807 },
+  { id: 'robinson-ale-red-bank', name: 'Robinson Ale House', type: 'Restaurant', address: '26 Broad St', city: 'Red Bank, NJ', lat: 40.351216, lng: -74.065512 },
+  { id: 'mcloones-sea-bright', name: "McLoone's Sea Bright", type: 'Restaurant', address: '816 Ocean Ave', city: 'Sea Bright, NJ', lat: 40.371408, lng: -73.974249 },
+  { id: 'shell-liquor', name: 'Shell Liquor', type: 'Bottle shop', address: '1414 Long Beach Blvd', city: 'Beach Haven, NJ', lat: 39.572673, lng: -74.233828 },
+  { id: 'fine-spirits-tenafly', name: 'Fine Spirits', type: 'Bottle shop', address: '14 Riveredge Rd', city: 'Tenafly, NJ', lat: 40.926367, lng: -73.965409 },
+  { id: 'raeyas', name: "Raeya's", type: 'Restaurant', address: 'Wayne', city: 'Wayne, NJ', lat: 40.9254, lng: -74.2765 },
+  { id: 'shoprite-westfield', name: 'ShopRite Westfield', type: 'Bottle shop', address: '333 South Ave E', city: 'Westfield, NJ', lat: 40.649818, lng: -74.337454 },
+  { id: 'mcloones-boathouse', name: "McLoone's Boathouse", type: 'Restaurant', address: '9 Cherry Ln', city: 'West Orange, NJ', lat: 40.758174, lng: -74.291626 },
+  { id: 'scotland-run-golf', name: 'Scotland Run Golf Club', type: 'Golf course', address: 'Williamstown', city: 'Williamstown, NJ', lat: 39.669, lng: -74.994 },
+  { id: 'rats-restaurant', name: 'Rats Restaurant', type: 'Restaurant', address: 'Grounds for Sculpture', city: 'Trenton, NJ', lat: 40.2336, lng: -74.728 }
 ];
 
+function milesBetween(a, b) {
+  const R = 3958.8;
+  const toRad = (d) => (d * Math.PI) / 180;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+function formatMiles(mi) {
+  if (mi < 0.1) return '< 0.1 mi';
+  if (mi < 10) return mi.toFixed(1) + ' mi';
+  return Math.round(mi) + ' mi';
+}
+
+const NEARBY_MI = 60;
+
+function textMatchesQuery(s, q) {
+  if (!q) return true;
+  return (s.name + ' ' + s.city + ' ' + s.type + ' ' + s.address).toLowerCase().includes(q);
+}
+
+function storeBias() {
+  const lats = STORES.map((s) => s.lat).sort((a, b) => a - b);
+  const lngs = STORES.map((s) => s.lng).sort((a, b) => a - b);
+  const mid = (arr) => arr[Math.floor(arr.length / 2)];
+  return { lat: mid(lats), lng: mid(lngs) };
+}
+
+function featureLabel(p, fallback) {
+  const street = p.street ? ((p.housenumber ? p.housenumber + ' ' : '') + p.street) : '';
+  const name = p.name && !/^\d+$/.test(String(p.name)) ? p.name : '';
+  return [name, street, p.city || p.county, p.state, p.postcode]
+    .filter(Boolean)
+    .filter((part, i, arr) => arr.indexOf(part) === i)
+    .join(', ') || fallback;
+}
+
+function scoreGeocodeFeature(f, bias) {
+  const p = f.properties || {};
+  const [lng, lat] = f.geometry.coordinates;
+  let score = 0;
+  const country = String(p.country || '');
+  const cc = String(p.countrycode || '').toUpperCase();
+  if (cc === 'US' || /united states/i.test(country)) score += 120;
+  else score -= 80;
+  const kind = String(p.osm_value || p.type || '').toLowerCase();
+  if (['city', 'town', 'village', 'suburb', 'neighbourhood', 'hamlet', 'postcode', 'county'].includes(kind)) score += 55;
+  else if (['house', 'building', 'commercial', 'retail'].includes(kind)) score += 45;
+  else if (['residential', 'tertiary', 'secondary', 'primary', 'unclassified'].includes(kind)) score -= 25;
+  const mi = milesBetween(bias, { lat, lng });
+  score -= Math.min(mi, 2500) / 8;
+  return score;
+}
+
+async function geocodePlace(q) {
+  const bias = storeBias();
+  // Bias toward stockist region. Do not append ", USA" — that can drown out
+  // local city hits (e.g. Coral Gables, FL) with unrelated US street names.
+  const params = new URLSearchParams({
+    q: q,
+    limit: '8',
+    lang: 'en',
+    lat: String(bias.lat),
+    lon: String(bias.lng)
+  });
+  const res = await fetch('https://photon.komoot.io/api/?' + params.toString());
+  if (!res.ok) throw new Error('geocode failed');
+  const data = await res.json();
+  const features = (data.features || []).filter((f) => f && f.geometry && f.geometry.coordinates);
+  if (!features.length) return null;
+  features.sort((a, b) => scoreGeocodeFeature(b, bias) - scoreGeocodeFeature(a, bias));
+  const f = features[0];
+  if (scoreGeocodeFeature(f, bias) < 40) return null;
+  const [lng, lat] = f.geometry.coordinates;
+  return { lat, lng, label: featureLabel(f.properties || {}, q) };
+}
+
 class Component extends DCLogic {
-  state = { ageOk: false, faqOpen: false, gateDenied: false, query: '', active: null };
+  state = {
+    ageOk: false, faqOpen: false, gateDenied: false,
+    query: '', typeFilter: null, active: null,
+    userLoc: null, locStatus: 'idle',
+    searchLoc: null, geoStatus: 'idle', geoQuery: '',
+    sheetOpen: false, hoverId: null
+  };
+  _geoTimer = null;
+  _geoSeq = 0;
 
   componentDidMount() {
-    try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
-    this._onPick = (e) => this.setState({ active: e.detail });
+    let ageOk = false;
+    try { if (localStorage.getItem('bb-age-ok') === '1') ageOk = true; } catch (e) {}
+    if (ageOk) this.setState({ ageOk: true });
+    this._onPick = (e) => {
+      const id = e.detail;
+      this.setState({ active: id, sheetOpen: true, hoverId: null }, () => this._scrollStoreIntoView(id));
+    };
+    this._onDeselect = () => {
+      this.setState({ active: null, hoverId: null });
+    };
+    this._onLocate = () => this._requestLocation();
+    this._onMapHover = (e) => {
+      const id = e.detail || null;
+      if (id === this.state.hoverId) return;
+      this.setState({ hoverId: id }, () => {
+        if (id) this._scrollStoreIntoView(id);
+      });
+    };
     document.addEventListener('store-select', this._onPick);
+    document.addEventListener('store-deselect', this._onDeselect);
+    document.addEventListener('store-locate', this._onLocate);
+    document.addEventListener('store-hover', this._onMapHover);
+    if (ageOk || !(this.props.ageGate ?? true)) this._requestLocation();
   }
-  componentWillUnmount() { document.removeEventListener('store-select', this._onPick); }
+  componentDidUpdate() {
+    if (this.state.active && this.state.active !== this._scrolledFor) {
+      this._scrolledFor = this.state.active;
+      this._scrollStoreIntoView(this.state.active);
+    }
+  }
+  componentWillUnmount() {
+    document.removeEventListener('store-select', this._onPick);
+    document.removeEventListener('store-deselect', this._onDeselect);
+    document.removeEventListener('store-locate', this._onLocate);
+    document.removeEventListener('store-hover', this._onMapHover);
+    clearTimeout(this._geoTimer);
+  }
 
   _map() { return document.querySelector('store-map'); }
 
+  _scrollStoreIntoView(id) {
+    if (id == null) return;
+    const run = () => {
+      const row = document.querySelector('[data-store-id="' + String(id).replace(/"/g, '\\"') + '"]');
+      const sc = document.querySelector('[data-bb-store-scroll]');
+      if (!row || !sc) return;
+      const r = row.getBoundingClientRect();
+      const p = sc.getBoundingClientRect();
+      if (r.top >= p.top + 4 && r.bottom <= p.bottom - 4) return;
+      const delta = (r.top - p.top) - (p.height * 0.35);
+      sc.scrollTop = Math.max(0, sc.scrollTop + delta);
+    };
+    setTimeout(run, 0);
+  }
+
+  _activeIfVisible(active, matches) {
+    if (!active) return null;
+    return matches.some((s) => s.id === active) ? active : null;
+  }
+
+  _syncMapLocation(loc) {
+    const m = this._map();
+    if (m && m.setUserLocation && loc) m.setUserLocation(loc.lat, loc.lng, { fit: true, animate: true });
+  }
+
+  _requestLocation() {
+    if (!navigator.geolocation) {
+      this.setState({ locStatus: 'unsupported' });
+      return;
+    }
+    if (this.state.locStatus === 'pending') return;
+    this.setState({ locStatus: 'pending' });
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        this.setState({ userLoc: loc, locStatus: 'ready' });
+        this._syncMapLocation(loc);
+        let tries = 0;
+        const retry = () => {
+          tries += 1;
+          const m = this._map();
+          if (m && m.setUserLocation) m.setUserLocation(loc.lat, loc.lng, { fit: true, animate: true });
+          else if (tries < 20) setTimeout(retry, 150);
+        };
+        setTimeout(retry, 120);
+      },
+      (err) => {
+        const denied = err && err.code === 1;
+        this.setState({ locStatus: denied ? 'denied' : 'error', userLoc: null });
+      },
+      { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 }
+    );
+  }
+
   select(id) {
-    this.setState({ active: id });
+    this.setState({ active: id, sheetOpen: true }, () => this._scrollStoreIntoView(id));
     const m = this._map();
     if (m && m.focusStore) m.focusStore(id, true);
   }
 
-  renderVals() {
+  _refLoc() {
+    return this.state.searchLoc || this.state.userLoc;
+  }
+
+  _pool(typeFilter) {
+    const type = typeFilter === undefined ? this.state.typeFilter : typeFilter;
+    return STORES.filter((s) => !type || s.type === type);
+  }
+
+  _scheduleGeocode(query) {
+    clearTimeout(this._geoTimer);
+    const q = query.trim();
+    if (q.length < 3) {
+      this._clearSearchLoc();
+      return;
+    }
+    this._geoTimer = setTimeout(() => this._runGeocode(q), 450);
+  }
+
+  _clearSearchLoc() {
+    this.setState({ searchLoc: null, geoStatus: 'idle', geoQuery: '' });
+    const m = this._map();
+    if (m && m.clearSearchLocation) m.clearSearchLocation();
+  }
+
+  async _runGeocode(q) {
+    const seq = ++this._geoSeq;
+    this.setState({ geoStatus: 'pending', geoQuery: q });
+    try {
+      const place = await geocodePlace(q);
+      if (seq !== this._geoSeq || this.state.query.trim() !== q) return;
+      if (!place) {
+        this.setState({ searchLoc: null, geoStatus: 'miss' });
+        const m = this._map();
+        if (m && m.clearSearchLocation) m.clearSearchLocation();
+        return;
+      }
+      this.setState({ searchLoc: place, geoStatus: 'ready', geoQuery: q });
+      const sync = () => {
+        const map = this._map();
+        if (map && map.setSearchLocation) map.setSearchLocation(place.lat, place.lng, { fit: true, animate: true });
+      };
+      sync();
+      setTimeout(sync, 120);
+    } catch (e) {
+      if (seq !== this._geoSeq) return;
+      this.setState({ searchLoc: null, geoStatus: 'miss' });
+    }
+  }
+
+  _filteredStores() {
     const q = this.state.query.trim().toLowerCase();
-    const matches = q
-      ? STORES.filter((s) => (s.name + ' ' + s.city + ' ' + s.type).toLowerCase().includes(q))
-      : STORES;
+    const pool = this._pool();
+    const loc = this._refLoc();
+    let matches;
+
+    if (!q) {
+      matches = pool.slice();
+    } else {
+      const textHits = pool.filter((s) => textMatchesQuery(s, q));
+      if (textHits.length) {
+        matches = textHits;
+      } else if (this.state.searchLoc && this.state.geoStatus === 'ready') {
+        // Address/ZIP lookup: nearest stockists to that place
+        matches = pool.slice();
+      } else {
+        matches = [];
+      }
+    }
+
+    matches = matches.map((s) => {
+      const mi = loc ? milesBetween(loc, s) : null;
+      return { ...s, mi };
+    });
+    if (loc) matches.sort((a, b) => a.mi - b.mi);
+
+    // When searching by place, prefer stores within range; otherwise keep closest few
+    if (q && !pool.some((s) => textMatchesQuery(s, q)) && this.state.searchLoc && matches.length) {
+      const near = matches.filter((s) => s.mi != null && s.mi <= NEARBY_MI);
+      matches = near.length ? near : matches.slice(0, 8);
+    }
+    return matches;
+  }
+
+  renderVals() {
+    const userLoc = this.state.userLoc;
+    const searchLoc = this.state.searchLoc;
+    const loc = this._refLoc();
+    const matches = this._filteredStores();
+    const active = this._activeIfVisible(this.state.active, matches);
+    const q = this.state.query.trim();
+    const qLower = q.toLowerCase();
+    const hasTextHits = !qLower || this._pool().some((s) => textMatchesQuery(s, qLower));
+
+    const types = [...new Set(STORES.map((s) => s.type))].sort((a, b) => a.localeCompare(b));
+    const typeFilters = [
+      {
+        label: 'All',
+        active: !this.state.typeFilter,
+        onSelect: () => this.setState({ typeFilter: null })
+      },
+      ...types.map((t) => ({
+        label: t,
+        active: this.state.typeFilter === t,
+        onSelect: () => {
+          const typeFilter = this.state.typeFilter === t ? null : t;
+          const next = this._pool(typeFilter);
+          this.setState({ typeFilter, active: this._activeIfVisible(this.state.active, next) });
+        }
+      }))
+    ];
+
+    const nearest = loc && matches.length ? matches[0] : null;
+    const status = this.state.locStatus;
+    const locReady = status === 'ready' && !!userLoc && !searchLoc;
+    const showLocPrompt = !searchLoc && (status === 'idle' || status === 'denied' || status === 'error' || status === 'unsupported');
+    let locPromptLabel = 'Near me';
+    if (status === 'denied') locPromptLabel = 'Location blocked';
+    else if (status === 'error') locPromptLabel = 'Try again';
+    else if (status === 'unsupported') locPromptLabel = 'Unavailable';
+
+    let statusCopy = matches.length ? (matches.length + ' stockists') : 'Browse the map';
+    if (status === 'pending') statusCopy = 'Looking around your neighborhood…';
+    else if (this.state.geoStatus === 'pending' && !hasTextHits) statusCopy = 'Looking around that neighborhood…';
+    else if (this.state.geoStatus === 'miss' && !hasTextHits && q.length >= 3) statusCopy = 'Could not find that place — try a city or ZIP.';
+    else if (searchLoc && this.state.geoStatus === 'ready') {
+      statusCopy = 'Near ' + searchLoc.label + (nearest ? ' · ' + formatMiles(nearest.mi) : '');
+    } else if (locReady && nearest) {
+      statusCopy = 'Nearest first · ' + formatMiles(nearest.mi);
+    }
+
+    const showFeatured = !!(nearest && (locReady || (searchLoc && this.state.geoStatus === 'ready')));
+    const featured = showFeatured ? {
+      eyebrow: searchLoc ? 'Close to your search' : 'Closest to you',
+      name: nearest.name,
+      line: [nearest.type, nearest.city, nearest.mi != null ? formatMiles(nearest.mi) : ''].filter(Boolean).join(' · '),
+      onSelect: () => this.select(nearest.id)
+    } : { eyebrow: '', name: '', line: '', onSelect: () => {} };
+
+    const dirOrigin = loc;
+    const mapStores = matches.map((s) => {
+      const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
+      const directions = dirOrigin
+        ? 'https://www.google.com/maps/dir/?api=1&origin=' + dirOrigin.lat + ',' + dirOrigin.lng + '&destination=' + dest
+        : 'https://www.google.com/maps/search/?api=1&query=' + dest;
+      return {
+        id: s.id,
+        name: s.name,
+        type: s.type,
+        address: s.address,
+        city: s.city,
+        lat: s.lat,
+        lng: s.lng,
+        distance: s.mi != null ? formatMiles(s.mi) : '',
+        directions
+      };
+    });
+
+    // When featuring the nearest store, keep it in the list too (directory feel)
+    const listStores = matches;
+
     return {
       showList: this.props.storeList ?? true,
       showSearch: this.props.search ?? true,
       query: this.state.query,
-      onQuery: (e) => this.setState({ query: e.target.value }),
-      noResults: matches.length === 0,
-      storesJson: JSON.stringify(STORES),
-      visibleStores: matches.map((s) => ({
-        ...s,
-        bg: this.state.active === s.id ? 'rgba(245,215,50,0.22)' : 'transparent',
-        dot: this.state.active === s.id ? '#f5d732' : '#e6393a',
-        directions: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city),
-        onSelect: () => this.select(s.id)
-      })),
-      resetView: () => { this.setState({ active: null }); const m = this._map(); if (m && m.resetView) m.resetView(); },
+      onQuery: (e) => {
+        const query = e.target.value;
+        const qTrim = query.trim().toLowerCase();
+        const typeFilter = this.state.typeFilter;
+        const pool = STORES.filter((s) => !typeFilter || s.type === typeFilter);
+        const textHits = !qTrim ? pool : pool.filter((s) => textMatchesQuery(s, qTrim));
+        const patch = {
+          query,
+          active: this._activeIfVisible(this.state.active, textHits.length ? textHits : pool),
+          sheetOpen: true
+        };
+        if (!qTrim) {
+          clearTimeout(this._geoTimer);
+          patch.searchLoc = null;
+          patch.geoStatus = 'idle';
+          patch.geoQuery = '';
+          this.setState(patch);
+          const m = this._map();
+          if (m && m.clearSearchLocation) m.clearSearchLocation();
+          return;
+        }
+        if (textHits.length) {
+          clearTimeout(this._geoTimer);
+          patch.searchLoc = null;
+          patch.geoStatus = 'idle';
+          patch.geoQuery = '';
+          this.setState(patch);
+          const m = this._map();
+          if (m && m.clearSearchLocation) m.clearSearchLocation();
+          return;
+        }
+        this.setState(patch);
+        this._scheduleGeocode(query.trim());
+      },
+      typeFilters,
+      noResults: matches.length === 0 && this.state.geoStatus !== 'pending',
+      storesJson: JSON.stringify(mapStores),
+      activeId: active || '',
+      introCopy: searchLoc
+        ? 'Stockists near your search — pick one to find it on the map.'
+        : (locReady
+          ? 'Nearest pours first. Search a city or ZIP to look farther afield.'
+          : 'A living directory of shops, bars, and tables pouring Brisa Bay.'),
+      statusCopy,
+      showFeatured,
+      featured,
+      showLocPrompt,
+      locPromptLabel,
+      requestLoc: () => this._requestLocation(),
+      sheetState: this.state.sheetOpen ? 'open' : 'peek',
+      toggleSheet: () => this.setState({ sheetOpen: !this.state.sheetOpen }),
+      visibleStores: listStores.map((s, i) => {
+        const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
+        const directions = dirOrigin
+          ? 'https://www.google.com/maps/dir/?api=1&origin=' + dirOrigin.lat + ',' + dirOrigin.lng + '&destination=' + dest
+          : 'https://www.google.com/maps/search/?api=1&query=' + dest;
+        return {
+          ...s,
+          isActive: active === s.id ? 'true' : 'false',
+          isHover: this.state.hoverId === s.id ? 'true' : 'false',
+          delay: Math.min(i, 8) * 0.04 + 's',
+          distance: s.mi != null ? formatMiles(s.mi) : '',
+          directions,
+          onSelect: () => this.select(s.id),
+          onHover: () => {
+            if (this.state.hoverId === s.id) return;
+            this.setState({ hoverId: s.id });
+            const m = this._map();
+            if (m && m.highlightStore) m.highlightStore(s.id);
+          },
+          onLeave: () => {
+            if (this.state.hoverId !== s.id) return;
+            this.setState({ hoverId: null });
+            const m = this._map();
+            if (m && m.highlightStore) m.highlightStore(null);
+          }
+        };
+      }),
+      resetView: () => {
+        clearTimeout(this._geoTimer);
+        this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null });
+        const m = this._map();
+        if (m && m.clearSearchLocation) m.clearSearchLocation();
+        if (m && m.highlightStore) m.highlightStore(null);
+        if (m && m.resetView) setTimeout(() => { const map = this._map(); if (map && map.resetView) map.resetView(); }, 50);
+      },
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
-      acceptAge: () => { try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {} this.setState({ ageOk: true }); },
+      acceptAge: () => {
+        try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {}
+        this.setState({ ageOk: true });
+        this._requestLocation();
+      },
       denyAge: () => this.setState({ gateDenied: true }),
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
       closeFaq: () => this.setState({ faqOpen: false }),
       faqItems: [
-        { q: 'Where can I buy Brisa Bay?', a: 'Use the map on this page to find the shops, bars and restaurants closest to you. If your favourite spot does not carry us yet, ask them to order it.' },
+        { q: 'Where can I buy Brisa Bay?', a: 'Share your location, or search a city, ZIP, or address to see the nearest stockists. You can also filter by type. If your favourite spot does not carry us yet, ask them to order it.' },
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
         { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
         { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
