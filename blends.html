@@ -14,9 +14,7 @@
     body { margin: 0; background: #eeeee4; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
-    @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
-    @keyframes bb-rise { from { opacity: 0; transform: translateY(70px) scale(0.975) } to { opacity: 1; transform: none } }
     @keyframes bb-fade { from { opacity: 0 } to { opacity: 1 } }
     @keyframes bb-wipe { from { opacity: 0; transform: translateY(0.22em) } to { opacity: 1; transform: none } }
 
@@ -86,28 +84,61 @@
     [data-bb-blend-scroll-cue] {
       will-change: opacity, transform;
     }
+    /* ---------------- Wine stage: editorial plate ----------------
+       The photograph carries through from the hero. A left-weighted scrim gives the
+       copy column a dark ground to sit on while the right side stays open so the
+       picture still reads behind the bottle. Everything sits on a 12-column grid. */
     [data-bb-blend-stage] {
       position: absolute;
       inset: 0;
       z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(16px, 3vw, 56px);
-      padding: clamp(96px, 14vh, 130px) clamp(20px, 4vw, 80px) clamp(28px, 4vh, 48px);
+      background: linear-gradient(100deg, rgba(45,45,42,0.90) 0%, rgba(45,45,42,0.78) 45%,
+                                            rgba(45,45,42,0.42) 70%, rgba(45,45,42,0.30) 100%);
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      column-gap: clamp(12px, 1.5vw, 28px);
+      row-gap: clamp(14px, 2.2vh, 30px);
+      padding: clamp(78px, 11vh, 126px) clamp(20px, 4.7vw, 90px) clamp(24px, 3.4vh, 46px);
       box-sizing: border-box;
       opacity: 0;
       pointer-events: none;
       will-change: opacity;
+      color: #eeeee4;
     }
     [data-bb-blend-stage].is-live { pointer-events: auto; }
+
+    /* Small tracked uppercase furniture. A neutral grotesk here is deliberate:
+       it also sidesteps the faux-bold problem, since Garamond ships Regular only. */
+    [data-bb-label] {
+      font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      font-size: clamp(10px, 0.72vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(238, 238, 228, 0.62);
+      line-height: 1;
+      /* meta and nav span the full width, out past where the scrim thins */
+      text-shadow: 0 1px 4px rgba(45, 45, 42, 0.9);
+    }
+
+    [data-bb-stage-meta] {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: clamp(10px, 1.2vh, 18px);
+      border-bottom: 1px solid rgba(238, 238, 228, 0.24);
+    }
+
     [data-bb-stage-copy] {
-      flex: 1 1 36%;
-      min-width: min(100%, 260px);
-      max-width: 520px;
+      grid-column: 1 / span 6;
+      grid-row: 2;
       display: grid;
       align-content: center;
-      gap: clamp(12px, 1.6vw, 22px);
+      min-width: 0;
       will-change: opacity, transform;
       transform: translate3d(-36px, 28px, 0);
       opacity: 0;
@@ -116,52 +147,107 @@
       grid-area: 1 / 1;
       display: flex;
       flex-direction: column;
-      gap: clamp(10px, 1.2vw, 18px);
+      align-items: flex-start;
+      gap: clamp(10px, 1.3vh, 20px);
       transition: opacity 0.42s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
     [data-bb-stage-copy] h2 {
       margin: 0;
       font-family: 'Old Newspaper', serif;
-      font-size: clamp(36px, 5.6vw, 92px);
-      line-height: 1;
+      font-size: clamp(34px, 5vw, 88px);
+      line-height: 0.94;
       font-weight: 400;
       color: #eeeee4;
       text-wrap: balance;
     }
     [data-bb-stage-copy] p {
       margin: 0;
-      font-size: clamp(15px, 1.45vw, 26px);
-      line-height: 1.45;
-      color: rgba(238, 238, 228, 0.95);
+      font-size: clamp(15px, 1.15vw, 21px);
+      line-height: 1.55;
+      color: rgba(238, 238, 228, 0.94);
       text-wrap: pretty;
-      max-width: 34ch;
+      max-width: 70ch;
     }
-    [data-bb-stage-copy] [data-bb-copy-meta] {
+    /* Spec list — dry, tabular, hairline-ruled. */
+    [data-bb-spec] {
+      margin: clamp(2px, 0.6vh, 8px) 0 0;
+      width: 100%;
+      max-width: 72ch;
+      border-top: 1px solid rgba(238, 238, 228, 0.24);
+    }
+    [data-bb-spec] > div {
       display: grid;
-      gap: 0.35em;
-      font-size: clamp(14px, 1.25vw, 22px);
-      line-height: 1.45;
-      color: rgba(238, 238, 228, 0.9);
+      grid-template-columns: minmax(88px, 0.32fr) 1fr;
+      gap: clamp(10px, 1.2vw, 22px);
+      align-items: baseline;
+      padding: clamp(7px, 0.9vh, 12px) 0;
+      border-bottom: 1px solid rgba(238, 238, 228, 0.24);
     }
+    [data-bb-spec] dt {
+      font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+      font-size: clamp(9px, 0.66vw, 12px);
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(238, 238, 228, 0.58);
+      line-height: 1.5;
+    }
+    [data-bb-spec] dd {
+      margin: 0;
+      font-size: clamp(14px, 1.02vw, 19px);
+      line-height: 1.45;
+      color: rgba(238, 238, 228, 0.96);
+      text-wrap: pretty;
+    }
+
+    /* Bottle column — sits on a hairline so it is standing, not floating. */
     [data-bb-blend-stage] [data-bb-stage-row] {
-      flex: 0 1 auto;
+      grid-column: 8 / span 5;
+      grid-row: 2;
       min-width: 0;
-      height: min(72vh, 100%);
-      max-height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(10px, 2.4vw, 40px);
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      justify-items: center;
+      align-content: center;
+      gap: 0;
       will-change: opacity, transform;
       transform: translate3d(0, 56vh, 0) scale(0.92);
       opacity: 0;
       transform-origin: 50% 80%;
     }
-    [data-bb-blend-stage] [data-bb-stage-row] [role="button"] {
+    [data-bb-bottle-plinth] {
+      width: min(100%, 30vw);
+      height: 1px;
+      background: rgba(238, 238, 228, 0.45);
+      box-shadow: 0 1px 3px rgba(45, 45, 42, 0.55);
+    }
+
+    /* Typographic prev/next — no circles. */
+    [data-bb-stage-nav] {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: clamp(10px, 1.2vh, 18px);
+      border-top: 1px solid rgba(238, 238, 228, 0.24);
+    }
+    [data-bb-stage-arrow] {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7em;
+      cursor: pointer;
+      color: rgba(238, 238, 228, 0.75);
+      transition: color 0.25s ease, letter-spacing 0.25s ease;
       will-change: opacity, transform;
       opacity: 0;
-      transform: scale(0.85);
+      transform: translateY(6px);
     }
+    [data-bb-stage-arrow]:hover { color: #f5d732; }
+
+    /* Nav stays cream throughout — the ground behind it is the photo, start to finish. */
+    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; }
 
     @media (prefers-reduced-motion: reduce) {
       [data-bb-blend-scroll] { height: auto !important; }
@@ -171,7 +257,7 @@
       [data-bb-blend-stage],
       [data-bb-stage-copy],
       [data-bb-blend-stage] [data-bb-stage-row],
-      [data-bb-blend-stage] [data-bb-stage-row] [role="button"] {
+      [data-bb-stage-arrow] {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
@@ -187,7 +273,6 @@
         display: flex;
         flex-direction: column;
       }
-      [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
       [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
     }
     @media (max-width: 900px) {
@@ -220,52 +305,53 @@
       [data-bb-blend-stage],
       [data-bb-stage-copy],
       [data-bb-blend-stage] [data-bb-stage-row],
-      [data-bb-blend-stage] [data-bb-stage-row] [role="button"] {
+      [data-bb-stage-arrow] {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
       }
+      /* Mobile stacks below the photo rather than over it, so it takes the same
+         dark ground directly. The 12-column grid collapses to one and the bottle leads. */
       [data-bb-blend-stage] {
         position: relative !important;
         inset: auto !important;
         pointer-events: auto !important;
         min-height: 70svh;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        justify-content: flex-start !important;
-        gap: 18px !important;
-        padding: clamp(28px, 5vh, 48px) clamp(18px, 4vw, 28px) 36px !important;
-        background: #e6393a;
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto auto auto auto !important;
+        row-gap: 20px !important;
+        padding: clamp(24px, 4vh, 40px) clamp(18px, 4vw, 28px) 32px !important;
+        background: #2d2d2a;
       }
-      [data-bb-blend-stage][data-blend="1"] { background: #60b98f; }
+      [data-bb-stage-meta],
+      [data-bb-stage-nav] { grid-column: 1 !important; }
       [data-bb-stage-copy] {
-        order: 2;
+        grid-column: 1 !important;
+        grid-row: 3 !important;
         max-width: none !important;
         min-width: 0 !important;
       }
       [data-bb-stage-copy] h2 {
         font-size: clamp(34px, 11vw, 56px) !important;
-        line-height: 1.05 !important;
+        line-height: 1 !important;
       }
       [data-bb-stage-copy] p,
-      [data-bb-stage-copy] [data-bb-copy-meta] {
+      [data-bb-spec] {
         max-width: none !important;
       }
-      [data-bb-stage-row] {
-        order: 1;
-        gap: 8px !important;
+      [data-bb-blend-stage] [data-bb-stage-row] {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
         height: auto !important;
         min-height: clamp(300px, 66vw, 420px) !important;
       }
       [data-bb-bottle-slot] {
-        flex: 1 1 auto !important;
         height: clamp(300px, 66vw, 420px) !important;
       }
+      [data-bb-bottle-plinth] { width: min(100%, 60vw) !important; }
       [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
-      [data-vibe] > [data-photo] { aspect-ratio: 3 / 4 !important; max-height: 70svh !important; }
       [data-bb-nav] { row-gap: 10px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
-      [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
     }
   </style>
   <title>Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc</title>
@@ -289,13 +375,12 @@
       <img data-bb-blend-photo="" src="assets/web/blends-hero.jpg" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit">
       <div style="position: absolute; left: 0; right: 0; top: 0; height: 42%; background: linear-gradient(to bottom, rgba(45,45,42,0.62), rgba(45,45,42,0)); pointer-events: none; z-index: 3"></div>
       <div data-bb-blend-bottom-veil="" style="position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: linear-gradient(to top, rgba(45,45,42,0.58), rgba(45,45,42,0)); pointer-events: none; z-index: 3; will-change: opacity"></div>
-      <div data-bb-blend-stage-veil="" style="position: absolute; inset: 0; background: rgba(45,45,42,0.52); pointer-events: none; z-index: 3; opacity: 0; will-change: opacity"></div>
 
       <div data-bb-nav="" style="position: absolute; z-index: 8; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px); box-sizing: border-box">
-        <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); color: #eeeee4; letter-spacing: 0.01em; text-decoration: none">Brisa Bay</a>
+        <a href="index.html" style="font-size: clamp(26px, 2.8vw, 52px); letter-spacing: 0.01em; text-decoration: none; color: #eeeee4">Brisa Bay</a>
         <div role="navigation" aria-label="Main" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(16px, 2.7vw, 52px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
           <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About us</a>
-          <span style="cursor: default; color: #f5d732">Our Wines</span>
+          <span data-bb-nav-active="" style="cursor: default">Our Wines</span>
           <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Where to buy</a>
         </div>
       </div>
@@ -309,120 +394,61 @@
       </div>
 
       <div data-bb-blend-stage="" data-blend="{{ blendAttr }}">
+        <div data-bb-stage-meta="">
+          <span data-bb-label="">Our Wines</span>
+          <span data-bb-label="">Napa Valley, California</span>
+        </div>
+
         <div data-bb-stage-copy="">
           <div data-bb-copy-panel="" style="opacity: {{ fade0 }}; transform: {{ shift0 }}; pointer-events: {{ pointer0 }}" aria-hidden="{{ hidden0 }}">
             <h2>Chardonnay</h2>
             <p>A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
-            <div data-bb-copy-meta="">
-              <span><em style="font-weight: 700">Profile:</em> Ripe peach, bright citrus, and a smooth, tender finish.</span>
-              <span><em style="font-weight: 700">Best Served:</em> Cold, during a long lunch that rolls right into dinner.</span>
-            </div>
+            <dl data-bb-spec="">
+              <div><dt>Profile</dt><dd>Ripe peach, bright citrus, and a smooth, tender finish.</dd></div>
+              <div><dt>Best served</dt><dd>Cold, during a long lunch that rolls right into dinner.</dd></div>
+            </dl>
           </div>
           <div data-bb-copy-panel="" style="opacity: {{ fade1 }}; transform: {{ shift1 }}; pointer-events: {{ pointer1 }}" aria-hidden="{{ hidden1 }}">
             <h2>Sauvignon Blanc</h2>
             <p>Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
-            <div data-bb-copy-meta="">
-              <span><em style="font-weight: 700">Profile:</em> Tropical fruit, juicy lime, and a crisp vein of stony minerality.</span>
-              <span><em style="font-weight: 700">Best Served:</em> Chilled, the second the sun comes out and the music starts.</span>
-            </div>
+            <dl data-bb-spec="">
+              <div><dt>Profile</dt><dd>Tropical fruit, juicy lime, and a crisp vein of stony minerality.</dd></div>
+              <div><dt>Best served</dt><dd>Chilled, the second the sun comes out and the music starts.</dd></div>
+            </dl>
           </div>
         </div>
 
         <div data-bb-stage-row="">
-          <div onClick="{{ prevBlend }}" role="button" aria-label="Previous wine" style="flex: none; width: clamp(44px, 4.2vw, 80px); height: clamp(44px, 4.2vw, 80px); border-radius: 50%; background: {{ arrowColor }}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.25s, background-color 0.6s ease" style-hover="transform: scale(1.12)">
-            <svg width="40%" height="40%" viewBox="0 0 24 24" fill="none" stroke="#eeeee4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          </div>
-
-          <div data-bb-bottle-slot="" style="flex: 0 0 clamp(160px, 26vw, 420px); height: 100%; position: relative">
+          <div data-bb-bottle-slot="" style="position: relative; width: 100%; height: 100%; min-height: 0">
             <div data-bottle="" style="position: absolute; inset: 0; pointer-events: none; opacity: {{ fade0 }}; transform: {{ bottleShift0 }}; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
               <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
-                <img src="assets/web2/bottle.png" alt="Brisa Bay Chardonnay bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.45))">
+                <img src="assets/web2/bottle.png" alt="Brisa Bay Chardonnay bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
               </div>
             </div>
             <div data-bottle="" style="position: absolute; inset: 0; pointer-events: none; opacity: {{ fade1 }}; transform: {{ bottleShift1 }}; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
               <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
-                <img src="assets/web2/bottle-sauvblanc-trim.png" alt="Brisa Bay Sauvignon Blanc bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.45))">
+                <img src="assets/web2/bottle-sauvblanc-trim.png" alt="Brisa Bay Sauvignon Blanc bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
               </div>
             </div>
           </div>
+          <div data-bb-bottle-plinth=""></div>
+        </div>
 
-          <div onClick="{{ nextBlend }}" role="button" aria-label="Next wine" style="flex: none; width: clamp(44px, 4.2vw, 80px); height: clamp(44px, 4.2vw, 80px); border-radius: 50%; background: {{ arrowColor }}; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.25s, background-color 0.6s ease" style-hover="transform: scale(1.12)">
-            <svg width="40%" height="40%" viewBox="0 0 24 24" fill="none" stroke="#eeeee4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        <div data-bb-stage-nav="">
+          <div onClick="{{ prevBlend }}" role="button" data-bb-stage-arrow="" aria-label="Previous wine" data-bb-label="">
+            <span aria-hidden="true">&larr;</span><span>Previous</span>
+          </div>
+          <span data-bb-label="">{{ indexLabel }}</span>
+          <div onClick="{{ nextBlend }}" role="button" data-bb-stage-arrow="" aria-label="Next wine" data-bb-label="">
+            <span>Next</span><span aria-hidden="true">&rarr;</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= THE VIBE + FOOTER ================= -->
+  <!-- ================= FOOTER ================= -->
   <div style="position: relative; z-index: 2; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
-    <sc-if value="{{ isBlend0 }}" hint-placeholder-val="{{ true }}">
-      <div data-screen-label="The Vibe — Chardonnay" data-reveal="" data-vibe="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); animation: bb-rise linear both; animation-timeline: view(); animation-range: entry 8% entry 92%">
-        <div data-photo="" style="position: relative; width: 100%; aspect-ratio: 4000 / 6000; overflow: hidden; background: #d9d9d4">
-          <img src="assets/web/vibe-chardonnay.jpg" alt="A bottle of Brisa Bay Chardonnay chilling in an ice bucket beside a poolside glass being poured" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-        </div>
-        <div style="background: #eeeee4; padding: clamp(40px, 4.7vw, 90px) clamp(22px, 5.7vw, 110px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.1vw, 42px)">
-          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: clamp(16px, 1.6vw, 30px)">
-            <h2 style="margin: 0; font-size: clamp(32px, 4.4vw, 84px); font-weight: 400; color: #5b584e">The Vibe:</h2>
-            <div style="position: relative; width: clamp(88px, 7.8vw, 150px); aspect-ratio: 1; flex-shrink: 0; animation: bb-stamp 70s linear infinite; animation-play-state: {{ play }}">
-              <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
-              <div style="position: absolute; left: 7%; top: 33%; width: 87%; height: 33%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
-                <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
-                <span style="position: relative; font-size: clamp(10px, 0.89vw, 17px); color: #eeeee4">Brisa Bay</span>
-              </div>
-              <svg aria-hidden="true" focusable="false" viewBox="0 0 150 150" style="position: absolute; inset: 4%; width: 92%; height: 92%; overflow: visible; transform: rotate(-14deg)">
-                <defs><path id="blendsStampCircleR0" d="M 75,75 m -75,0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"></path></defs>
-                <text font-family="Garamond Pro, serif" font-size="11" letter-spacing="3.6" fill="#e6393a" font-weight="600"><textPath href="#blendsStampCircleR0">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-              </svg>
-            </div>
-          </div>
-          <p style="margin: 0; font-size: clamp(16px, 1.7vw, 32px); line-height: 1.55; text-align: justify; text-wrap: pretty">A Chardonnay that feels like a breath of fresh air. The nose brings waves of ripe white peach, crisp apple, and cool stone aromas. In the mouth, it unfurls bright, energetic notes of lemon, mandarin, and clementine with an appealingly tender texture. It wraps up with a mouthwatering acidity and an exquisite sweet-tart balance that lingers through the finish, naturally inviting you to take another sip.</p>
-          <div style="display: grid; gap: clamp(8px, 0.8vw, 14px)">
-            <h4 style="margin: 0; font-size: clamp(19px, 1.8vw, 34px); font-weight: 700">Quick Notes:</h4>
-            <div style="font-size: clamp(15px, 1.6vw, 30px); line-height: 1.65; display: grid; gap: clamp(4px, 0.4vw, 8px)">
-              <p style="margin: 0"><strong style="font-style: italic">Profile:</strong> Ripe peach, bright citrus, and a smooth, tender finish.</p>
-              <p style="margin: 0"><strong style="font-style: italic">Best Served:</strong> Cold, during a long lunch that rolls right into dinner.</p>
-            </div>
-          </div>
-          <a href="where-to-buy.html" style="align-self: flex-start; background: #e6393a; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 1.5vw, 28px); padding: clamp(10px, 0.9vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.1vw, 20px); border-radius: 999px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Where to buy</a>
-        </div>
-      </div>
-    </sc-if>
-
-    <sc-if value="{{ isBlend1 }}" hint-placeholder-val="{{ false }}">
-      <div data-screen-label="The Vibe — Sauvignon Blanc" data-reveal="" data-vibe="" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); animation: bb-rise linear both; animation-timeline: view(); animation-range: entry 8% entry 92%">
-        <div data-photo="" style="position: relative; width: 100%; aspect-ratio: 4000 / 6000; overflow: hidden; background: #d9d9d4">
-          <img src="assets/web/vibe-sauvblanc.jpg" alt="A bottle of Brisa Bay Sauvignon Blanc in an ice bucket beside a poured glass at the edge of a pool" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
-        </div>
-        <div style="background: #eeeee4; padding: clamp(40px, 4.7vw, 90px) clamp(22px, 5.7vw, 110px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.1vw, 42px)">
-          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: clamp(16px, 1.6vw, 30px)">
-            <h2 style="margin: 0; font-size: clamp(32px, 4.4vw, 84px); font-weight: 400; color: #5b584e">The Vibe:</h2>
-            <div style="position: relative; width: clamp(88px, 7.8vw, 150px); aspect-ratio: 1; flex-shrink: 0; animation: bb-stamp 70s linear infinite; animation-play-state: {{ play }}">
-              <img src="assets/brush/asterisk-sage.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
-              <div style="position: absolute; left: 7%; top: 33%; width: 87%; height: 33%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
-                <img src="assets/brush/bar-sage.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
-                <span style="position: relative; font-size: clamp(10px, 0.89vw, 17px); color: #eeeee4">Brisa Bay</span>
-              </div>
-              <svg aria-hidden="true" focusable="false" viewBox="0 0 150 150" style="position: absolute; inset: 4%; width: 92%; height: 92%; overflow: visible; transform: rotate(-14deg)">
-                <defs><path id="blendsStampCircleR1" d="M 75,75 m -75,0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"></path></defs>
-                <text font-family="Garamond Pro, serif" font-size="11" letter-spacing="3.6" fill="#60b98f" font-weight="600"><textPath href="#blendsStampCircleR1">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-              </svg>
-            </div>
-          </div>
-          <p style="margin: 0; font-size: clamp(16px, 1.7vw, 32px); line-height: 1.55; text-align: justify; text-wrap: pretty">Our very first release of Sauvignon Blanc is a fresh, citrusy take on the Brisa Bay experience. Designed to be bright and energetic yet soft and easygoing, this is the wine that practically invites a friend to join you for a glass and a chat. Aromas of guava, passionfruit, and lush tropical flowers swirl from the glass, followed by juicy pineapple, lime, tangerine, and a cool vein of stony minerality that lingers through a mouthwatering finish.</p>
-          <div style="display: grid; gap: clamp(8px, 0.8vw, 14px)">
-            <h4 style="margin: 0; font-size: clamp(19px, 1.8vw, 34px); font-weight: 700">Quick Notes:</h4>
-            <div style="font-size: clamp(15px, 1.6vw, 30px); line-height: 1.65; display: grid; gap: clamp(4px, 0.4vw, 8px)">
-              <p style="margin: 0"><strong style="font-style: italic">Profile:</strong> Tropical fruit, juicy lime, and a crisp vein of stony minerality.</p>
-              <p style="margin: 0"><strong style="font-style: italic">Best Served:</strong> Chilled, the second the sun comes out and the music starts.</p>
-            </div>
-          </div>
-          <a href="where-to-buy.html" style="align-self: flex-start; background: #60b98f; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 1.5vw, 28px); padding: clamp(10px, 0.9vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.1vw, 20px); border-radius: 999px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Where to buy</a>
-        </div>
-      </div>
-    </sc-if>
-
-    <!-- ================= FOOTER (bottom of viewport 3) ================= -->
     <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 3; background: #60b98f; padding: clamp(56px, 6vw, 116px) clamp(20px, 5vw, 190px) clamp(40px, 4.7vw, 90px); box-sizing: border-box">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(20px, 3vw, 50px)">
         <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: #eeeee4">Brisa Bay</div>
@@ -513,9 +539,8 @@ class Component extends DCLogic {
     const flip = () => this.setState({ blendIndex: (i + 1) % 2 });
     return {
       play: (this.props.motion ?? true) ? 'running' : 'paused',
-      isBlend0: i === 0,
-      isBlend1: i === 1,
       blendAttr: String(i),
+      indexLabel: '0' + (i + 1) + ' / 02',
       fade0: i === 0 ? 1 : 0,
       fade1: i === 1 ? 1 : 0,
       hidden0: i !== 0,
@@ -526,7 +551,6 @@ class Component extends DCLogic {
       shift1: i === 1 ? 'none' : 'translateY(0.16em)',
       bottleShift0: i === 0 ? 'none' : 'translateY(-5%) scale(0.95)',
       bottleShift1: i === 1 ? 'none' : 'translateY(-5%) scale(0.95)',
-      arrowColor: i === 0 ? '#60b98f' : '#e6393a',
       prevBlend: flip,
       nextBlend: flip,
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
@@ -570,9 +594,8 @@ class Component extends DCLogic {
     stage: document.querySelector('[data-bb-blend-stage]'),
     copy: document.querySelector('[data-bb-stage-copy]'),
     row: document.querySelector('[data-bb-stage-row]'),
-    arrows: Array.from(document.querySelectorAll('[data-bb-stage-row] [role="button"]')),
-    veil: document.querySelector('[data-bb-blend-bottom-veil]'),
-    stageVeil: document.querySelector('[data-bb-blend-stage-veil]')
+    arrows: Array.from(document.querySelectorAll('[data-bb-stage-arrow]')),
+    veil: document.querySelector('[data-bb-blend-bottom-veil]')
   });
 
   const bind = () => {
@@ -601,13 +624,9 @@ class Component extends DCLogic {
     };
 
     if (!motionOn()) {
-      const { photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil, stageVeil } = els();
+      const { photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil } = els();
       [photo, heroCopy, heroTitle, scrollCue, stage, copy, row, veil].forEach(resetMotion);
       arrows.forEach(resetMotion);
-      // The stage veil only exists to lift the copy off the photo during the desktop scrub.
-      // Clearing its inline opacity would default it to 1, laying a scrim over the whole
-      // mobile hero — and the mobile stage already has its own solid background.
-      if (stageVeil) stageVeil.style.opacity = '0';
       if (stage) stage.classList.add('is-live');
       const onResize = () => { if (motionOn()) bind(); };
       window.addEventListener('resize', onResize);
@@ -627,7 +646,7 @@ class Component extends DCLogic {
 
     const apply = (p) => {
       const {
-        photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil, stageVeil
+        photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil
       } = els();
       if (!heroCopy || !stage) return;
 
@@ -665,9 +684,9 @@ class Component extends DCLogic {
 
       const deepen = ease(range(p, 0.2, 0.58));
       if (veil) veil.style.opacity = String(0.8 + deepen * 0.2);
-      if (stageVeil) stageVeil.style.opacity = String(deepen);
 
-      // Stage only begins once the headline has fully left the screen (exit completes at p = 0.34)
+      // Stage only begins once the headline has fully left the screen (exit completes at p = 0.34).
+      // It is an opaque plate, so this reads as a cut from photograph to product.
       const stageFade = ease(range(p, 0.36, 0.58));
       stage.style.opacity = String(stageFade);
       if (stageFade > 0.58) stage.classList.add('is-live');
@@ -693,12 +712,12 @@ class Component extends DCLogic {
           : `translate3d(0, ${y}vh, 0) scale(${scale})`;
       }
 
-      // Arrows settle last
+      // Prev/next settle last, rising onto the baseline rather than scaling up
       const arrowsIn = easeOut(range(p, 0.66, 0.88));
       arrows.forEach((btn, i) => {
         const t = clamp01(arrowsIn - i * 0.05);
         btn.style.opacity = String(t);
-        btn.style.transform = t >= 0.999 ? 'none' : `scale(${0.82 + t * 0.18})`;
+        btn.style.transform = t >= 0.999 ? 'none' : `translateY(${(1 - t) * 6}px)`;
       });
     };
 
