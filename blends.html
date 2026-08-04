@@ -372,6 +372,158 @@
       [data-bb-nav] { row-gap: 10px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
     }
+
+    /* ---- Pouring moments carousel (Graza-inspired editorial strip) ---- */
+    [data-bb-pour] {
+      position: relative;
+      z-index: 2;
+      background: #eeeee4;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(64px, 9vh, 120px) 0 clamp(56px, 7vh, 100px);
+      box-sizing: border-box;
+    }
+    [data-bb-pour-line],
+    [data-bb-pour-rail],
+    [data-bb-pour-foot],
+    [data-bb-footer-rise] {
+      will-change: opacity, transform;
+    }
+    /* Only promote the cards while they are still dealing in. */
+    [data-bb-pour][data-pour-in="0"] [data-bb-pour-card] {
+      will-change: opacity, transform;
+    }
+    [data-bb-pour-head] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: clamp(16px, 2vw, 28px);
+      padding: 0 clamp(20px, 5vw, 90px);
+      margin-bottom: clamp(28px, 3.6vh, 52px);
+      box-sizing: border-box;
+    }
+    [data-bb-pour-head] h2 {
+      margin: 0;
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(28px, 3.6vw, 64px);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #3c3a34;
+      white-space: nowrap;
+    }
+    [data-bb-pour-cta] {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #9ac21e;
+      color: #eeeee4;
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(16px, 1.45vw, 26px);
+      padding: clamp(10px, 0.85vw, 16px) clamp(22px, 2.2vw, 40px) clamp(12px, 1vw, 18px);
+      border-radius: 999px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.25s, background-color 0.25s, color 0.25s;
+    }
+    [data-bb-pour-cta]:hover {
+      background: #f5d732;
+      color: #3c3a34;
+      transform: scale(1.04);
+    }
+    [data-bb-pour-cta-mob] { display: none; }
+    [data-bb-pour-foot] {
+      display: flex;
+      justify-content: center;
+      margin-top: clamp(24px, 2.6vw, 40px);
+      padding: 0 clamp(20px, 5vw, 40px);
+    }
+    @keyframes bb-pour-marquee {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-50%, 0, 0); }
+    }
+    [data-bb-pour-rail] {
+      padding: 0;
+      box-sizing: border-box;
+    }
+    [data-bb-pour-window] {
+      width: 100%;
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    }
+    [data-bb-pour-track] {
+      display: flex;
+      align-items: flex-end;
+      width: max-content;
+      will-change: transform;
+      animation: bb-pour-marquee 52s linear infinite;
+    }
+    /* Held still until the scroll entrance puts the strip on stage. */
+    [data-bb-pour][data-pour-in="0"] [data-bb-pour-track] {
+      animation-play-state: paused;
+    }
+    [data-bb-pour-window]:has([data-bb-pour-card]:hover) [data-bb-pour-track],
+    [data-bb-pour-window]:has([data-bb-pour-card]:focus-within) [data-bb-pour-track] {
+      animation-play-state: paused;
+    }
+    [data-bb-pour-card] {
+      /* Width varies; height follows each photo's native ratio — no cropping */
+      flex: 0 0 auto;
+      width: clamp(200px, 20vw, 300px);
+      min-width: 0;
+      margin-right: clamp(14px, 1.5vw, 28px);
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+    [data-bb-pour-card][data-size="sm"] { width: clamp(200px, 19vw, 280px); }
+    [data-bb-pour-card][data-size="md"] { width: clamp(220px, 21vw, 310px); }
+    [data-bb-pour-card][data-size="lg"] { width: clamp(240px, 23vw, 340px); }
+    [data-bb-pour-card][data-size="wide"] { width: clamp(260px, 26vw, 380px); }
+    [data-bb-pour-card] .bb-pour-frame {
+      width: 100%;
+      overflow: hidden;
+      border-radius: clamp(14px, 1.4vw, 24px);
+      background: transparent;
+      line-height: 0;
+    }
+    [data-bb-pour-card] img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    [data-bb-pour-card]:hover img { transform: scale(1.03); }
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-pour-track] { animation: none; }
+    }
+    @media (max-width: 900px) {
+      [data-bb-pour] {
+        min-height: 0;
+        padding: clamp(48px, 8vh, 88px) 0 clamp(40px, 6vh, 72px);
+      }
+      [data-bb-pour-head] {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 clamp(20px, 5vw, 40px);
+        margin-bottom: clamp(28px, 4vh, 40px);
+      }
+      [data-bb-pour-head] h2 {
+        font-size: clamp(22px, 6.2vw, 34px);
+        text-align: center;
+      }
+      [data-bb-pour-cta-desk] { display: none; }
+      [data-bb-pour-cta-mob] { display: inline-flex; }
+      [data-bb-pour-card][data-size="sm"] { width: clamp(180px, 52vw, 230px); }
+      [data-bb-pour-card][data-size="md"] { width: clamp(195px, 56vw, 250px); }
+      [data-bb-pour-card][data-size="lg"] { width: clamp(210px, 60vw, 270px); }
+      [data-bb-pour-card][data-size="wide"] { width: clamp(230px, 68vw, 300px); }
+      [data-bb-pour-track] { animation-duration: 56s; }
+    }
   </style>
   <title>Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc</title>
   <meta name="description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
@@ -466,8 +618,34 @@
     </div>
   </div>
 
+  <!-- ================= PHOTO CAROUSEL ================= -->
+  <section data-bb-pour="" data-screen-label="Photo Carousel" aria-label="See what else we're pouring">
+    <div data-bb-pour-head="">
+      <h2 data-bb-pour-line="">See what else we're pouring:</h2>
+      <a data-bb-pour-line="" data-bb-pour-cta="" data-bb-pour-cta-desk="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener">Follow us on Instagram</a>
+    </div>
+
+    <div data-bb-pour-rail="">
+      <div data-bb-pour-window="">
+        <div data-bb-pour-track="">
+          <sc-for list="{{ pourShots }}" as="shot" hint-placeholder-count="12">
+            <a data-bb-pour-card="" data-size="{{ shot.size }}" href="{{ shot.href }}" target="_blank" rel="noopener" aria-label="{{ shot.alt }}">
+              <div class="bb-pour-frame">
+                <img src="{{ shot.src }}" alt="{{ shot.alt }}" width="{{ shot.w }}" height="{{ shot.h }}" loading="lazy">
+              </div>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div data-bb-pour-foot="">
+      <a data-bb-pour-cta="" data-bb-pour-cta-mob="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener">Follow us on Instagram</a>
+    </div>
+  </section>
+
   <!-- ================= FOOTER ================= -->
-  <div style="position: relative; z-index: 2; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
+  <div data-bb-footer-rise="" style="position: relative; z-index: 3; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
     <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 3; background: #60b98f; padding: clamp(56px, 6vw, 116px) clamp(20px, 5vw, 190px) clamp(40px, 4.7vw, 90px); box-sizing: border-box">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(20px, 3vw, 50px)">
         <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: #eeeee4">Brisa Bay</div>
@@ -546,7 +724,31 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;startBlend&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Chardonnay&quot;,&quot;Sauvignon Blanc&quot;],&quot;default&quot;:&quot;Chardonnay&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
 class Component extends DCLogic {
   state = { blendIndex: null, ageOk: false, faqOpen: false, gateDenied: false };
-  componentDidMount() { try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {} }
+  componentDidMount() {
+    try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
+  }
+  _pourShots() {
+    const ig = 'https://www.instagram.com/brisabaywines';
+    // Order: lifestyle → breather → graphic, alternating cool/warm so the loop never clumps.
+    return [
+      { src: 'assets/web2/pour/15-posts-july-artboard-3.png', alt: 'Friends toasting with Brisa Bay at a picnic', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/01-3cd17d63-fdfd-431d-9ae8-edb566f92859.jpg', alt: 'Bird over a Brisa Bay vineyard', href: ig, size: 'wide', w: 2304, h: 1536 },
+      { src: 'assets/web2/pour/06-julio-artboard-4.png', alt: 'Pouring Brisa Bay by the pool', href: ig, size: 'md', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/08-julio-artboard-8.png', alt: 'Brisa Bay week of bottles graphic', href: ig, size: 'sm', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/12-post-10.png', alt: 'Brisa Bay bottle balanced on a cap', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/02-7e7103b6-0a1e-4d89-b2e9-365755455338.jpg', alt: 'Sunset over the vineyard', href: ig, size: 'wide', w: 2306, h: 1536 },
+      { src: 'assets/web2/pour/04-julio-artboard-12.jpg', alt: 'Made for the moments you do not plan', href: ig, size: 'md', w: 1080, h: 1350 },
+      { src: 'assets/web2/pour/10-julio-jumping-wine.jpg', alt: 'Surreal Brisa Bay collage', href: ig, size: 'sm', w: 1080, h: 1350 },
+      { src: 'assets/web2/pour/09-julio-dia-del-queso-2.png', alt: 'Brisa Bay with cheese outdoors', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/07-julio-artboard-7.png', alt: 'The Brisa Times newspaper graphic', href: ig, size: 'md', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/16-img-6287.jpg', alt: 'Pouring Brisa Bay at the table', href: ig, size: 'sm', w: 854, h: 1280 },
+      { src: 'assets/web2/pour/11-julio-polaroid.png', alt: 'Sauvignon Blanc polaroid vineyard', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/14-posts-july-artboard-1.png', alt: 'Opening a bottle of Brisa Bay', href: ig, size: 'md', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/05-julio-artboard-17.png', alt: 'Brisa Bay Chardonnay on corks', href: ig, size: 'sm', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/03-julio-artboard-11.png', alt: 'Beach-day emoji sticker graphic', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/13-post-8.png', alt: 'Wine pouring from a polaroid into a glass', href: ig, size: 'md', w: 1081, h: 1351 }
+    ];
+  }
   index() {
     if (this.state.blendIndex !== null) return this.state.blendIndex;
     return (this.props.startBlend === 'Sauvignon Blanc') ? 1 : 0;
@@ -554,6 +756,9 @@ class Component extends DCLogic {
   renderVals() {
     const i = this.index();
     const flip = () => this.setState({ blendIndex: (i + 1) % 2 });
+    const base = this._pourShots();
+    // Duplicate the strip so the CSS marquee can loop seamlessly at -50%.
+    const pourShots = base.concat(base);
     return {
       play: (this.props.motion ?? true) ? 'running' : 'paused',
       blendAttr: String(i),
@@ -570,6 +775,7 @@ class Component extends DCLogic {
       bottleShift1: i === 1 ? 'none' : 'translateY(-5%) scale(0.95)',
       prevBlend: flip,
       nextBlend: flip,
+      pourShots,
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
@@ -788,6 +994,205 @@ class Component extends DCLogic {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
   const mo = new MutationObserver(() => start());
+  mo.observe(document.body, { childList: true, subtree: true });
+  setTimeout(() => mo.disconnect(), 8000);
+})();
+
+/* Scroll entrance when the photo carousel / footer viewports arrive */
+(function () {
+  const motionOn = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let raf = 0;
+  let cleanup = null;
+  let bound = false;
+
+  const clamp01 = (n) => Math.min(1, Math.max(0, n));
+  const range = (p, a, b) => clamp01((p - a) / Math.max(0.0001, b - a));
+  const ease = (t) => t * t * (3 - 2 * t);
+  const easeOut = (t) => 1 - Math.pow(1 - t, 2.4);
+
+  const reset = (node) => {
+    if (!node) return;
+    node.style.opacity = '';
+    node.style.transform = '';
+  };
+
+  const arrival = (el, startFrac, endFrac) => {
+    if (!el) return 1;
+    const h = window.innerHeight || 0;
+    // No usable viewport (hidden tab, zero-height frame): reveal rather than hide.
+    if (h < 2) return 1;
+    const top = el.getBoundingClientRect().top;
+    const start = h * startFrac;
+    const end = h * endFrac;
+    return clamp01((start - top) / Math.max(1, start - end));
+  };
+
+  const bind = () => {
+    if (cleanup) cleanup();
+    const section = document.querySelector('[data-bb-pour]');
+    const rail = document.querySelector('[data-bb-pour-rail]');
+    const foot = document.querySelector('[data-bb-pour-foot]');
+    const footer = document.querySelector('[data-bb-footer-rise]');
+    const lines = Array.from(document.querySelectorAll('[data-bb-pour-line]'));
+    const cards = Array.from(document.querySelectorAll('[data-bb-pour-card]'));
+    if (!section) return false;
+
+    const showAll = () => {
+      lines.forEach(reset);
+      cards.forEach(reset);
+      reset(rail);
+      reset(foot);
+      reset(footer);
+      if (section) section.style.transform = '';
+      section.setAttribute('data-pour-in', '1');
+    };
+
+    if (!motionOn()) {
+      showAll();
+      const onResize = () => { if (motionOn()) bind(); };
+      window.addEventListener('resize', onResize);
+      cleanup = () => window.removeEventListener('resize', onResize);
+      return true;
+    }
+
+    let running = false;
+
+    const apply = () => {
+      const cover = arrival(section, 0.92, 0.18);
+      const enter = ease(cover);
+
+      // Whole viewport rises in as it replaces the wine stage
+      section.style.transform = enter >= 0.999
+        ? 'none'
+        : `translate3d(0, ${(1 - enter) * 64}px, 0)`;
+
+      lines.forEach((el, i) => {
+        const t = easeOut(range(cover, 0.08 + i * 0.1, 0.42 + i * 0.1));
+        el.style.opacity = String(t);
+        el.style.transform = t >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - t) * 28}px, 0)`;
+      });
+
+      if (rail) {
+        // The rail only rises; the cards below own the fade, so the two
+        // don't stack into a muddy double dissolve.
+        const t = easeOut(range(cover, 0.28, 0.78));
+        rail.style.opacity = '';
+        rail.style.transform = t >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - t) * 48}px, 0)`;
+      }
+
+      // Cards deal in left-to-right: a card's delay follows how far right it
+      // sits in the viewport, so the strip assembles itself as you arrive.
+      if (cards.length) {
+        const vw = window.innerWidth || 1;
+        for (let i = 0; i < cards.length; i++) {
+          const card = cards[i];
+          const x = card.getBoundingClientRect().left;
+          if (x > vw * 1.15) continue; // still parked off-stage; it lands revealed
+          const delay = clamp01(x / vw) * 0.3;
+          const t = easeOut(range(cover, 0.3 + delay, 0.72 + delay));
+          card.style.opacity = String(t);
+          card.style.transform = t >= 0.999
+            ? 'none'
+            : `translate3d(0, ${(1 - t) * 34}px, 0) scale(${0.94 + t * 0.06})`;
+        }
+      }
+
+      // Hold the marquee still until the strip is on stage, then let it glide.
+      section.setAttribute('data-pour-in', cover > 0.32 ? '1' : '0');
+
+      if (foot) {
+        const t = easeOut(range(cover, 0.55, 0.95));
+        foot.style.opacity = String(t);
+        foot.style.transform = t >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - t) * 22}px, 0)`;
+      }
+
+      if (footer) {
+        const f = ease(arrival(footer, 0.96, 0.35));
+        footer.style.opacity = String(Math.max(0.35, f));
+        footer.style.transform = f >= 0.999
+          ? 'none'
+          : `translate3d(0, ${(1 - f) * 40}px, 0)`;
+      }
+    };
+
+    const tick = () => {
+      apply();
+      running = false;
+      raf = 0;
+    };
+
+    const onScroll = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      if (!motionOn()) { bind(); return; }
+      onScroll();
+    };
+
+    // The reveal is driven by animation frames, which a restored background
+    // tab can starve — that would strand the section as a blank cream screen.
+    // IntersectionObserver fires without frames, so once the section all but
+    // fills the viewport we guarantee it is shown. By then the scroll-linked
+    // pass has normally finished anyway, which makes this a no-op.
+    let io = null;
+    let rescue = 0;
+    if ('IntersectionObserver' in window) {
+      const stalled = () => {
+        const probe = lines[0] || rail;
+        return probe ? Number(probe.style.opacity || 1) < 0.5 : false;
+      };
+      io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.intersectionRatio < 0.85) continue;
+          // Give the frame-driven pass a moment; only step in if it never ran.
+          clearTimeout(rescue);
+          rescue = setTimeout(() => { if (stalled()) showAll(); }, 400);
+        }
+      }, { threshold: [0.85] });
+      io.observe(section);
+    }
+
+    apply();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    cleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      if (io) io.disconnect();
+      io = null;
+      clearTimeout(rescue);
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      running = false;
+    };
+    return true;
+  };
+
+  const start = () => {
+    if (bound) return;
+    if (bind()) {
+      bound = true;
+      return;
+    }
+    requestAnimationFrame(start);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+  const mo = new MutationObserver(() => {
+    if (!document.querySelector('[data-bb-pour]')) return;
+    bound = false;
+    start();
+  });
   mo.observe(document.body, { childList: true, subtree: true });
   setTimeout(() => mo.disconnect(), 8000);
 })();
