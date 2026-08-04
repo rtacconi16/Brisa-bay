@@ -33,61 +33,61 @@ FALLBACK_MOMENTS = [
         "id": "local-1",
         "src": "assets/web2/story-photo.jpg",
         "alt": "Friends on a beach blanket pouring Brisa Bay Chardonnay",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-2",
         "src": "assets/web2/collage-a.jpg",
         "alt": "Friends clinking glasses of Brisa Bay over a picnic blanket",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-3",
         "src": "assets/web2/collage-b.jpg",
         "alt": "A table set with Brisa Bay bottles, white wine and small plates",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-4",
         "src": "assets/web2/collage-c.jpg",
         "alt": "A pool float afternoon with a bottle of Brisa Bay Sauvignon Blanc",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-5",
         "src": "assets/web2/better-together.jpg",
         "alt": "Sharing Brisa Bay together outdoors",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-6",
         "src": "assets/web2/every-occasion.jpg",
         "alt": "Brisa Bay for an easy, unplanned occasion",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-7",
         "src": "assets/web2/freshness-first.jpg",
         "alt": "Chilled bottles of Brisa Bay held up against a blue sky",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-8",
         "src": "assets/web2/intro-photo.jpg",
         "alt": "An afternoon pour of Brisa Bay in the sun",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-9",
         "src": "assets/web2/keeping-simple.jpg",
         "alt": "Keeping it simple with Brisa Bay",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
         "id": "local-10",
         "src": "assets/web2/vibe-chardonnay.jpg",
         "alt": "Brisa Bay Chardonnay chilling by the pool",
-        "permalink": "https://www.instagram.com/brisabay",
+        "permalink": "https://www.instagram.com/brisabaywines",
     },
 ]
 
@@ -116,7 +116,7 @@ def _configured() -> bool:
 
 def _caption_alt(caption: str | None) -> str:
     if not caption:
-        return "A Bottled Moment from @brisabay on Instagram"
+        return "A Bottled Moment from @brisabaywines on Instagram"
     one_line = " ".join(caption.split())
     return one_line[:140] + ("…" if len(one_line) > 140 else "")
 
@@ -138,7 +138,7 @@ def _normalize_media(item: dict) -> dict | None:
         "id": item.get("id") or src,
         "src": src,
         "alt": _caption_alt(item.get("caption")),
-        "permalink": item.get("permalink") or "https://www.instagram.com/brisabay",
+        "permalink": item.get("permalink") or "https://www.instagram.com/brisabaywines",
         "mediaType": media_type or "IMAGE",
         "timestamp": item.get("timestamp"),
     }
