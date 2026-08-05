@@ -119,7 +119,7 @@
                                             rgba(45,45,42,0.42) 70%, rgba(45,45,42,0.30) 100%);
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr) auto;
       column-gap: clamp(12px, 1.5vw, 28px);
       row-gap: clamp(14px, 2.2vh, 30px);
       padding: clamp(78px, 11vh, 126px) clamp(20px, 4.7vw, 90px) clamp(24px, 3.4vh, 46px);
@@ -143,20 +143,12 @@
       text-shadow: 0 1px 4px rgba(45, 45, 42, 0.9);
     }
 
-    [data-bb-stage-meta] {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding-bottom: clamp(10px, 1.2vh, 18px);
-      border-bottom: 1px solid rgba(238, 238, 228, 0.24);
-    }
-
     [data-bb-stage-copy] {
-      grid-column: 1 / span 6;
-      grid-row: 2;
+      /* Seven columns, not six: the extra track closes the dead band that used
+         to sit between the copy and the bottle, and gives the display type the
+         width it needs to grow. */
+      grid-column: 1 / span 7;
+      grid-row: 1;
       display: grid;
       align-content: center;
       min-width: 0;
@@ -169,43 +161,53 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: clamp(10px, 1.3vh, 20px);
+      gap: clamp(12px, 1.8vh, 28px);
       transition: opacity 0.42s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
     }
+    /* Both wines have to occupy the same frame, so switching between them moves
+       nothing: the name reserves two lines and sits on the lower one, and the
+       spec table is pinned to the floor of the panel. Whatever each wine's copy
+       does in between, the four blocks start at the same y. */
     [data-bb-stage-copy] h2 {
       margin: 0;
       font-family: 'Old Newspaper', serif;
-      font-size: clamp(34px, 5vw, 88px);
+      /* Height-aware as well as width-aware: two lines of display type has to
+         fit the column on a short, wide window too. */
+      font-size: clamp(34px, min(7.4vw, 13vh), 150px);
       line-height: 0.94;
+      min-height: 1.88em;
+      display: grid;
+      align-content: end;
       font-weight: 400;
       color: #eeeee4;
       text-wrap: balance;
     }
     [data-bb-stage-copy] p {
       margin: 0;
-      font-size: clamp(15px, 1.15vw, 21px);
-      line-height: 1.55;
+      font-size: clamp(15px, min(1.72vw, 3.1vh), 34px);
+      line-height: 1.56;
       color: rgba(238, 238, 228, 0.94);
       text-wrap: pretty;
-      max-width: 70ch;
+      /* Wide enough to use the column, short of a measure that reads as a wall. */
+      max-width: 56ch;
     }
     /* Spec list — dry, tabular, hairline-ruled. */
     [data-bb-spec] {
       margin: clamp(2px, 0.6vh, 8px) 0 0;
       width: 100%;
-      max-width: 72ch;
       border-top: 1px solid rgba(238, 238, 228, 0.24);
     }
+    [data-bb-stage-copy] [data-bb-spec] { margin-top: auto; }
     [data-bb-spec] > div {
       display: grid;
       grid-template-columns: minmax(88px, 0.32fr) 1fr;
       gap: clamp(10px, 1.2vw, 22px);
       align-items: baseline;
-      padding: clamp(7px, 0.9vh, 12px) 0;
+      padding: clamp(9px, 1.6vh, 24px) 0;
       border-bottom: 1px solid rgba(238, 238, 228, 0.24);
     }
     [data-bb-spec] dt {
-      font-size: clamp(11px, 0.76vw, 14px);
+      font-size: clamp(11px, 0.85vw, 17px);
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: rgba(238, 238, 228, 0.58);
@@ -213,8 +215,11 @@
     }
     [data-bb-spec] dd {
       margin: 0;
-      font-size: clamp(14px, 1.02vw, 19px);
+      font-size: clamp(14px, min(1.2vw, 2.2vh), 24px);
       line-height: 1.45;
+      /* Two lines reserved: one wine's value wraps where the other's does not,
+         and the rows have to keep the same height either way. */
+      min-height: 2.9em;
       color: rgba(238, 238, 228, 0.96);
       text-wrap: pretty;
     }
@@ -222,7 +227,7 @@
     /* Bottle column — sits on a hairline so it is standing, not floating. */
     [data-bb-blend-stage] [data-bb-stage-row] {
       grid-column: 8 / span 5;
-      grid-row: 2;
+      grid-row: 1;
       min-width: 0;
       display: grid;
       grid-template-rows: minmax(0, 1fr) auto;
@@ -244,7 +249,7 @@
     /* Typographic prev/next — no circles. */
     [data-bb-stage-nav] {
       grid-column: 1 / -1;
-      grid-row: 3;
+      grid-row: 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -337,30 +342,38 @@
         pointer-events: auto !important;
         min-height: 70svh;
         grid-template-columns: minmax(0, 1fr) !important;
-        grid-template-rows: auto auto auto auto !important;
+        grid-template-rows: auto auto auto !important;
         row-gap: 20px !important;
         padding: clamp(24px, 4vh, 40px) clamp(18px, 4vw, 28px) 32px !important;
         background: #2d2d2a;
       }
-      [data-bb-stage-meta],
-      [data-bb-stage-nav] { grid-column: 1 !important; }
-      [data-bb-stage-copy] {
+      /* Bottle, then copy, then the prev/next rule at the foot. */
+      [data-bb-stage-nav] {
         grid-column: 1 !important;
         grid-row: 3 !important;
+      }
+      [data-bb-stage-copy] {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
         max-width: none !important;
         min-width: 0 !important;
       }
+      /* Nothing is sharing a frame here — the stage is content-height and
+         stacked — so drop the reserved space rather than spend it. */
       [data-bb-stage-copy] h2 {
         font-size: clamp(34px, 11vw, 56px) !important;
         line-height: 1 !important;
+        min-height: 0 !important;
       }
+      [data-bb-spec] dd { min-height: 0 !important; }
+      [data-bb-stage-copy] [data-bb-spec] { margin-top: 0 !important; }
       [data-bb-stage-copy] p,
       [data-bb-spec] {
         max-width: none !important;
       }
       [data-bb-blend-stage] [data-bb-stage-row] {
         grid-column: 1 !important;
-        grid-row: 2 !important;
+        grid-row: 1 !important;
         height: auto !important;
         min-height: clamp(300px, 66vw, 420px) !important;
       }
@@ -390,8 +403,7 @@
     }
     [data-bb-pour-line],
     [data-bb-pour-rail],
-    [data-bb-pour-foot],
-    [data-bb-footer-rise] {
+    [data-bb-pour-foot] {
       will-change: opacity, transform;
     }
     /* Only promote the cards while they are still dealing in. */
@@ -412,7 +424,9 @@
       align-items: center;
       align-content: center;
       justify-content: center;
-      gap: clamp(16px, 1.9vw, 36px);
+      /* Wider than it was under the pill: without the button's own padding the
+         link needs the air, or it reads as a continuation of the heading. */
+      gap: clamp(20px, 2.6vw, 50px);
       padding: 0 clamp(20px, 5vw, 90px);
       box-sizing: border-box;
     }
@@ -425,26 +439,37 @@
       color: #3c3a34;
       white-space: nowrap;
     }
+    /* The mark alone — no chrome, no label — drawn in the heading's ink on the
+       cream ground. The name of the network lives in the aria-label. */
     [data-bb-pour-cta] {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: #9ac21e;
-      color: #eeeee4;
-      font-family: 'Old Newspaper', serif;
-      font-size: clamp(16px, 1.45vw, 26px);
-      padding: clamp(10px, 0.85vw, 16px) clamp(22px, 2.2vw, 40px) clamp(12px, 1vw, 18px);
-      border-radius: 999px;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: transform 0.25s, background-color 0.25s, color 0.25s;
-    }
-    [data-bb-pour-cta]:hover {
-      background: #f5d732;
       color: #3c3a34;
-      transform: scale(1.04);
+      text-decoration: none;
     }
-    /* The desktop pill lives in the head lockup, so the foot is mobile-only
+    /* Sitting inside the heading now: its own word space, seated optically on
+       the line rather than hanging off the inline box's bottom edge. */
+    [data-bb-pour-head] h2 [data-bb-pour-cta] {
+      margin-left: clamp(10px, 1.1vw, 22px);
+      vertical-align: middle;
+    }
+    [data-bb-pour-cta] svg {
+      width: clamp(28px, 2.6vw, 46px);
+      height: clamp(28px, 2.6vw, 46px);
+      flex: 0 0 auto;
+      transition: color 0.25s, transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1);
+    }
+    [data-bb-pour-cta]:hover svg {
+      color: #e6393a;
+      transform: scale(1.12);
+    }
+    [data-bb-pour-cta]:focus-visible {
+      outline: 2px solid #9ac21e;
+      outline-offset: 6px;
+      border-radius: 4px;
+    }
+    /* The desktop link lives in the head lockup, so the foot is mobile-only
        and must not reserve height on wide screens. */
     [data-bb-pour-cta-mob] { display: none; }
     [data-bb-pour-foot] { display: none; }
@@ -578,11 +603,6 @@
       </div>
 
       <div data-bb-blend-stage="" data-blend="{{ blendAttr }}">
-        <div data-bb-stage-meta="">
-          <span data-bb-label="">Our Wines</span>
-          <span data-bb-label="">Napa Valley, California</span>
-        </div>
-
         <div data-bb-stage-copy="">
           <div data-bb-copy-panel="" style="opacity: {{ fade0 }}; transform: {{ shift0 }}; pointer-events: {{ pointer0 }}" aria-hidden="{{ hidden0 }}">
             <h2>Chardonnay</h2>
@@ -634,8 +654,7 @@
   <!-- ================= PHOTO CAROUSEL ================= -->
   <section data-bb-pour="" data-screen-label="Photo Carousel" aria-label="See what else we're pouring">
     <div data-bb-pour-head="">
-      <h2 data-bb-pour-line="">See what else we're pouring:</h2>
-      <a data-bb-pour-line="" data-bb-pour-cta="" data-bb-pour-cta-desk="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener">Follow us on Instagram</a>
+      <h2 data-bb-pour-line="">See what else we're pouring<a data-bb-pour-cta="" data-bb-pour-cta-desk="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Follow us on Instagram" title="Follow us on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.6"></rect><circle cx="12" cy="12" r="4.7"></circle><circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none"></circle></svg></a></h2>
     </div>
 
     <div data-bb-pour-rail="">
@@ -653,12 +672,12 @@
     </div>
 
     <div data-bb-pour-foot="">
-      <a data-bb-pour-cta="" data-bb-pour-cta-mob="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener">Follow us on Instagram</a>
+      <a data-bb-pour-cta="" data-bb-pour-cta-mob="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Follow us on Instagram" title="Follow us on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.6"></rect><circle cx="12" cy="12" r="4.7"></circle><circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none"></circle></svg></a>
     </div>
   </section>
 
   <!-- ================= FOOTER ================= -->
-  <div data-bb-footer-rise="" style="position: relative; z-index: 3; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
+  <div style="position: relative; z-index: 3; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
     <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 3; background: #60b98f; padding: clamp(56px, 6vw, 116px) clamp(20px, 5vw, 190px) clamp(40px, 4.7vw, 90px); box-sizing: border-box">
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(20px, 3vw, 50px)">
         <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: #eeeee4">Brisa Bay</div>
@@ -1011,7 +1030,7 @@ class Component extends DCLogic {
   setTimeout(() => mo.disconnect(), 8000);
 })();
 
-/* Scroll entrance when the photo carousel / footer viewports arrive */
+/* Scroll entrance when the photo carousel arrives */
 (function () {
   const motionOn = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1046,7 +1065,6 @@ class Component extends DCLogic {
     const section = document.querySelector('[data-bb-pour]');
     const rail = document.querySelector('[data-bb-pour-rail]');
     const foot = document.querySelector('[data-bb-pour-foot]');
-    const footer = document.querySelector('[data-bb-footer-rise]');
     const lines = Array.from(document.querySelectorAll('[data-bb-pour-line]'));
     const cards = Array.from(document.querySelectorAll('[data-bb-pour-card]'));
     if (!section) return false;
@@ -1056,7 +1074,6 @@ class Component extends DCLogic {
       cards.forEach(reset);
       reset(rail);
       reset(foot);
-      reset(footer);
       if (section) section.style.transform = '';
       section.setAttribute('data-pour-in', '1');
     };
@@ -1126,13 +1143,6 @@ class Component extends DCLogic {
           : `translate3d(0, ${(1 - t) * 22}px, 0)`;
       }
 
-      if (footer) {
-        const f = ease(arrival(footer, 0.96, 0.35));
-        footer.style.opacity = String(Math.max(0.35, f));
-        footer.style.transform = f >= 0.999
-          ? 'none'
-          : `translate3d(0, ${(1 - f) * 40}px, 0)`;
-      }
     };
 
     const tick = () => {
