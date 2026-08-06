@@ -378,7 +378,7 @@
           <p style="margin: 0">Brisa Bay</p>
           <p style="margin: 0">Napa Valley, California</p>
           <p style="margin: 0">Email: <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a></p>
-          <p style="margin: 0">Privacy Officer: <a href="mailto:privacy@brisabay.com" style="color: #e6393a">privacy@brisabay.com</a></p>
+          <p style="margin: 0">Privacy Officer: <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a></p>
         </div>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(15px, 1.4vw, 26px); line-height: 1.55; color: #7a766a">Please allow 5-7 business days for a response to your privacy request.</p>
       </div>
@@ -414,12 +414,12 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;hello@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;info@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
 class Component extends DCLogic {
   renderVals() {
     return {
       showToc: this.props.showToc ?? true,
-      contactEmail: this.props.contactEmail ?? 'hello@brisabay.com'
+      contactEmail: this.props.contactEmail ?? 'info@brisabay.com'
     };
   }
 }

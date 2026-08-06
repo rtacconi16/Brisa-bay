@@ -267,12 +267,12 @@
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;hello@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;info@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
 class Component extends DCLogic {
   renderVals() {
     return {
       showToc: this.props.showToc ?? true,
-      contactEmail: this.props.contactEmail ?? 'hello@brisabay.com'
+      contactEmail: this.props.contactEmail ?? 'info@brisabay.com'
     };
   }
 }
