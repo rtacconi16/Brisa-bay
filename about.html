@@ -154,14 +154,17 @@
       max-width: 100%;
       max-height: min(72vh, 100%);
       min-height: 0;
-      display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       transform-origin: 50% 60%;
     }
     [data-bb-way-photo-frame] {
       display: block;
-      width: 100%;
-      aspect-ratio: 2 / 3;
+      width: fit-content;
+      max-width: 100%;
       max-height: min(72vh, 100%);
+      line-height: 0;
       overflow: hidden;
       border-radius: 48px;
       background: #eeeee4;
@@ -174,9 +177,11 @@
     }
     [data-bb-way-photo] img {
       display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: min(72vh, 100%);
+      object-fit: contain;
       object-position: center;
       border-radius: 48px;
     }
@@ -300,48 +305,72 @@
       [data-bb-roots] { padding: clamp(64px, 10vh, 96px) 16px 24px !important; }
       [data-bb-roots-card] { padding: clamp(22px, 4vh, 32px) 18px !important; gap: 14px !important; }
       [data-bb-roots-card] p { font-size: clamp(16px, 4.2vw, 19px) !important; line-height: 1.45 !important; }
-      /* Portrait screens can't fit a 2:3 photo card *beside* the copy at any
-         readable size, so the desktop row stacks: photo on top, copy under it,
-         the pair centred in the panel. Same elements, same order, same motion. */
+      /* Portrait: photo stack on top, copy under it. Stamp floats over the photos
+         so we don't reserve a tall empty band above them. */
       [data-bb-way-panel] {
-        padding: calc(clamp(118px, 34vw, 168px) + clamp(12px, 2vh, 28px) + 10px) 18px 46px !important;
+        padding: calc(clamp(10px, 1.6vh, 18px) + 32px) 18px 46px !important;
+        min-height: 0 !important;
       }
       [data-bb-way-row] {
         grid-template-columns: minmax(0, 1fr) !important;
-        grid-auto-rows: min-content !important;
-        align-content: center !important;
+        grid-template-rows: auto auto !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        align-content: start !important;
         justify-items: center !important;
-        gap: clamp(22px, 6vw, 32px) !important;
+        gap: clamp(28px, 6vw, 40px) !important;
       }
       [data-bb-way-photo] {
-        /* The 33svh term keeps the card from going square on short phones,
-           where max-height would otherwise crop a full-width 2:3 frame. */
-        width: min(72vw, 300px, 33svh) !important;
-        max-height: 44svh !important;
+        /* Sit high in the viewport; leave room below for title + body. */
+        width: min(94vw, 460px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: min(62svh, calc(100svh - 220px)) !important;
+        min-height: 0 !important;
+        align-self: start !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
       }
       [data-bb-way-photo-frame] {
-        max-height: 44svh !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
         border-radius: 32px !important;
         overflow: hidden !important;
+        background: transparent !important;
+        box-shadow: none !important;
       }
       [data-bb-way-photo] img {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: min(62svh, calc(100svh - 220px)) !important;
         border-radius: 32px !important;
-        object-fit: cover !important;
+        object-fit: contain !important;
+        box-shadow: 0 22px 40px rgba(60, 58, 52, 0.2);
       }
       [data-bb-way-copy] {
         width: 100% !important;
         padding: 0 !important;
+        margin-top: 45px !important;
         gap: clamp(8px, 2.2vw, 14px) !important;
         justify-content: flex-start !important;
+        flex-shrink: 0 !important;
+        align-self: stretch !important;
       }
       [data-bb-way-title] { font-size: clamp(24px, 6.4vw, 34px) !important; line-height: 1.1 !important; }
-      [data-bb-way-body] { font-size: clamp(16px, 4.4vw, 20px) !important; line-height: 1.5 !important; max-width: 46ch !important; }
+      [data-bb-way-body] { font-size: clamp(15px, 4.1vw, 19px) !important; line-height: 1.45 !important; max-width: 46ch !important; }
       [data-bb-way-progress] { right: 16px !important; bottom: 14px !important; }
       [data-bb-stamp] {
         width: clamp(118px, 34vw, 168px) !important;
         left: auto !important;
         right: 6px !important;
-        top: clamp(12px, 2vh, 28px) !important;
+        top: clamp(8px, 1.4vh, 18px) !important;
+        z-index: 50 !important;
       }
       /* Keep the wordmark the same fraction of the stamp as on desktop — the
          stamp is clamp(118px, 34vw, 168px) here, so track it at ~15%. */
@@ -426,7 +455,7 @@
       <img data-bb-deco="" src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
 
       <!-- rotating stamp -->
-      <div data-bb-stamp="" style="position: absolute; right: clamp(-14px, 1.5vw, 46px); top: clamp(8px, 2vh, 28px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 7">
+      <div data-bb-stamp="" style="position: absolute; right: clamp(-14px, 1.5vw, 46px); top: clamp(8px, 2vh, 28px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 50">
         <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
           <img src="assets/brush/asterisk-sage-centered.png" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
         </div>
