@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,7 @@
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -406,7 +407,23 @@
       [data-bb-way-panel] { padding: 0 !important; }
       [data-bb-way-photo], [data-bb-way-photo-frame] { max-height: none !important; }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>About Brisa Bay</title>
   <meta name="description" content="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine.">
   <meta name="theme-color" content="#60b98f">
@@ -421,6 +438,7 @@
 </helmet>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: clip; font-family: 'Garamond Pro', serif; color: #606060">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
   <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden">
@@ -546,6 +564,8 @@
   </div>
 
   <!-- ================= FOOTER (bottom of the same viewport) ================= -->
+  </main>
+
   <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 6; flex: none; background: #60b98f; padding: clamp(24px, 3vw, 54px) clamp(20px, 5vw, 190px) clamp(18px, 2vw, 36px); box-sizing: border-box">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(20px, 3vw, 50px)">
       <div style="font-size: clamp(40px, 5.4vw, 100px); line-height: 1; color: #eeeee4">Brisa Bay</div>

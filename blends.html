@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,6 +8,7 @@
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -550,7 +551,23 @@
       [data-bb-pour] { --pour-w: clamp(220px, 58vw, 300px); }
       [data-bb-pour-track] { animation-duration: 56s; }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc</title>
   <meta name="description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
   <meta name="theme-color" content="#60b98f">
@@ -565,6 +582,7 @@
 </helmet>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow-x: clip; font-family: 'Garamond Pro', serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= HERO → BOTTLE STAGE (pinned scrub) ================= -->
   <div data-bb-blend-scroll="" data-screen-label="Hero to Wines">
@@ -663,6 +681,8 @@
       <a data-bb-pour-cta="" data-bb-pour-cta-mob="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Follow us on Instagram" title="Follow us on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.6"></rect><circle cx="12" cy="12" r="4.7"></circle><circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none"></circle></svg></a>
     </div>
   </section>
+
+  </main>
 
   <!-- ================= FOOTER ================= -->
   <div style="position: relative; z-index: 3; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,6 +10,7 @@
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -478,7 +479,23 @@
         right: 12px !important;
       }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>Store Locator | Brisa Bay</title>
   <meta name="description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
   <meta name="theme-color" content="#3c3a34">
@@ -493,6 +510,7 @@
 </helmet>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; font-family: 'Garamond Pro', Garamond, serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= LOCATOR VIEWPORT ================= -->
   <div data-screen-label="Store Locator" data-bb-locator="" style="height: 100svh; min-height: 640px; display: flex; flex-direction: column; overflow: hidden">
@@ -615,6 +633,8 @@
     </div>
   </div>
 
+  </main>
+
   <!-- ================= FOOTER ================= -->
   <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(56px, 10vw, 190px) clamp(20px, 5vw, 190px) clamp(40px, 5vw, 90px); box-sizing: border-box">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(30px, 5vw, 80px)">
@@ -648,7 +668,7 @@
 
 <!-- ================= FAQ MODAL ================= -->
 <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
+  <div role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
       <div onClick="{{ closeFaq }}" onKeyDown="{{ closeFaqKey }}" role="button" tabindex="0" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
       <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
@@ -666,7 +686,7 @@
 
 <!-- ================= AGE GATE ================= -->
 <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" aria-label="Age verification" style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
+  <div role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
       <div style="font-size: clamp(24px, 2.3vw, 44px); color: #57544a; margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
       <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">
@@ -1022,8 +1042,19 @@ class Component extends DCLogic {
       this.setState({ areaOffer: b, areaOffscreen: offscreen });
     };
     document.addEventListener('store-map-moved', this._onMapMoved);
+    // Escape closes the FAQ. It deliberately does NOT close the age gate —
+    // dismissing a legal check with a keypress would defeat the point of it.
+    this._onKeyDown = (e) => {
+      if (e.key !== 'Escape' || !this.state.faqOpen) return;
+      e.preventDefault();
+      this.setState({ faqOpen: false });
+    };
+    document.addEventListener('keydown', this._onKeyDown);
     this._readUrlState();
     this._resumeLocationIfGranted();
+    // The gate is up on first paint, before any state change would trigger an
+    // update, so seal the page now rather than waiting for one.
+    setTimeout(() => this._syncModal(), 0);
   }
 
   /** ?near / ?type / ?radius / ?store make a result shareable, survivable
@@ -1090,6 +1121,48 @@ class Component extends DCLogic {
       this._scrollStoreIntoView(this.state.active);
     }
     this._writeUrlState();
+    this._syncModal();
+  }
+
+  /** Both overlays carried aria-modal="true" while the whole page stayed
+     tabbable behind them — 234 focusable elements, focus never entering the
+     dialog. For the age gate that is not just an accessibility defect: a
+     keyboard user could tab straight past the check into the site.
+
+     `inert` on the page container is what actually fixes it. It removes
+     everything behind from the tab order, from hit testing and from the
+     accessibility tree in one go, so no hand-rolled focus trap is needed. */
+  _syncModal() {
+    const gateOpen = (this.props.ageGate ?? true) && !this.state.ageOk;
+    const faqOpen = !!this.state.faqOpen;
+    const open = gateOpen || faqOpen;
+    const key = gateOpen ? 'gate' : (faqOpen ? 'faq' : null);
+    if (key === this._modalKey) return;
+
+    const page = document.getElementById('bb-content');
+    const foot = document.querySelector('[role="contentinfo"]');
+    const skip = document.querySelector('[data-bb-skiplink]');
+
+    if (open) {
+      if (!this._modalKey) this._returnFocusTo = document.activeElement;
+      [page, foot, skip].forEach((el) => { if (el) el.inert = true; });
+      document.body.style.overflow = 'hidden';
+      // Focus the dialog itself rather than its first control: a screen reader
+      // then reads the dialog's label and purpose before its options.
+      setTimeout(() => {
+        const dlg = document.querySelector('[role="dialog"]');
+        if (!dlg) return;
+        if (!dlg.hasAttribute('tabindex')) dlg.setAttribute('tabindex', '-1');
+        dlg.focus();
+      }, 0);
+    } else {
+      [page, foot, skip].forEach((el) => { if (el) el.inert = false; });
+      document.body.style.overflow = '';
+      const back = this._returnFocusTo;
+      this._returnFocusTo = null;
+      if (back && back.focus) setTimeout(() => back.focus(), 0);
+    }
+    this._modalKey = key;
   }
   componentWillUnmount() {
     document.removeEventListener('store-select', this._onPick);
@@ -1097,8 +1170,15 @@ class Component extends DCLogic {
     document.removeEventListener('store-locate', this._onLocate);
     document.removeEventListener('store-hover', this._onMapHover);
     document.removeEventListener('store-map-moved', this._onMapMoved);
+    document.removeEventListener('keydown', this._onKeyDown);
     clearTimeout(this._geoTimer);
     clearTimeout(this._urlTimer);
+    // Never leave the page inert behind an unmounted dialog.
+    ['bb-content'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.inert = false;
+    });
+    document.body.style.overflow = '';
   }
 
   _map() { return document.querySelector('store-map'); }
