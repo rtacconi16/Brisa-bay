@@ -56,6 +56,16 @@
       limit: 8
     },
 
+    // Instrumentation. `sink: null` keeps every event in the browser, which is
+    // the default so nothing ships anywhere by accident. Set it to a
+    // first-party collector URL, or to a function to hand events to whichever
+    // analytics provider is chosen. Never put a third-party endpoint here
+    // without checking it against privacy.html.
+    analytics: {
+      sink: null,
+      debug: false
+    },
+
     // Fallback view and the radius options offered in the toolbar.
     homeView: { center: [26.6, -80.4], zoom: 8 },
     radiusOptions: [0, 10, 25, 50, 100]

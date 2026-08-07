@@ -5,8 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
-<script src="./locator-config.js?v=1"></script>
+<script src="./locator-config.js?v=2"></script>
 <script src="./locator-util.js?v=1"></script>
+<script src="./locator-analytics.js?v=1"></script>
 </head>
 <body>
 <x-dc>
@@ -572,7 +573,7 @@
             <sc-if value="{{ outOfRange }}" hint-placeholder-val="{{ false }}">
               <div data-bb-ask="">
                 <div data-bb-ask-copy="">Want Brisa Bay in {{ askPlace }}? Tell us and we&rsquo;ll pass it to our distributors.</div>
-                <a data-bb-ask-link="" href="{{ askMailto }}">Request a stockist</a>
+                <a data-bb-ask-link="" href="{{ askMailto }}" onClick="{{ onAskClick }}">Request a stockist</a>
               </div>
             </sc-if>
             <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
@@ -1106,6 +1107,38 @@ class Component extends DCLogic {
 
   _map() { return document.querySelector('store-map'); }
 
+  _track(name, props) {
+    if (window.BBAnalytics) window.BBAnalytics.track(name, props);
+  }
+
+  /** Report a settled search once the user stops typing, not per keystroke, and
+     record whether it found anything. Zero-result searches are the point. */
+  _trackSearch() {
+    clearTimeout(this._trackTimer);
+    this._trackTimer = setTimeout(() => {
+      const q = this.state.query.trim();
+      if (q.length < 2) return;
+      const { matches } = this._filteredStores();
+      const nearest = matches.length && matches[0].mi != null ? Math.round(matches[0].mi) : null;
+      this._track('locator_search', {
+        query: q.toLowerCase().slice(0, 80),
+        results: matches.length,
+        nearest_mi: nearest,
+        geo: this.state.geoStatus,
+        type_filter: this.state.typeFilter || null,
+        radius: this.state.radius || null
+      });
+      if (!matches.length || (nearest != null && nearest > OUT_OF_RANGE_MI)) {
+        // The commercially interesting one: someone looked, and we are not there.
+        this._track('locator_gap', {
+          query: q.toLowerCase().slice(0, 80),
+          place: this.state.searchLoc ? this.state.searchLoc.label : null,
+          nearest_mi: nearest
+        });
+      }
+    }, 1200);
+  }
+
   /** Every control here is a div[role=button], so Enter/Space have to be wired
      by hand to match what a real <button> would do. */
   _activate(fn) {
@@ -1151,6 +1184,8 @@ class Component extends DCLogic {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        // Grant/deny rate only — never the coordinates themselves.
+        this._track('locator_geolocation', { outcome: 'granted' });
         this.setState({ userLoc: loc, locStatus: 'ready' });
         this._syncMapLocation(loc);
         let tries = 0;
@@ -1164,6 +1199,7 @@ class Component extends DCLogic {
       },
       (err) => {
         const denied = err && err.code === 1;
+        this._track('locator_geolocation', { outcome: denied ? 'denied' : 'error' });
         this.setState({ locStatus: denied ? 'denied' : 'error', userLoc: null });
       },
       { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 }
@@ -1174,6 +1210,12 @@ class Component extends DCLogic {
     this.setState({ active: id, sheetOpen: true }, () => this._scrollStoreIntoView(id));
     const m = this._map();
     if (m && m.focusStore) m.focusStore(id, true);
+    const store = STORES.find((s) => s.id === id);
+    this._track('locator_store_select', {
+      store_id: id,
+      store_city: store ? store.city : null,
+      store_type: store ? store.type : null
+    });
   }
 
   _refLoc() {
@@ -1426,6 +1468,7 @@ class Component extends DCLogic {
     };
     const doSearchArea = () => {
       // Adopt the viewport as a filter and leave the map exactly where it is.
+      this._track('locator_area_search', { hidden: this.state.areaOffscreen });
       this.setState({
         areaBounds: this.state.areaOffer,
         areaOffer: null,
@@ -1469,6 +1512,7 @@ class Component extends DCLogic {
         };
         if (!qTrim) {
           clearTimeout(this._geoTimer);
+          clearTimeout(this._trackTimer);
           patch.searchLoc = null;
           patch.geoStatus = 'idle';
           patch.geoQuery = '';
@@ -1477,6 +1521,9 @@ class Component extends DCLogic {
           if (m && m.clearSearchLocation) m.clearSearchLocation();
           return;
         }
+        // Every non-empty search reports, whether it resolved by text or by
+        // geocode. The debounce inside means only the settled query is sent.
+        this._trackSearch();
         if (textHits.length) {
           clearTimeout(this._geoTimer);
           patch.searchLoc = null;
@@ -1545,6 +1592,10 @@ class Component extends DCLogic {
       // mailto keeps this working with no backend. Swap for a POST to a
       // capture endpoint once one exists — the interesting signal is which
       // places get asked for, and that belongs in a database, not an inbox.
+      onAskClick: () => this._track('locator_stockist_request', {
+        place: searchPlace,
+        nearest_mi: nearest && nearest.mi != null ? Math.round(nearest.mi) : null
+      }),
       askMailto: 'mailto:info@brisabay.com'
         + '?subject=' + encodeURIComponent('Stockist request: ' + searchPlace)
         + '&body=' + encodeURIComponent(
@@ -1564,7 +1615,10 @@ class Component extends DCLogic {
           isActive: active === s.id ? 'true' : 'false',
           isHover: this.state.hoverId === s.id ? 'true' : 'false',
           index: String(i + 1).padStart(2, '0'),
-          stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+          stop: (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            this._track('locator_directions', { store_id: s.id, store_city: s.city });
+          },
           delay: Math.min(i, 8) * 0.04 + 's',
           distance: formatMiles(s.mi),
           directions: directionsUrl(s, dirOrigin),
