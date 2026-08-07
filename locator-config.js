@@ -41,6 +41,13 @@
       minZoom: 3
     },
 
+    // Stockist data. A separate file so adding a shop is a data edit reviewable
+    // on its own, and so it can later come from a CMS or a build step without
+    // touching the page.
+    stores: {
+      url: 'stores.json'
+    },
+
     geocode: {
       endpoint: 'https://photon.komoot.io/api/',
       // Set true once `endpoint` is a first-party proxy that attaches the key

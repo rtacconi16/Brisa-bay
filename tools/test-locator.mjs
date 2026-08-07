@@ -57,14 +57,14 @@ const mod = new Function('milesBetween', src + `
 `)(milesBetween);
 
 // --- store data ------------------------------------------------------------
-const storeBlock = html.match(/const STORES = \[([\s\S]*?)\n\];/)[1];
-const STORES = [...storeBlock.matchAll(
-  /\{ id: '([^']+)', name: ("[^"]*"|'[^']*'), type: '([^']*)', address: ("[^"]*"|'[^']*'), city: '([^']*)', lat: ([-\d.]+), lng: ([-\d.]+) \}/g
-)].map((m) => ({
-  id: m[1], name: m[2].slice(1, -1), type: m[3],
-  address: m[4].slice(1, -1), city: m[5],
-  lat: parseFloat(m[6]), lng: parseFloat(m[7]),
-  latRaw: m[6], lngRaw: m[7]
+// Read from stores.json, the shipped source of truth. Deep structural checks
+// live in tools/validate-stores.mjs; what follows exercises the search and
+// ranking logic against real records.
+const storeDoc = JSON.parse(readFileSync(join(ROOT, 'stores.json'), 'utf8'));
+const STORES = (Array.isArray(storeDoc) ? storeDoc : storeDoc.stores).map((s) => ({
+  ...s,
+  latRaw: String(s.lat),
+  lngRaw: String(s.lng)
 }));
 
 const bias = {
