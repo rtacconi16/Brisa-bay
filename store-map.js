@@ -200,9 +200,17 @@
       this._draw({ fit });
     }
 
+    /** Memoised on the raw attribute string. A single update reads this from
+       _draw, _fitSmart and focusStore, and the payload is ~17KB of JSON — three
+       full parses per keystroke otherwise. */
     get stores() {
-      try { return JSON.parse(this.getAttribute('storesjson') || this.getAttribute('stores-json') || '[]'); }
-      catch (e) { return []; }
+      const raw = this.getAttribute('storesjson') || this.getAttribute('stores-json') || '[]';
+      if (raw === this._storesRaw) return this._storesParsed;
+      let parsed;
+      try { parsed = JSON.parse(raw); } catch (e) { parsed = []; }
+      this._storesRaw = raw;
+      this._storesParsed = parsed;
+      return parsed;
     }
 
     _init(L) {
@@ -277,6 +285,11 @@
         this._pendingSearch = null;
         this.setSearchLocation(p.lat, p.lng, p.opts);
       }
+      // Keep the map roughly over the footprint. Soft viscosity so it resists
+      // rather than snaps, and generous margin so nothing near an edge store
+      // feels fenced in.
+      this._applyMaxBounds();
+
       requestAnimationFrame(() => {
         if (!this._map) return;
         this._map.invalidateSize();
@@ -489,6 +502,21 @@
     _clearActive(closePopups) {
       this._refreshIcons();
       if (closePopups) Object.values(this._markers || {}).forEach((m) => m.closePopup());
+    }
+
+    _applyMaxBounds() {
+      const list = this.stores;
+      if (!list.length || !this._map || !this._L) return;
+      const lats = list.map((s) => s.lat);
+      const lngs = list.map((s) => s.lng);
+      // ~8 degrees of slack: enough to see well beyond the outermost stockist
+      // without letting the visitor lose the pins entirely.
+      const pad = 8;
+      this._map.setMaxBounds(this._L.latLngBounds(
+        [Math.min(...lats) - pad, Math.min(...lngs) - pad],
+        [Math.max(...lats) + pad, Math.max(...lngs) + pad]
+      ));
+      this._map.options.maxBoundsViscosity = 0.6;
     }
 
     _stripMarkerTabIndex() {

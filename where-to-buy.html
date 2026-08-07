@@ -226,6 +226,32 @@
       color: rgba(87, 84, 74, 0.62);
     }
 
+    [data-bb-featured][data-out-of-range="true"] [data-bb-label] { color: #e6393a !important; }
+    [data-bb-ask] {
+      margin: 0 clamp(20px, 1.9vw, 38px) 4px;
+      padding: clamp(14px, 1.2vw, 22px) 0 clamp(16px, 1.3vw, 24px);
+      border-bottom: 1px solid rgba(87,84,74,0.14);
+    }
+    [data-bb-ask-copy] {
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87,84,74,0.78);
+      text-wrap: pretty;
+    }
+    [data-bb-ask-link] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: #eeeee4;
+      background: #3c3a34;
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    [data-bb-ask-link]:hover { background: #e6393a; color: #eeeee4; }
+
     [data-bb-row-actions] {
       display: flex;
       flex-wrap: wrap;
@@ -486,10 +512,16 @@
           <div data-bb-sheet-handle="" role="button" tabindex="0" aria-label="Expand or collapse stockist list" aria-expanded="{{ sheetExpanded }}" onClick="{{ toggleSheet }}" onKeyDown="{{ toggleSheetKey }}"></div>
           <div data-bb-store-scroll="" style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
             <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ false }}">
-              <div data-bb-featured="" role="button" tabindex="0" onClick="{{ featured.onSelect }}" onKeyDown="{{ featured.onKey }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
+              <div data-bb-featured="" data-out-of-range="{{ outOfRange }}" role="button" tabindex="0" onClick="{{ featured.onSelect }}" onKeyDown="{{ featured.onKey }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
                 <div data-bb-label="" style="color: #60b98f">{{ featured.eyebrow }}</div>
                 <div data-bb-featured-name="">{{ featured.name }}</div>
                 <div data-bb-featured-line="">{{ featured.line }}</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ outOfRange }}" hint-placeholder-val="{{ false }}">
+              <div data-bb-ask="">
+                <div data-bb-ask-copy="">Want Brisa Bay in {{ askPlace }}? Tell us and we&rsquo;ll pass it to our distributors.</div>
+                <a data-bb-ask-link="" href="{{ askMailto }}">Request a stockist</a>
               </div>
             </sc-if>
             <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
@@ -537,7 +569,7 @@
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=12" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=13" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
         <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
@@ -736,6 +768,9 @@ const STORES = [
 const { milesBetween, formatMiles, directionsUrl, telHref } = window.BBLocator;
 
 const NEARBY_MI = 60;
+// Past this, calling the result "near you" would be a stretch, so the page says
+// so plainly instead.
+const OUT_OF_RANGE_MI = 75;
 
 /** Fold case, accents and punctuation so "ruths chris" finds "Ruth's Chris"
    and "cafe" finds "Café". The dataset is full of both. */
@@ -1254,14 +1289,28 @@ class Component extends DCLogic {
       statusCopy = 'Nearest first · ' + formatMiles(nearest.mi);
     }
 
+    // The page promises "Find the Brisa Near You". For most of the country the
+    // honest answer is "not yet" — say it, rather than quietly offering a shop
+    // several states away as though it answered the question.
+    const outOfRange = !!(nearest && nearest.mi != null && nearest.mi > OUT_OF_RANGE_MI);
+    const searchPlace = searchLoc ? searchLoc.label.split(',')[0] : 'your area';
+
     const showFeatured = !!(nearest && (locReady || (searchLoc && this.state.geoStatus === 'ready')));
     const featured = showFeatured ? {
-      eyebrow: searchLoc ? 'Close to your search' : 'Closest to you',
-      name: nearest.name,
-      line: [nearest.type, nearest.city, nearest.mi != null ? formatMiles(nearest.mi) : ''].filter(Boolean).join(' · '),
+      eyebrow: outOfRange
+        ? 'Not here yet'
+        : (searchLoc ? 'Close to your search' : 'Closest to you'),
+      name: outOfRange ? ('No stockists in ' + searchPlace + ' yet') : nearest.name,
+      line: outOfRange
+        ? ('The nearest is ' + nearest.name + ' in ' + nearest.city + ', ' + formatMiles(nearest.mi) + ' away.')
+        : [nearest.type, nearest.city, nearest.mi != null ? formatMiles(nearest.mi) : ''].filter(Boolean).join(' · '),
       onSelect: () => this.select(nearest.id),
       onKey: this._activate(() => this.select(nearest.id))
     } : { eyebrow: '', name: '', line: '', onSelect: () => {}, onKey: () => {} };
+
+    if (outOfRange && searchLoc) {
+      statusCopy = 'Nothing in ' + searchPlace + ' yet · nearest ' + formatMiles(nearest.mi);
+    }
 
     const dirOrigin = loc;
     const mapStores = matches.map((s) => ({
@@ -1381,6 +1430,16 @@ class Component extends DCLogic {
       statusCopy,
       showFeatured,
       featured,
+      outOfRange,
+      askPlace: searchPlace,
+      // mailto keeps this working with no backend. Swap for a POST to a
+      // capture endpoint once one exists — the interesting signal is which
+      // places get asked for, and that belongs in a database, not an inbox.
+      askMailto: 'mailto:info@brisabay.com'
+        + '?subject=' + encodeURIComponent('Stockist request: ' + searchPlace)
+        + '&body=' + encodeURIComponent(
+            'I\'d like to buy Brisa Bay near ' + searchPlace + '.\n\n'
+            + '(Nearest listed stockist: ' + (nearest ? nearest.name + ', ' + nearest.city : 'n/a') + ')'),
       showLocPrompt,
       locPromptLabel,
       requestLoc: () => this._requestLocation(),
