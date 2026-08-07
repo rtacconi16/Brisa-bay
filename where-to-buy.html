@@ -474,6 +474,16 @@
         padding: 14px 20px !important;
         gap: 2px 12px !important;
       }
+      /* WCAG 2.5.8 wants 24x24 minimum. Sized to their text, the short filter
+         labels fell well under — "All" measured 14px wide at 320px. */
+      [data-bb-type-filter] {
+        min-height: 34px !important;
+        display: inline-flex !important;
+        align-items: center;
+        padding: 6px 6px 10px !important;
+      }
+      [data-bb-locate] { width: 34px !important; height: 34px !important; }
+      [data-bb-sheet-handle] { padding: 14px 0 10px !important; }
       [data-bb-nav] { row-gap: 8px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
       [data-bb-see-all] {
@@ -632,7 +642,7 @@
         <sc-if value="{{ showAreaClear }}" hint-placeholder-val="{{ false }}">
           <div data-bb-area-clear="" role="button" tabindex="0" onClick="{{ clearArea }}" onKeyDown="{{ clearAreaKey }}">{{ areaClearLabel }}</div>
         </sc-if>
-        <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
+        <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
     </div>
@@ -1058,6 +1068,39 @@ class Component extends DCLogic {
      `inert` on the page container is what actually fixes it. It removes
      everything behind from the tab order, from hit testing and from the
      accessibility tree in one go, so no hand-rolled focus trap is needed. */
+  /** `inert` needs Safari 15.5+. On anything older, assigning it is a silent
+     no-op — which would quietly make the age gate bypassable again on exactly
+     the devices least likely to be noticed. Fall back to neutralising the
+     subtree by hand, restoring each element's original tabindex afterwards.
+
+     Not equivalent to real inert: tabindex="-1" takes an element out of the
+     tab order and aria-hidden takes it out of the accessibility tree, but
+     programmatic .focus() still reaches it. That closes the realistic hole —
+     someone pressing Tab — and not the theoretical one, which needs devtools
+     that would defeat any client-side gate anyway. */
+  _setInert(el, on) {
+    if (!el) return;
+    if ('inert' in HTMLElement.prototype) { el.inert = on; return; }
+    const SEL = 'a[href],button,input,select,textarea,iframe,[tabindex]';
+    if (on) {
+      el.setAttribute('aria-hidden', 'true');
+      el.querySelectorAll(SEL).forEach((n) => {
+        if (!n.hasAttribute('data-bb-prev-tabindex')) {
+          n.setAttribute('data-bb-prev-tabindex', n.getAttribute('tabindex') ?? '');
+        }
+        n.setAttribute('tabindex', '-1');
+      });
+    } else {
+      el.removeAttribute('aria-hidden');
+      el.querySelectorAll('[data-bb-prev-tabindex]').forEach((n) => {
+        const prev = n.getAttribute('data-bb-prev-tabindex');
+        if (prev === '') n.removeAttribute('tabindex');
+        else n.setAttribute('tabindex', prev);
+        n.removeAttribute('data-bb-prev-tabindex');
+      });
+    }
+  }
+
   _syncModal() {
     const gateOpen = (this.props.ageGate ?? true) && !this.state.ageOk;
     const faqOpen = !!this.state.faqOpen;
@@ -1071,7 +1114,7 @@ class Component extends DCLogic {
 
     if (open) {
       if (!this._modalKey) this._returnFocusTo = document.activeElement;
-      [page, foot, skip].forEach((el) => { if (el) el.inert = true; });
+      [page, foot, skip].forEach((el) => this._setInert(el, true));
       document.body.style.overflow = 'hidden';
       // Focus the dialog itself rather than its first control: a screen reader
       // then reads the dialog's label and purpose before its options.
@@ -1082,7 +1125,7 @@ class Component extends DCLogic {
         dlg.focus();
       }, 0);
     } else {
-      [page, foot, skip].forEach((el) => { if (el) el.inert = false; });
+      [page, foot, skip].forEach((el) => this._setInert(el, false));
       document.body.style.overflow = '';
       const back = this._returnFocusTo;
       this._returnFocusTo = null;
