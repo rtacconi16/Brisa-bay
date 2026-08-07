@@ -216,11 +216,52 @@ def get_moments(limit: int = DEFAULT_LIMIT) -> dict:
     return payload
 
 
+# Content Security Policy.
+#
+# 'unsafe-eval' and inline styles are required by the DC runtime, not by choice:
+# support.js evaluates component code with new Function, and the pages carry
+# inline style attributes throughout. Removing either means reworking the
+# framework, so this is the strictest policy the site can actually run under
+# rather than the strictest policy that exists.
+#
+# What it still buys: script, connect, image and font sources are restricted to
+# our own origin plus the two map services, so an injected <script src> or an
+# exfiltration fetch to an arbitrary host is blocked. Framing, plugins, base-tag
+# rewriting and form posts are denied outright.
+#
+# Tighten `connect-src` and `img-src` when the tile and geocode providers change.
+CSP = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-eval'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https://tile.openstreetmap.org",
+    "connect-src 'self' https://photon.komoot.io",
+    "font-src 'self'",
+    "object-src 'none'",
+    "base-uri 'none'",
+    "form-action 'none'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+])
+
+SECURITY_HEADERS = {
+    "Content-Security-Policy": CSP,
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    # The locator asks for geolocation; nothing else is needed, and no third
+    # party should be able to ask on our behalf.
+    "Permissions-Policy": "geolocation=(self), camera=(), microphone=(), payment=(), usb=()",
+    "X-Frame-Options": "DENY",
+}
+
+
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
     def end_headers(self):
+        for name, value in SECURITY_HEADERS.items():
+            self.send_header(name, value)
         if self.path.startswith("/api/"):
             self.send_header("Cache-Control", "no-store")
             self.send_header("Access-Control-Allow-Origin", "*")

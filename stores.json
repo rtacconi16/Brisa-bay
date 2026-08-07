@@ -1,0 +1,929 @@
+{
+  "$comment": [
+    "Brisa Bay stockists — the source of truth for the store locator.",
+    "Each record additionally accepts optional 'phone' and 'url' fields; they",
+    "render in the list row, the map popup and as a tel: link when present.",
+    "Validate after editing with: node tools/validate-stores.mjs"
+  ],
+  "updated": "2026-08-07",
+  "stores": [
+    {
+      "id": "ke-uh",
+      "name": "Ke-uH",
+      "type": "Restaurant",
+      "address": "2278 Weston Rd",
+      "city": "Weston, FL",
+      "lat": 26.091884,
+      "lng": -80.370623
+    },
+    {
+      "id": "grand-vin",
+      "name": "Grand Vin Wine Bar",
+      "type": "Wine Bar",
+      "address": "1107 Duval St",
+      "city": "Key West, FL",
+      "lat": 24.549894,
+      "lng": -81.798362
+    },
+    {
+      "id": "key-food-119th",
+      "name": "Key Food Supermarket",
+      "type": "Grocery",
+      "address": "1701 NW 119th St",
+      "city": "Miami, FL",
+      "lat": 25.883151,
+      "lng": -80.227124
+    },
+    {
+      "id": "price-choice-5",
+      "name": "Price Choice Food Market #5",
+      "type": "Grocery",
+      "address": "1851 NE 2nd Ave #5",
+      "city": "Miami, FL",
+      "lat": 25.794358,
+      "lng": -80.190402
+    },
+    {
+      "id": "seed-to-table",
+      "name": "Seed to Table",
+      "type": "Grocery",
+      "address": "4835 Immokalee Rd",
+      "city": "Naples, FL",
+      "lat": 26.274556,
+      "lng": -81.752683
+    },
+    {
+      "id": "royal-palm-yacht",
+      "name": "Royal Palm Yacht & Country Club",
+      "type": "Country Club",
+      "address": "2425 W Maya Palm Dr",
+      "city": "Boca Raton, FL",
+      "lat": 26.326229,
+      "lng": -80.087608
+    },
+    {
+      "id": "meat-town",
+      "name": "Meat Town Market",
+      "type": "Grocery",
+      "address": "14225 S Dixie Hwy",
+      "city": "Miami, FL",
+      "lat": 25.638038,
+      "lng": -80.336476
+    },
+    {
+      "id": "golden-hog",
+      "name": "The Golden Hog",
+      "type": "Grocery",
+      "address": "91 Harbor Dr",
+      "city": "Key Biscayne, FL",
+      "lat": 25.700209,
+      "lng": -80.162965
+    },
+    {
+      "id": "super-liquors-fwb",
+      "name": "Super Liquors",
+      "type": "Liquor Store",
+      "address": "507 Mary Esther Cut Off NW",
+      "city": "Fort Walton Beach, FL",
+      "lat": 30.423976,
+      "lng": -86.648154
+    },
+    {
+      "id": "1910-miami-lakes",
+      "name": "1910 Restaurant",
+      "type": "Restaurant",
+      "address": "6743 Main St",
+      "city": "Miami Lakes, FL",
+      "lat": 25.913297,
+      "lng": -80.310105
+    },
+    {
+      "id": "paradise-liquors",
+      "name": "Paradise Liquors & Wine",
+      "type": "Liquor Store",
+      "address": "15928 W State Rd 84",
+      "city": "Sunrise, FL",
+      "lat": 26.123451,
+      "lng": -80.35834
+    },
+    {
+      "id": "carmines",
+      "name": "Carmine's Gourmet Market",
+      "type": "Grocery",
+      "address": "2401 PGA Blvd, Suite 172",
+      "city": "Palm Beach Gardens, FL",
+      "lat": 26.84512,
+      "lng": -80.07133
+    },
+    {
+      "id": "carmela-avenir",
+      "name": "Carmela Coffee - Avenir",
+      "type": "Café",
+      "address": "12515 Northlake Blvd #110",
+      "city": "Palm Beach Gardens, FL",
+      "lat": 26.812101,
+      "lng": -80.235739
+    },
+    {
+      "id": "carmela-boynton",
+      "name": "Carmela Coffee - Boynton Beach",
+      "type": "Café",
+      "address": "1750 N Congress Ave STE 100",
+      "city": "Boynton Beach, FL",
+      "lat": 26.541138,
+      "lng": -80.09038
+    },
+    {
+      "id": "carmela-east-boca",
+      "name": "Carmela Coffee - East Boca",
+      "type": "Café",
+      "address": "3200 N Federal Hwy #106",
+      "city": "Boca Raton, FL",
+      "lat": 26.380387,
+      "lng": -80.075979
+    },
+    {
+      "id": "carmela-ft-lauderdale",
+      "name": "Carmela Coffee - Fort Lauderdale",
+      "type": "Café",
+      "address": "201 S Federal Hwy",
+      "city": "Fort Lauderdale, FL",
+      "lat": 26.120232,
+      "lng": -80.13734
+    },
+    {
+      "id": "carmela-parkland",
+      "name": "Carmela Coffee - Parkland",
+      "type": "Café",
+      "address": "7967 N University Dr",
+      "city": "Parkland, FL",
+      "lat": 26.32891,
+      "lng": -80.252956
+    },
+    {
+      "id": "carmela-port-st-lucie",
+      "name": "Carmela Coffee - Port St Lucie",
+      "type": "Café",
+      "address": "10308 SW Discovery Wy",
+      "city": "Port St. Lucie, FL",
+      "lat": 27.253052,
+      "lng": -80.429607
+    },
+    {
+      "id": "carmela-uptown-boca",
+      "name": "Carmela Coffee - Uptown Boca",
+      "type": "Café",
+      "address": "9658 Glades Rd",
+      "city": "Boca Raton, FL",
+      "lat": 26.366308,
+      "lng": -80.197914
+    },
+    {
+      "id": "carmela-wellington",
+      "name": "Carmela Coffee - Wellington",
+      "type": "Café",
+      "address": "10630 Forest Hill Blvd, Suite 60",
+      "city": "Wellington, FL",
+      "lat": 26.649942,
+      "lng": -80.215376
+    },
+    {
+      "id": "carmela-westlake",
+      "name": "Carmela Coffee - Westlake",
+      "type": "Café",
+      "address": "16881 Persimmon Blvd",
+      "city": "Loxahatchee, FL",
+      "lat": 26.755276,
+      "lng": -80.30947
+    },
+    {
+      "id": "carmela-bric",
+      "name": "Carmela Coffee - BRIC",
+      "type": "Café",
+      "address": "4800 T-Rex Ave Suite #150",
+      "city": "Boca Raton, FL",
+      "lat": 26.389761,
+      "lng": -80.1076
+    },
+    {
+      "id": "carmela-clematis",
+      "name": "Carmela Coffee - Clematis St",
+      "type": "Café",
+      "address": "319 Clematis St",
+      "city": "West Palm Beach, FL",
+      "lat": 26.71336,
+      "lng": -80.052723
+    },
+    {
+      "id": "carmela-east-delray",
+      "name": "Carmela Coffee - East Delray",
+      "type": "Café",
+      "address": "247 SE 6th Ave",
+      "city": "Delray Beach, FL",
+      "lat": 26.457066,
+      "lng": -80.066652
+    },
+    {
+      "id": "carmela-park-place",
+      "name": "Carmela Coffee - Park Place",
+      "type": "Café",
+      "address": "5560 N Military Trl",
+      "city": "Boca Raton, FL",
+      "lat": 26.400409,
+      "lng": -80.121369
+    },
+    {
+      "id": "carmela-pompano",
+      "name": "Carmela Coffee - Pompano Beach",
+      "type": "Café",
+      "address": "1182 S Powerline Rd",
+      "city": "Pompano Beach, FL",
+      "lat": 26.214616,
+      "lng": -80.156098
+    },
+    {
+      "id": "carmela-stuart",
+      "name": "Carmela Coffee - Stuart",
+      "type": "Café",
+      "address": "2644 SE Federal Hwy",
+      "city": "Stuart, FL",
+      "lat": 27.172151,
+      "lng": -80.232487
+    },
+    {
+      "id": "carmela-village-commons",
+      "name": "Carmela Coffee - Village Commons",
+      "type": "Café",
+      "address": "711 Village Blvd",
+      "city": "West Palm Beach, FL",
+      "lat": 26.713401,
+      "lng": -80.100278
+    },
+    {
+      "id": "carmela-west-delray",
+      "name": "Carmela Coffee - West Delray",
+      "type": "Café",
+      "address": "8918 W Atlantic Ave",
+      "city": "Delray Beach, FL",
+      "lat": 26.453189,
+      "lng": -80.186247
+    },
+    {
+      "id": "carmela-west-village",
+      "name": "Carmela Coffee - West Village",
+      "type": "Café",
+      "address": "10 5th Ave",
+      "city": "New York, NY",
+      "lat": 40.732373,
+      "lng": -73.99664
+    },
+    {
+      "id": "desert-mountain-club",
+      "name": "Desert Mountain Club",
+      "type": "Country Club",
+      "address": "37700 N Desert Mountain Pkwy",
+      "city": "Scottsdale, AZ",
+      "lat": 33.8269651,
+      "lng": -111.8748624
+    },
+    {
+      "id": "my-friends-bottle-shop",
+      "name": "My Friend's Bottle Shop",
+      "type": "Liquor Store",
+      "address": "275 Memorial Dr SE Suite A",
+      "city": "Atlanta, GA",
+      "lat": 33.747476,
+      "lng": -84.3464095
+    },
+    {
+      "id": "local-vine-cobb",
+      "name": "Local Vine - Cobb Parkway (Buckhead Area)",
+      "type": "Liquor Store",
+      "address": "3101 Cobb Pkwy, Suite 102",
+      "city": "Atlanta, GA",
+      "lat": 33.8790523,
+      "lng": -84.4564879
+    },
+    {
+      "id": "local-vine-johns-creek",
+      "name": "Local Vine - John's Creek",
+      "type": "Liquor Store",
+      "address": "5805 State Bridge Rd #200",
+      "city": "Johns Creek, GA",
+      "lat": 34.0182247,
+      "lng": -84.1877314
+    },
+    {
+      "id": "bobby-jones-golf",
+      "name": "Bobby Jones Golf Course",
+      "type": "Golf Course",
+      "address": "2205 Northside Dr NW",
+      "city": "Atlanta, GA",
+      "lat": 33.814733,
+      "lng": -84.407632
+    },
+    {
+      "id": "cafe-lily",
+      "name": "Cafe Lilly",
+      "type": "Café",
+      "address": "308 W Ponce De Leon Ave Ste B",
+      "city": "Decatur, GA",
+      "lat": 33.775531,
+      "lng": -84.300287
+    },
+    {
+      "id": "candler-park-market",
+      "name": "Candler Park Market",
+      "type": "Grocery",
+      "address": "1642 McLendon Ave NE",
+      "city": "Atlanta, GA",
+      "lat": 33.764902,
+      "lng": -84.333862
+    },
+    {
+      "id": "enso-izakaya",
+      "name": "Enso Izakaya Restaurant",
+      "type": "Restaurant",
+      "address": "6 Olive St Ste 105B",
+      "city": "Avondale Estates, GA",
+      "lat": 33.775944,
+      "lng": -84.27426
+    },
+    {
+      "id": "ruths-chris-kennesaw",
+      "name": "Ruth's Chris Steak House Kennesaw",
+      "type": "Restaurant",
+      "address": "620 Chastain Rd NW",
+      "city": "Kennesaw, GA",
+      "lat": 34.037429,
+      "lng": -84.56657
+    },
+    {
+      "id": "seasons-52-dunwoody",
+      "name": "Seasons 52 #4507",
+      "type": "Restaurant",
+      "address": "90 Perimeter Ctr West",
+      "city": "Dunwoody, GA",
+      "lat": 33.926904,
+      "lng": -84.341085
+    },
+    {
+      "id": "the-james-room",
+      "name": "The James Room",
+      "type": "Restaurant",
+      "address": "661 Auburn Ave NE Ste 280",
+      "city": "Atlanta, GA",
+      "lat": 33.756983,
+      "lng": -84.366275
+    },
+    {
+      "id": "the-stratford",
+      "name": "The Stratford Restaurant",
+      "type": "Restaurant",
+      "address": "17 North Avondale Plaza",
+      "city": "Avondale Estates, GA",
+      "lat": 33.776194,
+      "lng": -84.266595
+    },
+    {
+      "id": "capitol-grille-buckhead",
+      "name": "Capitol Grille Buckhead",
+      "type": "Restaurant",
+      "address": "255 E Paces Ferry Rd NE, FL 8",
+      "city": "Atlanta, GA",
+      "lat": 33.839138,
+      "lng": -84.378819
+    },
+    {
+      "id": "cumming-beverage-mart",
+      "name": "Cumming Beverage Mart",
+      "type": "Liquor Store",
+      "address": "1770 Buford Hwy Ste A",
+      "city": "Cumming, GA",
+      "lat": 34.159723,
+      "lng": -84.112107
+    },
+    {
+      "id": "eddie-vs-alpharetta",
+      "name": "Eddie V's 8537",
+      "type": "Restaurant",
+      "address": "11405 Haynes Bridge Rd",
+      "city": "Alpharetta, GA",
+      "lat": 34.058746,
+      "lng": -84.287454
+    },
+    {
+      "id": "lake-pointe-package",
+      "name": "Lake Pointe Package",
+      "type": "Liquor Store",
+      "address": "5285 Lake Pointe Center Dr, Ste G",
+      "city": "Cumming, GA",
+      "lat": 34.249274,
+      "lng": -84.051541
+    },
+    {
+      "id": "oakhurst-market",
+      "name": "Oakhurst Market",
+      "type": "Grocery",
+      "address": "650 E Lake Dr Ste A",
+      "city": "Decatur, GA",
+      "lat": 33.759746,
+      "lng": -84.304501
+    },
+    {
+      "id": "rox-wine-cumming",
+      "name": "Rox Wine & Spirits (Cumming)",
+      "type": "Liquor Store",
+      "address": "910 Peachtree Pkwy",
+      "city": "Cumming, GA",
+      "lat": 34.140841,
+      "lng": -84.172883
+    },
+    {
+      "id": "savi-decatur",
+      "name": "Savi Decatur",
+      "type": "Grocery",
+      "address": "180 W Ponce De Leon Ave",
+      "city": "Decatur, GA",
+      "lat": 33.775505,
+      "lng": -84.298469
+    },
+    {
+      "id": "savi-midtown",
+      "name": "Savi Midtown",
+      "type": "Grocery",
+      "address": "988 Peachtree St NE",
+      "city": "Atlanta, GA",
+      "lat": 33.780739,
+      "lng": -84.384164
+    },
+    {
+      "id": "suds-bottles",
+      "name": "Suds & Bottles",
+      "type": "Liquor Store",
+      "address": "225 Reformation Pkwy Ste 104A",
+      "city": "Canton, GA",
+      "lat": 34.235167,
+      "lng": -84.495195
+    },
+    {
+      "id": "the-imperial-decatur",
+      "name": "The Imperial",
+      "type": "Restaurant",
+      "address": "724 & 726 West College Ave",
+      "city": "Decatur, GA",
+      "lat": 33.766415,
+      "lng": -84.305727
+    },
+    {
+      "id": "tuxedo-wine",
+      "name": "Tuxedo Wine & Spirits",
+      "type": "Liquor Store",
+      "address": "3861 Roswell Rd NE Ste A",
+      "city": "Atlanta, GA",
+      "lat": 33.860158,
+      "lng": -84.380488
+    },
+    {
+      "id": "deep-roots-marietta",
+      "name": "Deep Roots - Market Square",
+      "type": "Grocery",
+      "address": "107 Church St",
+      "city": "Marietta, GA",
+      "lat": 33.954729,
+      "lng": -84.550245
+    },
+    {
+      "id": "towe-beer",
+      "name": "Towe Beer",
+      "type": "Liquor Store",
+      "address": "2161 Piedmont Rd NE",
+      "city": "Atlanta, GA",
+      "lat": 33.815583,
+      "lng": -84.3660131
+    },
+    {
+      "id": "mcloones-asbury",
+      "name": "McLoone's (Asbury Park)",
+      "type": "Restaurant",
+      "address": "1200 Ocean Ave",
+      "city": "Asbury Park, NJ",
+      "lat": 40.222525,
+      "lng": -73.999484
+    },
+    {
+      "id": "iron-whale",
+      "name": "Iron Whale",
+      "type": "Restaurant",
+      "address": "1200 Ocean Ave Unit 504",
+      "city": "Asbury Park, NJ",
+      "lat": 40.2229618,
+      "lng": -73.9990314
+    },
+    {
+      "id": "saltwater-liquors",
+      "name": "Saltwater Liquors",
+      "type": "Liquor Store",
+      "address": "9-11 Bayshore Plaza",
+      "city": "Atlantic Highlands, NJ",
+      "lat": 40.4092473,
+      "lng": -74.0412074
+    },
+    {
+      "id": "brant-beach-yacht",
+      "name": "Brant Beach Yacht Club",
+      "type": "Yacht Club",
+      "address": "6106 Bayview Ave",
+      "city": "Brant Beach, NJ",
+      "lat": 39.6213982,
+      "lng": -74.1988585
+    },
+    {
+      "id": "manasquan-river-golf",
+      "name": "Manasquan River Golf Club",
+      "type": "Golf Course",
+      "address": "843 Riverview Dr",
+      "city": "Brielle, NJ",
+      "lat": 40.10187,
+      "lng": -74.065855
+    },
+    {
+      "id": "national-hotel-frenchtown",
+      "name": "National Hotel",
+      "type": "Restaurant",
+      "address": "31 Race St",
+      "city": "Frenchtown, NJ",
+      "lat": 40.527046,
+      "lng": -75.060305
+    },
+    {
+      "id": "butchers-block-long-branch",
+      "name": "The Butcher's Block",
+      "type": "Restaurant",
+      "address": "235 West Ave",
+      "city": "Long Branch, NJ",
+      "lat": 40.2965061,
+      "lng": -73.9890338
+    },
+    {
+      "id": "mcloones-pier-house",
+      "name": "McLoone's Pier House",
+      "type": "Restaurant",
+      "address": "1 Ocean Ave N",
+      "city": "Long Branch, NJ",
+      "lat": 40.310364,
+      "lng": -73.977047
+    },
+    {
+      "id": "robinson-ale-long-branch",
+      "name": "The Robinson Ale House (Long Branch)",
+      "type": "Restaurant",
+      "address": "68 Ocean Ave",
+      "city": "Long Branch, NJ",
+      "lat": 40.307193,
+      "lng": -73.977926
+    },
+    {
+      "id": "manasquan-liquors",
+      "name": "Manasquan Liquors",
+      "type": "Liquor Store",
+      "address": "139 Main St",
+      "city": "Manasquan, NJ",
+      "lat": 40.1231837,
+      "lng": -74.050678
+    },
+    {
+      "id": "canals-bottlestop",
+      "name": "Canal's Bottlestop",
+      "type": "Liquor Store",
+      "address": "10 Route 70 W",
+      "city": "Marlton, NJ",
+      "lat": 39.894025,
+      "lng": -74.921661
+    },
+    {
+      "id": "liquor-city-south",
+      "name": "Liquor City South",
+      "type": "Liquor Store",
+      "address": "1345 Rt 1, South Dr",
+      "city": "North Brunswick, NJ",
+      "lat": 40.4589164,
+      "lng": -74.4726668
+    },
+    {
+      "id": "troy-social",
+      "name": "Troy Social Restaurant & Bar",
+      "type": "Restaurant",
+      "address": "8 Wood Hollow Rd",
+      "city": "Parsippany, NJ",
+      "lat": 40.8616388,
+      "lng": -74.4147847
+    },
+    {
+      "id": "catezza",
+      "name": "Catezza",
+      "type": "Restaurant",
+      "address": "19 Broad St",
+      "city": "Red Bank, NJ",
+      "lat": 40.351583,
+      "lng": -74.065381
+    },
+    {
+      "id": "cafe-pari",
+      "name": "Cafe Pari",
+      "type": "Café",
+      "address": "17 Broad St",
+      "city": "Red Bank, NJ",
+      "lat": 40.3516458,
+      "lng": -74.0652944
+    },
+    {
+      "id": "robinson-ale-red-bank",
+      "name": "The Robinson Ale House (Red Bank)",
+      "type": "Restaurant",
+      "address": "26 Broad St",
+      "city": "Red Bank, NJ",
+      "lat": 40.351216,
+      "lng": -74.065512
+    },
+    {
+      "id": "mcloones-sea-bright",
+      "name": "McLoone's Rum Runner (Sea Bright)",
+      "type": "Restaurant",
+      "address": "816 Ocean Ave",
+      "city": "Sea Bright, NJ",
+      "lat": 40.371408,
+      "lng": -73.974249
+    },
+    {
+      "id": "shell-liquor",
+      "name": "Shell Liquors",
+      "type": "Liquor Store",
+      "address": "1414 Long Beach Blvd",
+      "city": "Ship Bottom, NJ",
+      "lat": 39.6508263,
+      "lng": -74.1747899
+    },
+    {
+      "id": "fine-spirits-tenafly",
+      "name": "Tenafly Fine Wine & Spirits",
+      "type": "Liquor Store",
+      "address": "14 Riveredge Rd",
+      "city": "Tenafly, NJ",
+      "lat": 40.926367,
+      "lng": -73.965409
+    },
+    {
+      "id": "raeyas",
+      "name": "Raeya's",
+      "type": "Restaurant",
+      "address": "37 Berdan Ave",
+      "city": "Wayne, NJ",
+      "lat": 40.9616446,
+      "lng": -74.2417246
+    },
+    {
+      "id": "shoprite-westfield",
+      "name": "ShopRite Wines & Spirits",
+      "type": "Liquor Store",
+      "address": "333 South Ave E",
+      "city": "Westfield, NJ",
+      "lat": 40.649818,
+      "lng": -74.337454
+    },
+    {
+      "id": "mcloones-boathouse",
+      "name": "McLoone's Boathouse",
+      "type": "Restaurant",
+      "address": "9 Cherry Ln",
+      "city": "West Orange, NJ",
+      "lat": 40.758174,
+      "lng": -74.291626
+    },
+    {
+      "id": "scotland-run-golf",
+      "name": "Scotland Run Golf Club",
+      "type": "Golf Course",
+      "address": "2626 Fries Mill Rd",
+      "city": "Williamstown, NJ",
+      "lat": 39.669,
+      "lng": -74.994
+    },
+    {
+      "id": "rats-restaurant",
+      "name": "Rat's Restaurant",
+      "type": "Restaurant",
+      "address": "16 Fairgrounds Rd",
+      "city": "Hamilton, NJ",
+      "lat": 40.238327,
+      "lng": -74.717747
+    },
+    {
+      "id": "panther-valley-golf",
+      "name": "Panther Valley Golf & Country Club",
+      "type": "Golf Course",
+      "address": "1 Forest Dr",
+      "city": "Allamuchy, NJ",
+      "lat": 40.9083016,
+      "lng": -74.8306091
+    },
+    {
+      "id": "lavallette-liquors",
+      "name": "Lavallette Liquors",
+      "type": "Liquor Store",
+      "address": "66 Grand Central Ave",
+      "city": "Lavallette, NJ",
+      "lat": 39.9802931,
+      "lng": -74.0673924
+    },
+    {
+      "id": "jimmy-vs-downtown",
+      "name": "Jimmy V's Pub & Grill - Downtown",
+      "type": "Restaurant",
+      "address": "1788 W 5th Ave",
+      "city": "Columbus, OH",
+      "lat": 39.9893498,
+      "lng": -83.0543143
+    },
+    {
+      "id": "jimmy-vs-westerville",
+      "name": "Jimmy V's Pub & Grill - Westerville",
+      "type": "Restaurant",
+      "address": "1 S State Street",
+      "city": "Westerville, OH",
+      "lat": 40.1257284,
+      "lng": -82.9316958
+    },
+    {
+      "id": "stone-kitchen",
+      "name": "Stone Kitchen",
+      "type": "Restaurant",
+      "address": "1045 Bethel Rd",
+      "city": "Columbus, OH",
+      "lat": 40.0633212,
+      "lng": -83.0479738
+    },
+    {
+      "id": "panini-opa",
+      "name": "Panini Opa",
+      "type": "Restaurant",
+      "address": "4799 Sawmill Rd",
+      "city": "Columbus, OH",
+      "lat": 40.0653007,
+      "lng": -83.0937258
+    },
+    {
+      "id": "santaella",
+      "name": "Santaella",
+      "type": "Restaurant",
+      "address": "219 C. Canals",
+      "city": "San Juan, PR",
+      "lat": 18.450056,
+      "lng": -66.069854
+    },
+    {
+      "id": "set-the-bar",
+      "name": "Set the Bar Aguadilla",
+      "type": "Restaurant",
+      "address": "2032 Ave Pedro Albizu Campos",
+      "city": "Aguadilla, PR",
+      "lat": 18.4506033,
+      "lng": -67.152372
+    },
+    {
+      "id": "wine-spot",
+      "name": "Wine Spot",
+      "type": "Wine Bar",
+      "address": "1075 Av. Juan Ponce de León",
+      "city": "San Juan, PR",
+      "lat": 18.452591,
+      "lng": -66.076663
+    },
+    {
+      "id": "la-central-mario-pagan",
+      "name": "La Central by Mario Pagán",
+      "type": "Restaurant",
+      "address": "250 Convention Boulevard",
+      "city": "San Juan, PR",
+      "lat": 18.453324,
+      "lng": -66.092585
+    },
+    {
+      "id": "cocina-al-fondo",
+      "name": "Cocina al Fondo",
+      "type": "Restaurant",
+      "address": "658 Calle San Juan",
+      "city": "San Juan, PR",
+      "lat": 18.451401,
+      "lng": -66.077284
+    },
+    {
+      "id": "el-mamposteao",
+      "name": "El Mamposteao",
+      "type": "Restaurant",
+      "address": "Carretera 2 Km. 85",
+      "city": "Hatillo, PR",
+      "lat": 18.474252,
+      "lng": -66.789148
+    },
+    {
+      "id": "ropa-vieja-grill-condado",
+      "name": "Ropa Vieja (Condado)",
+      "type": "Restaurant",
+      "address": "55 Avenida Condado",
+      "city": "San Juan, PR",
+      "lat": 18.45558,
+      "lng": -66.07166
+    },
+    {
+      "id": "pyp-restaurant",
+      "name": "PYP Restaurant (Caguas)",
+      "type": "Restaurant",
+      "address": "52 Calle Betances",
+      "city": "Caguas, PR",
+      "lat": 18.234164,
+      "lng": -66.03564
+    },
+    {
+      "id": "vin-us",
+      "name": "Vin'Us",
+      "type": "Wine Bar",
+      "address": "1000 Mall of San Juan Blvd, Suite 231",
+      "city": "San Juan, PR",
+      "lat": 18.412243,
+      "lng": -66.025011
+    },
+    {
+      "id": "tetas-by-karla-z",
+      "name": "Tetas by Karla Z",
+      "type": "Restaurant",
+      "address": "Hacienda Las Cecilias S/N",
+      "city": "Cayey, PR",
+      "lat": 18.1029116,
+      "lng": -66.1640614
+    },
+    {
+      "id": "ojala-speakeasy",
+      "name": "Ojala Speakeasy (Caguas)",
+      "type": "Wine Bar",
+      "address": "Carretera 189 Km. 2.2, Santa Elvira Mall",
+      "city": "Caguas, PR",
+      "lat": 18.240365,
+      "lng": -66.011986
+    },
+    {
+      "id": "calichi-gastrobar",
+      "name": "Calichi Gastrobar",
+      "type": "Restaurant",
+      "address": "Carr. PR-152 Km 18.3",
+      "city": "Naranjito, PR",
+      "lat": 18.28744,
+      "lng": -66.27116
+    },
+    {
+      "id": "salitre-meson-costero",
+      "name": "Salitre Mesón Costero",
+      "type": "Restaurant",
+      "address": "Carretera PR-681 Km 3.8",
+      "city": "Arecibo, PR",
+      "lat": 18.477614,
+      "lng": -66.656476
+    },
+    {
+      "id": "la-enoteca-uvas",
+      "name": "La Enoteca (UVAS PR)",
+      "type": "Wine Bar",
+      "address": "Galería de Artes y Ciencias III, Carretera 693 #877",
+      "city": "Dorado, PR",
+      "lat": 18.4288576,
+      "lng": -66.2887923
+    },
+    {
+      "id": "mr-sandwich-bistro",
+      "name": "Mr. Sandwich Bistro",
+      "type": "Restaurant",
+      "address": "Calle Guarionex BK-1 Ave Bairoa",
+      "city": "Caguas, PR",
+      "lat": 18.259136,
+      "lng": -66.044973
+    },
+    {
+      "id": "atirantado-bar-grill",
+      "name": "Atirantado Bar & Grill",
+      "type": "Restaurant",
+      "address": "Carretera PR-5 S/N",
+      "city": "Naranjito, PR",
+      "lat": 18.316264,
+      "lng": -66.220842
+    },
+    {
+      "id": "don-pepe-restaurant",
+      "name": "Don Pepe Restaurant",
+      "type": "Restaurant",
+      "address": "Carr. PR-3 Km. 29.0 Carola",
+      "city": "Rio Grande, PR",
+      "lat": 18.372443,
+      "lng": -65.770376
+    }
+  ]
+}

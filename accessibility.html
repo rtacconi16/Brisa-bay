@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./resources.js?v=1"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
+<helmet>
+  <style>
+    @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
+    @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
+    body { margin: 0; background: #eeeee4; }
+    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+       The UA stylesheet bolds headings and strong/b by default — neutralise it and let
+       size, italic and colour carry the hierarchy instead. */
+    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
+    /* ---- Site header: one definition, used on every page ---- */
+    [data-bb-wordmark] {
+      font-size: clamp(26px, 2.8vw, 52px);
+      letter-spacing: 0.01em;
+      color: #eeeee4;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    [data-bb-nav] [role="navigation"] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(16px, 2.7vw, 52px);
+      font-size: clamp(15px, 1.6vw, 30px);
+      color: #eeeee4;
+    }
+    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
+    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
+    a { color: #e6393a; }
+    a:hover { color: #f5d732; }
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
+  <title>Accessibility | Brisa Bay</title>
+  <meta name="description" content="Brisa Bay's commitment to making our website accessible and user friendly for everyone.">
+  <meta name="theme-color" content="#60b98f">
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#60b98f"></rect><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-size="34" fill="#eeeee4">BB</text></svg></template>
+
+<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
+
+  <div data-screen-label="Accessibility Header" style="position: relative; background: #3c3a34; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(40px, 5vw, 96px); box-sizing: border-box">
+    <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
+      <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
+      <div role="navigation" aria-label="Main">
+        <a href="about.html" style-hover="color: #f5d732">About us</a>
+        <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
+        <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
+      </div>
+    </div>
+
+    <div style="max-width: 1180px; margin: 0 auto; padding-top: clamp(40px, 6vw, 118px)">
+      <h1 style="margin: 0 0 clamp(12px, 1.2vw, 22px); font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5vw, 96px); line-height: 1.08; font-weight: 400; letter-spacing: 0.03em; color: #eeeee4">Accessibility</h1>
+      <p style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 1.4vw, 26px); letter-spacing: 0.09em; color: #f5d732">LAST UPDATED: AUGUST 6, 2026</p>
+    </div>
+  </div>
+
+  <div data-screen-label="Accessibility Body" style="position: relative; background: #eeeee4; padding: clamp(44px, 5.5vw, 110px) clamp(20px, 5vw, 190px) clamp(60px, 7vw, 140px); box-sizing: border-box">
+    <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(34px, 3.6vw, 70px)">
+
+      <div style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">Our Commitment to Accessibility</h2>
+        <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">Brisa Bay is committed to making our website&rsquo;s content accessible and user friendly to everyone. If you are having difficulty viewing or navigating the content on this website, or notice any content, feature, or functionality that you believe is not fully accessible to people with disabilities, please email our team at <a href="mailto:info@brisabay.com?subject=Disabled%20Access" style="color: #e6393a">info@brisabay.com</a> with &ldquo;Disabled Access&rdquo; in the subject line and provide a description of the specific feature you feel is not fully accessible or a suggestion for improvement.</p>
+        <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">We take your feedback seriously and will consider it as we evaluate ways to accommodate all of our customers and our overall accessibility policies.</p>
+        <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">Additionally, while we do not control such vendors, we strongly encourage vendors of third-party digital content to provide content that is accessible and user friendly.</p>
+      </div>
+
+      <div id="contact" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">Contact Us</h2>
+        <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">For accessibility feedback or assistance, please reach us at:</p>
+        <div style="margin-top: clamp(6px, 0.6vw, 10px); display: flex; flex-direction: column; gap: 4px; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55">
+          <p style="margin: 0">Brisa Bay</p>
+          <p style="margin: 0">Napa Valley, California</p>
+          <p style="margin: 0">Email: <a href="mailto:{{ contactEmail }}?subject=Disabled%20Access" style="color: #e6393a">{{ contactEmail }}</a></p>
+        </div>
+        <p style="margin: 0; max-width: 74ch; font-size: clamp(15px, 1.4vw, 26px); line-height: 1.55; color: #7a766a">Please allow 5-7 business days for a response to your accessibility request.</p>
+      </div>
+
+    </div>
+  </div>
+
+  </main>
+
+  <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(56px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(30px, 5vw, 80px)">
+      <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: #eeeee4">Brisa Bay</div>
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(36px, 6.3vw, 120px)">
+        <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: #eeeee4">
+          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
+          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Store Locator</a>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: #eeeee4">
+          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
+          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: clamp(20px, 3vw, 40px); margin-top: clamp(34px, 2.9vw, 54px)">
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
+        <a href="privacy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Privacy Policy</a>
+        <a href="terms.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Terms of Service</a>
+        <span style="cursor: default; color: #f5d732">Accessibility</span>
+        <span>&copy; Brisa Bay 2026</span>
+      </div>
+      <div style="display: flex; gap: clamp(12px, 1.4vw, 26px)">
+        <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(42px, 3vw, 58px); height: clamp(42px, 3vw, 58px); border-radius: 50%; background: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;info@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      contactEmail: this.props.contactEmail ?? 'info@brisabay.com'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -37,7 +39,23 @@
     [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>Privacy Policy | Brisa Bay</title>
   <meta name="description" content="How Brisa Bay collects, uses and protects your information.">
   <meta name="theme-color" content="#60b98f">
@@ -46,6 +64,7 @@
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#60b98f"></rect><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-size="34" fill="#eeeee4">BB</text></svg></template>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
 
   <div data-screen-label="Policy Header" style="position: relative; background: #3c3a34; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(40px, 5vw, 96px); box-sizing: border-box">
     <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
@@ -148,6 +167,10 @@
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
               <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Location Data:</strong> Geographic location based on IP address or GPS coordinates (with your consent).</p>
+            </div>
+            <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
+              <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+              <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty"><strong style="font-style: italic; color: #3c3a34">Store Locator Searches:</strong> When you type a place into our store locator, that text is sent to Photon (photon.komoot.io), an open-source geocoding service, to turn it into map coordinates. We never send your name, email, or account details with it. Map tiles are served by OpenStreetMap. If you use the &ldquo;near me&rdquo; button, your device shares GPS coordinates with the page to sort stockists by distance &mdash; those coordinates stay in your browser and are never sent to us or stored. We do record which searches found no nearby stockist, so we know where to expand; that record contains the place searched and how far the nearest shop was, never your location or anything identifying you.</p>
             </div>
             <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
               <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
@@ -378,13 +401,15 @@
           <p style="margin: 0">Brisa Bay</p>
           <p style="margin: 0">Napa Valley, California</p>
           <p style="margin: 0">Email: <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a></p>
-          <p style="margin: 0">Privacy Officer: <a href="mailto:privacy@brisabay.com" style="color: #e6393a">privacy@brisabay.com</a></p>
+          <p style="margin: 0">Privacy Officer: <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a></p>
         </div>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(15px, 1.4vw, 26px); line-height: 1.55; color: #7a766a">Please allow 5-7 business days for a response to your privacy request.</p>
       </div>
 
     </div>
   </div>
+
+  </main>
 
   <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(56px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(30px, 5vw, 80px)">
@@ -404,6 +429,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
         <span style="cursor: default; color: #f5d732">Privacy Policy</span>
         <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
+        <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Accessibility</a>
         <span>&copy; Brisa Bay 2026</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.4vw, 26px)">
@@ -414,12 +440,12 @@
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;hello@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;info@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
 class Component extends DCLogic {
   renderVals() {
     return {
       showToc: this.props.showToc ?? true,
-      contactEmail: this.props.contactEmail ?? 'hello@brisabay.com'
+      contactEmail: this.props.contactEmail ?? 'info@brisabay.com'
     };
   }
 }

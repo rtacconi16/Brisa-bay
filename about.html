@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -62,7 +64,7 @@
       background: rgba(247, 247, 242, 0.94);
       border-radius: clamp(22px, 2.8vw, 40px);
       border: 1px solid rgba(255, 255, 255, 0.55);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow:
         0 1px 0 rgba(255, 255, 255, 0.75) inset,
@@ -154,14 +156,17 @@
       max-width: 100%;
       max-height: min(72vh, 100%);
       min-height: 0;
-      display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       transform-origin: 50% 60%;
     }
     [data-bb-way-photo-frame] {
       display: block;
-      width: 100%;
-      aspect-ratio: 2 / 3;
+      width: fit-content;
+      max-width: 100%;
       max-height: min(72vh, 100%);
+      line-height: 0;
       overflow: hidden;
       border-radius: 48px;
       background: #eeeee4;
@@ -174,9 +179,11 @@
     }
     [data-bb-way-photo] img {
       display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: min(72vh, 100%);
+      object-fit: contain;
       object-position: center;
       border-radius: 48px;
     }
@@ -300,48 +307,72 @@
       [data-bb-roots] { padding: clamp(64px, 10vh, 96px) 16px 24px !important; }
       [data-bb-roots-card] { padding: clamp(22px, 4vh, 32px) 18px !important; gap: 14px !important; }
       [data-bb-roots-card] p { font-size: clamp(16px, 4.2vw, 19px) !important; line-height: 1.45 !important; }
-      /* Portrait screens can't fit a 2:3 photo card *beside* the copy at any
-         readable size, so the desktop row stacks: photo on top, copy under it,
-         the pair centred in the panel. Same elements, same order, same motion. */
+      /* Portrait: photo stack on top, copy under it. Stamp floats over the photos
+         so we don't reserve a tall empty band above them. */
       [data-bb-way-panel] {
-        padding: calc(clamp(118px, 34vw, 168px) + clamp(12px, 2vh, 28px) + 10px) 18px 46px !important;
+        padding: calc(clamp(10px, 1.6vh, 18px) + 32px) 18px 46px !important;
+        min-height: 0 !important;
       }
       [data-bb-way-row] {
         grid-template-columns: minmax(0, 1fr) !important;
-        grid-auto-rows: min-content !important;
-        align-content: center !important;
+        grid-template-rows: auto auto !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        align-content: start !important;
         justify-items: center !important;
-        gap: clamp(22px, 6vw, 32px) !important;
+        gap: clamp(28px, 6vw, 40px) !important;
       }
       [data-bb-way-photo] {
-        /* The 33svh term keeps the card from going square on short phones,
-           where max-height would otherwise crop a full-width 2:3 frame. */
-        width: min(72vw, 300px, 33svh) !important;
-        max-height: 44svh !important;
+        /* Sit high in the viewport; leave room below for title + body. */
+        width: min(94vw, 460px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: min(62svh, calc(100svh - 220px)) !important;
+        min-height: 0 !important;
+        align-self: start !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
       }
       [data-bb-way-photo-frame] {
-        max-height: 44svh !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
         border-radius: 32px !important;
         overflow: hidden !important;
+        background: transparent !important;
+        box-shadow: none !important;
       }
       [data-bb-way-photo] img {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: min(62svh, calc(100svh - 220px)) !important;
         border-radius: 32px !important;
-        object-fit: cover !important;
+        object-fit: contain !important;
+        box-shadow: 0 22px 40px rgba(60, 58, 52, 0.2);
       }
       [data-bb-way-copy] {
         width: 100% !important;
         padding: 0 !important;
+        margin-top: 45px !important;
         gap: clamp(8px, 2.2vw, 14px) !important;
         justify-content: flex-start !important;
+        flex-shrink: 0 !important;
+        align-self: stretch !important;
       }
       [data-bb-way-title] { font-size: clamp(24px, 6.4vw, 34px) !important; line-height: 1.1 !important; }
-      [data-bb-way-body] { font-size: clamp(16px, 4.4vw, 20px) !important; line-height: 1.5 !important; max-width: 46ch !important; }
+      [data-bb-way-body] { font-size: clamp(15px, 4.1vw, 19px) !important; line-height: 1.45 !important; max-width: 46ch !important; }
       [data-bb-way-progress] { right: 16px !important; bottom: 14px !important; }
       [data-bb-stamp] {
         width: clamp(118px, 34vw, 168px) !important;
         left: auto !important;
         right: 6px !important;
-        top: clamp(12px, 2vh, 28px) !important;
+        top: clamp(8px, 1.4vh, 18px) !important;
+        z-index: 50 !important;
       }
       /* Keep the wordmark the same fraction of the stamp as on desktop — the
          stamp is clamp(118px, 34vw, 168px) here, so track it at ~15%. */
@@ -376,7 +407,23 @@
       [data-bb-way-panel] { padding: 0 !important; }
       [data-bb-way-photo], [data-bb-way-photo-frame] { max-height: none !important; }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>About Brisa Bay</title>
   <meta name="description" content="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine.">
   <meta name="theme-color" content="#60b98f">
@@ -391,6 +438,7 @@
 </helmet>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: clip; font-family: 'Garamond Pro', serif; color: #606060">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
   <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden">
@@ -413,7 +461,7 @@
 
   <!-- ================= OUR ROOTS (slides over The Brisa Way band) ================= -->
   <div data-bb-roots="" style="display: flex; position: sticky; top: 0; z-index: 4; height: 100svh; align-items: center; justify-content: center; padding: clamp(64px, 8vh, 150px) clamp(16px, 4.7vw, 90px) clamp(24px, 3vw, 60px); box-sizing: border-box; pointer-events: none">
-    <div data-bb-roots-card="" data-screen-label="Our Roots" style="pointer-events: auto; width: 100%; max-width: 1240px; max-height: calc(100svh - 96px); background: rgba(247, 247, 242, 0.94); border-radius: clamp(22px, 2.8vw, 40px); border: 1px solid rgba(255, 255, 255, 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 4px 18px rgba(60, 58, 52, 0.08), 0 28px 70px rgba(60, 58, 52, 0.2); padding: clamp(28px, 3.2vw, 64px) clamp(20px, 3vw, 56px); box-sizing: border-box; display: grid; gap: clamp(14px, 1.7vw, 30px); overflow: auto">
+    <div data-bb-roots-card="" data-screen-label="Our Roots" style="pointer-events: auto; width: 100%; max-width: 1240px; max-height: calc(100svh - 96px); background: rgba(247, 247, 242, 0.94); border-radius: clamp(22px, 2.8vw, 40px); border: 1px solid rgba(255, 255, 255, 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 4px 18px rgba(60, 58, 52, 0.08), 0 28px 70px rgba(60, 58, 52, 0.2); padding: clamp(28px, 3.2vw, 64px) clamp(20px, 3vw, 56px); box-sizing: border-box; display: grid; gap: clamp(14px, 1.7vw, 30px); overflow: auto">
       <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">We've always believed that certain places have a soul of their own: the power to bring back a memory, shift your mood, or simply ground you in the present. For us, that place is right at the edge of the San Pablo Bay.</p>
       <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive,&nbsp;and&nbsp;moving.</p>
     </div>
@@ -426,7 +474,7 @@
       <img data-bb-deco="" src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
 
       <!-- rotating stamp -->
-      <div data-bb-stamp="" style="position: absolute; right: clamp(-14px, 1.5vw, 46px); top: clamp(8px, 2vh, 28px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 7">
+      <div data-bb-stamp="" style="position: absolute; right: clamp(-14px, 1.5vw, 46px); top: clamp(8px, 2vh, 28px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 50">
         <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
           <img src="assets/brush/asterisk-sage-centered.png" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
         </div>
@@ -507,8 +555,8 @@
       <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
         <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; color: #606060">Say hello.</h2>
         <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: #606060">
-          <span>hello@brisabaywine.com</span>
-          <span>Let's Work Together: partners@brisabaywine.com</span>
+          <span>info@brisabay.com</span>
+          <span>Let's Work Together: info@brisabay.com</span>
           <span>Follow the Vibe: @brisabaywines</span>
         </div>
       </div>
@@ -516,6 +564,8 @@
   </div>
 
   <!-- ================= FOOTER (bottom of the same viewport) ================= -->
+  </main>
+
   <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 6; flex: none; background: #60b98f; padding: clamp(24px, 3vw, 54px) clamp(20px, 5vw, 190px) clamp(18px, 2vw, 36px); box-sizing: border-box">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(20px, 3vw, 50px)">
       <div style="font-size: clamp(40px, 5.4vw, 100px); line-height: 1; color: #eeeee4">Brisa Bay</div>
@@ -526,7 +576,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: #eeeee4">
           <span style="cursor: pointer" style-hover="color: #f5d732">About Us</span>
-          <a href="mailto:hello@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+          <a href="mailto:info@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
           <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
         </div>
       </div>
@@ -535,6 +585,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: clamp(16px, 3.2vw, 60px); font-size: clamp(14px, 1.4vw, 26px); color: #eeeee4">
         <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Privacy Policy</a>
         <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
+        <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Accessibility</a>
         <span>© Brisa Bay 2026</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.3vw, 24px)">
@@ -560,7 +611,7 @@
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>
-        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</p>
+        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</p>
       </div>
     </div>
   </sc-if>
@@ -890,7 +941,7 @@ class Component extends DCLogic {
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
                 { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
         { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
-        { q: 'How do I get in touch?', a: 'Email hello@brisabay.com for trade, press or anything else. We read everything.' }
+        { q: 'How do I get in touch?', a: 'Email info@brisabay.com for trade, press or anything else. We read everything.' }
       ]
     };
   }

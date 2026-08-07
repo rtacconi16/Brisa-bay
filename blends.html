@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -52,7 +54,7 @@
       100% { transform: translateY(-112vh); visibility: hidden }
     }
     @supports (animation-timeline: view()) {
-      @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+      @media (prefers-reduced-motion: no-preference) {
         [data-bb-blend-scroll] { view-timeline-name: --bb-blend-scrub }
         [data-bb-blend-hero-copy] h1 {
           animation: bb-headline-exit linear both;
@@ -299,91 +301,81 @@
       }
       [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
     }
+    /* Mobile keeps the desktop pin-scrub theatre: sticky photo, stage overlaid
+       with copy | bottle. Only density and type scale are retuned. */
     @media (max-width: 900px) {
-      [data-bb-blend-scroll] { height: auto !important; }
-      [data-bb-blend-pin] {
-        position: relative !important;
-        height: auto !important;
-        min-height: 0 !important;
-        display: flex;
-        flex-direction: column;
+      [data-bb-nav] { row-gap: 10px !important; }
+      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
+      [data-bb-blend-hero-copy] {
+        padding: 0 18px clamp(22px, 3.4vh, 36px) !important;
+        gap: 12px !important;
       }
+      [data-bb-blend-hero-copy] h1 {
+        font-size: clamp(32px, 9vw, 48px) !important;
+      }
+      [data-bb-blend-stage] {
+        /* Same absolute overlay + scrim as desktop; tighter pad for the phone plate. */
+        padding: clamp(64px, 10vh, 88px) 16px clamp(16px, 2.4vh, 28px) !important;
+        column-gap: 10px !important;
+        row-gap: clamp(10px, 1.6vh, 18px) !important;
+      }
+      [data-bb-stage-copy] {
+        grid-column: 1 / span 7 !important;
+        grid-row: 1 !important;
+      }
+      [data-bb-stage-copy] [data-bb-copy-panel] {
+        gap: clamp(8px, 1.4vh, 16px) !important;
+      }
+      [data-bb-stage-copy] h2 {
+        font-size: clamp(28px, min(8.2vw, 9vh), 44px) !important;
+        line-height: 0.96 !important;
+        min-height: 1.92em !important;
+      }
+      [data-bb-stage-copy] p {
+        font-size: clamp(13px, 3.4vw, 16px) !important;
+        line-height: 1.45 !important;
+        max-width: 42ch !important;
+      }
+      [data-bb-spec] > div {
+        grid-template-columns: minmax(72px, 0.36fr) 1fr !important;
+        gap: 8px !important;
+        padding: clamp(6px, 1.1vh, 12px) 0 !important;
+      }
+      [data-bb-spec] dt { font-size: 10px !important; }
+      [data-bb-spec] dd {
+        font-size: clamp(12px, 3.2vw, 15px) !important;
+        min-height: 2.6em !important;
+      }
+      [data-bb-blend-stage] [data-bb-stage-row] {
+        grid-column: 8 / span 5 !important;
+        grid-row: 1 !important;
+      }
+      [data-bb-bottle-plinth] { width: min(100%, 42vw) !important; }
+      [data-bb-stage-nav] {
+        padding-top: 8px !important;
+      }
+      [data-bb-label] {
+        font-size: 10px !important;
+        letter-spacing: 0.14em !important;
+      }
+    }
+    /* Un-pinned reduced-motion flow on phones: give the photo real height and a
+       solid stage ground so the stack does not collapse under absolute rules. */
+    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
       [data-bb-blend-photo] {
         position: relative !important;
         inset: auto !important;
         width: 100% !important;
-        height: 62svh !important;
-        min-height: 62svh !important;
+        height: 56svh !important;
+        min-height: 56svh !important;
         object-position: center 72% !important;
       }
-      [data-bb-blend-hero-copy] {
-        position: absolute !important;
-        top: 0 !important;
-        bottom: auto !important;
-        height: 62svh !important;
-        opacity: 1 !important;
-        transform: none !important;
-        align-items: flex-end !important;
-        padding-top: 0 !important;
-      }
-      [data-bb-blend-stage],
-      [data-bb-stage-copy],
-      [data-bb-blend-stage] [data-bb-stage-row],
-      [data-bb-stage-arrow] {
-        opacity: 1 !important;
-        transform: none !important;
-        filter: none !important;
-      }
-      /* Mobile stacks below the photo rather than over it, so it takes the same
-         dark ground directly. The 12-column grid collapses to one and the bottle leads. */
       [data-bb-blend-stage] {
         position: relative !important;
         inset: auto !important;
-        pointer-events: auto !important;
-        min-height: 70svh;
-        grid-template-columns: minmax(0, 1fr) !important;
-        grid-template-rows: auto auto auto !important;
-        row-gap: 20px !important;
-        padding: clamp(24px, 4vh, 40px) clamp(18px, 4vw, 28px) 32px !important;
-        background: #2d2d2a;
-      }
-      /* Bottle, then copy, then the prev/next rule at the foot. */
-      [data-bb-stage-nav] {
-        grid-column: 1 !important;
-        grid-row: 3 !important;
-      }
-      [data-bb-stage-copy] {
-        grid-column: 1 !important;
-        grid-row: 2 !important;
-        max-width: none !important;
-        min-width: 0 !important;
-      }
-      /* Nothing is sharing a frame here — the stage is content-height and
-         stacked — so drop the reserved space rather than spend it. */
-      [data-bb-stage-copy] h2 {
-        font-size: clamp(34px, 11vw, 56px) !important;
-        line-height: 1 !important;
+        background: #2d2d2a !important;
         min-height: 0 !important;
       }
-      [data-bb-spec] dd { min-height: 0 !important; }
-      [data-bb-stage-copy] [data-bb-spec] { margin-top: 0 !important; }
-      [data-bb-stage-copy] p,
-      [data-bb-spec] {
-        max-width: none !important;
-      }
-      [data-bb-blend-stage] [data-bb-stage-row] {
-        grid-column: 1 !important;
-        grid-row: 1 !important;
-        height: auto !important;
-        min-height: clamp(300px, 66vw, 420px) !important;
-      }
-      [data-bb-bottle-slot] {
-        height: clamp(300px, 66vw, 420px) !important;
-      }
-      [data-bb-bottle-plinth] { width: min(100%, 60vw) !important; }
-      [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
-      [data-bb-nav] { row-gap: 10px !important; }
-      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
     }
 
     /* ---- Pouring moments carousel (Graza-inspired editorial strip) ---- */
@@ -496,10 +488,6 @@
     [data-bb-pour][data-pour-in="0"] [data-bb-pour-track] {
       animation-play-state: paused;
     }
-    [data-bb-pour-window]:has([data-bb-pour-card]:hover) [data-bb-pour-track],
-    [data-bb-pour-window]:has([data-bb-pour-card]:focus-within) [data-bb-pour-track] {
-      animation-play-state: paused;
-    }
     [data-bb-pour-card] {
       /* Width varies; height follows each photo's native ratio — no cropping */
       flex: 0 0 auto;
@@ -532,37 +520,54 @@
       [data-bb-pour-track] { animation: none; }
     }
     @media (max-width: 900px) {
+      /* Same head lockup as desktop (title + IG in the h2); denser spacing only. */
       [data-bb-pour] {
         min-height: 0;
-        padding: clamp(48px, 8vh, 88px) 0 clamp(40px, 6vh, 72px);
+        padding: clamp(40px, 7vh, 72px) 0 clamp(36px, 5vh, 64px);
       }
-      /* The section is content-height here, so there is no band to centre in:
-         back to a plain block with its own spacing. */
       [data-bb-pour-head] {
         flex: 0 0 auto;
-        min-height: 0;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 0 clamp(20px, 5vw, 40px);
-        margin-bottom: clamp(28px, 4vh, 40px);
+        min-height: clamp(72px, 12vh, 120px);
+        padding: 0 clamp(18px, 5vw, 40px);
+        margin-bottom: clamp(20px, 3.2vh, 32px);
+        gap: clamp(12px, 2vw, 24px);
       }
       [data-bb-pour-head] h2 {
-        font-size: clamp(22px, 6.2vw, 34px);
+        font-size: clamp(22px, 5.8vw, 32px);
+        white-space: normal;
         text-align: center;
       }
-      [data-bb-pour-cta-desk] { display: none; }
-      [data-bb-pour-cta-mob] { display: inline-flex; }
-      [data-bb-pour-foot] {
-        display: flex;
-        justify-content: center;
-        margin-top: clamp(24px, 4vw, 40px);
-        padding: 0 clamp(20px, 5vw, 40px);
+      [data-bb-pour-head] h2 [data-bb-pour-cta] {
+        margin-left: clamp(8px, 1.5vw, 14px);
       }
-      [data-bb-pour] { --pour-w: clamp(230px, 64vw, 330px); }
+      [data-bb-pour-cta] svg {
+        width: clamp(24px, 6vw, 32px);
+        height: clamp(24px, 6vw, 32px);
+      }
+      /* Keep the desk CTA in the head; foot stays unused on mobile too. */
+      [data-bb-pour-cta-desk] { display: inline-flex; }
+      [data-bb-pour-cta-mob],
+      [data-bb-pour-foot] { display: none; }
+      [data-bb-pour] { --pour-w: clamp(220px, 58vw, 300px); }
       [data-bb-pour-track] { animation-duration: 56s; }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc</title>
   <meta name="description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
   <meta name="theme-color" content="#60b98f">
@@ -577,6 +582,7 @@
 </helmet>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow-x: clip; font-family: 'Garamond Pro', serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= HERO → BOTTLE STAGE (pinned scrub) ================= -->
   <div data-bb-blend-scroll="" data-screen-label="Hero to Wines">
@@ -676,6 +682,8 @@
     </div>
   </section>
 
+  </main>
+
   <!-- ================= FOOTER ================= -->
   <div style="position: relative; z-index: 3; background: #eeeee4; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
     <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 3; background: #60b98f; padding: clamp(56px, 6vw, 116px) clamp(20px, 5vw, 190px) clamp(40px, 4.7vw, 90px); box-sizing: border-box">
@@ -688,7 +696,7 @@
           </div>
           <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: #eeeee4">
             <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
-            <a href="mailto:hello@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+            <a href="mailto:info@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
             <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
           </div>
         </div>
@@ -697,6 +705,7 @@
         <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
           <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Privacy Policy</a>
           <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
+          <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Accessibility</a>
           <span>&copy; Brisa Bay 2026</span>
         </div>
         <div style="display: flex; gap: clamp(12px, 1.3vw, 24px)">
@@ -721,7 +730,7 @@
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>
-        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</p>
+        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</p>
       </div>
     </div>
   </sc-if>
@@ -821,7 +830,7 @@ class Component extends DCLogic {
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
         { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
         { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
-        { q: 'How do I get in touch?', a: 'Email hello@brisabay.com for trade, press or anything else. We read everything.' }
+        { q: 'How do I get in touch?', a: 'Email info@brisabay.com for trade, press or anything else. We read everything.' }
       ]
     };
   }
@@ -831,10 +840,10 @@ class Component extends DCLogic {
 <script>
 (function () {
   const motionOn = () => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const narrow = window.matchMedia('(max-width: 900px)').matches;
-    return !reduce && !narrow;
+    // Same path as About: keep pin-scrub on mobile; only reduced-motion opts out.
+    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   };
+  const narrowMq = window.matchMedia('(max-width: 900px)');
 
   let raf = 0;
   let cleanup = null;
@@ -956,10 +965,12 @@ class Component extends DCLogic {
           : `translate3d(${(1 - copyIn) * -56}px, ${(1 - copyIn) * 24}px, 0)`;
       }
 
-      // Bottle rises just behind the wine copy
+      // Bottle rises just behind the wine copy (shorter travel on phones so it
+      // does not overshoot the tighter plate).
       const bottleIn = easeOut(range(p, 0.44, 0.8));
       if (row) {
-        const y = (1 - bottleIn) * 48;
+        const rise = narrowMq.matches ? 32 : 48;
+        const y = (1 - bottleIn) * rise;
         const scale = 0.9 + bottleIn * 0.1;
         row.style.opacity = String(bottleIn);
         row.style.transform = bottleIn >= 0.999

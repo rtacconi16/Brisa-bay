@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -553,18 +555,9 @@
         max-width: none !important;
       }
 
-      /* Nav */
-      [data-bb-nav] {
-        padding: max(14px, env(safe-area-inset-top)) 16px 12px !important;
-        gap: 8px 12px !important;
-        row-gap: 8px !important;
-      }
-      [data-bb-nav] > div:first-child { font-size: 22px !important; }
-      [data-bb-nav] [role="navigation"] {
-        font-size: 13px !important;
-        gap: 12px !important;
-        flex: 1 1 100%;
-      }
+      /* Same mobile header treatment as blends / about / where-to-buy */
+      [data-bb-nav] { row-gap: 10px !important; }
+      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
 
       [data-bb-ticker] em,
       [data-bb-ticker] span { font-size: 15px !important; }
@@ -640,10 +633,6 @@
     }
 
     @media (max-width: 480px) {
-      [data-bb-nav] [role="navigation"] {
-        font-size: 12px !important;
-        gap: 10px !important;
-      }
       [data-bb-skip-title] {
         font-size: clamp(32px, 12vw, 42px) !important;
       }
@@ -651,7 +640,23 @@
         height: min(42vh, 280px) !important;
       }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>Brisa Bay | Napa Valley wine meant to be lived, not collected</title>
   <meta name="description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
   <meta name="theme-color" content="#60b98f">
@@ -668,6 +673,7 @@
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#60b98f"></rect><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-size="34" fill="#eeeee4">BB</text></svg></template>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; font-family: 'Garamond Pro', serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= OPENING VIEWPORT: HERO + TICKER ================= -->
   <div data-bb-hero-scroll="" data-screen-label="Hero">
@@ -680,14 +686,14 @@
           <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
           <div data-bb-hero-veil="" aria-hidden="true"></div>
 
-          <div data-bb-nav="" style="position: absolute; z-index: 6; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px)">
-        <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
-        <div role="navigation" aria-label="Main">
-          <a href="about.html" style-hover="color: #f5d732">About us</a>
-          <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
-          <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
-        </div>
-      </div>
+          <div data-bb-nav="" style="position: absolute; z-index: 8; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px); box-sizing: border-box">
+            <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
+            <div role="navigation" aria-label="Main">
+              <a href="about.html" style-hover="color: #f5d732">About us</a>
+              <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
+              <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
+            </div>
+          </div>
         </div>
 
         <!-- ================= TICKER ================= -->
@@ -846,6 +852,8 @@
     </div>
   </div>
 
+  </main>
+
   <!-- ================= FOOTER ================= -->
   <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(64px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
     
@@ -858,7 +866,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: #eeeee4">
           <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
-          <a href="mailto:hello@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+          <a href="mailto:info@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
           <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
         </div>
       </div>
@@ -867,6 +875,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
         <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Privacy Policy</a>
         <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
+        <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Accessibility</a>
         <span>© Brisa Bay 2026</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.4vw, 26px)">
@@ -891,7 +900,7 @@
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>
-        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</p>
+        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</p>
       </div>
     </div>
   </sc-if>
@@ -1531,7 +1540,7 @@ class Component extends DCLogic {
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
                 { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
         { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
-        { q: 'How do I get in touch?', a: 'Email hello@brisabay.com for trade, press or anything else. We read everything.' }
+        { q: 'How do I get in touch?', a: 'Email info@brisabay.com for trade, press or anything else. We read everything.' }
       ]
     };
   }

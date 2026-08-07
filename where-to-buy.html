@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
+<script src="./locator-config.js?v=2"></script>
+<script src="./locator-util.js?v=1"></script>
+<script src="./locator-analytics.js?v=1"></script>
+<script src="./locator-jsonld.js?v=1"></script>
 </head>
 <body>
 <x-dc>
+<a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
     @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
@@ -37,6 +43,14 @@
     [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
+    /* Every control in the locator is a div[role=button]; without this there is
+       no visible focus at all against the cream palette. */
+    [data-bb-locator] :focus-visible,
+    [role="dialog"] :focus-visible {
+      outline: 2px solid #e6393a;
+      outline-offset: 2px;
+    }
+    [data-bb-store-row]:focus-visible { outline-offset: -3px; }
     .leaflet-popup-content-wrapper {
       border-radius: 0;
       background: #eeeee4;
@@ -215,6 +229,102 @@
       color: rgba(87, 84, 74, 0.62);
     }
 
+    /* Viewport-driven search. Sits top-centre over the map so it reads as a
+       property of the view rather than another toolbar filter. */
+    [data-bb-area-search], [data-bb-area-clear] {
+      position: absolute;
+      top: clamp(16px, 1.4vw, 28px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      font-size: clamp(13px, 0.92vw, 16px);
+      letter-spacing: 0.04em;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(60,58,52,0.18);
+      transition: background 0.2s, color 0.2s;
+      animation: bb-row-in 0.3s ease both;
+    }
+    [data-bb-area-search] { background: #3c3a34; color: #eeeee4; }
+    [data-bb-area-search]:hover { background: #e6393a; }
+    [data-bb-area-clear] {
+      background: rgba(238,238,228,0.94);
+      color: #57544a;
+      border: 1px solid rgba(87,84,74,0.2);
+    }
+    [data-bb-area-clear]:hover { color: #e6393a; border-color: rgba(230,57,58,0.45); }
+    @media (max-width: 900px) {
+      [data-bb-area-search], [data-bb-area-clear] { top: 12px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-area-search], [data-bb-area-clear] { animation: none !important; transition: none !important; }
+    }
+
+    [data-bb-featured][data-out-of-range="true"] [data-bb-label] { color: #e6393a !important; }
+    [data-bb-ask] {
+      margin: 0 clamp(20px, 1.9vw, 38px) 4px;
+      padding: clamp(14px, 1.2vw, 22px) 0 clamp(16px, 1.3vw, 24px);
+      border-bottom: 1px solid rgba(87,84,74,0.14);
+    }
+    [data-bb-ask-copy] {
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87,84,74,0.78);
+      text-wrap: pretty;
+    }
+    [data-bb-ask-link] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: #eeeee4;
+      background: #3c3a34;
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    [data-bb-ask-link]:hover { background: #e6393a; color: #eeeee4; }
+
+    [data-bb-row-actions] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(8px, 0.9vw, 16px);
+    }
+    [data-bb-row-link] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(13px, 0.92vw, 16px);
+      color: #57544a;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(87,84,74,0.3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    [data-bb-row-link]:hover { color: #e6393a; border-color: rgba(230,57,58,0.5); }
+
+    [data-bb-empty-action] {
+      display: inline-block;
+      margin-top: clamp(12px, 1.1vw, 18px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: #eeeee4;
+      background: #3c3a34;
+      padding: 7px 13px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    [data-bb-empty-action]:hover { background: #e6393a; }
+    [data-bb-beyond-row] {
+      padding: clamp(12px, 1vw, 18px) 0;
+      border-top: 1px solid rgba(87,84,74,0.12);
+      cursor: pointer;
+    }
+    [data-bb-beyond-row]:hover [data-bb-store-name] { color: #e6393a; }
+
     [data-bb-type-filters] {
       display: flex;
       flex-wrap: nowrap;
@@ -284,6 +394,27 @@
 
     [data-bb-sheet-handle] { display: none; }
 
+    /* Same contract as index/about/blends: nothing moves that does not have to.
+       The locator is the most animated page on the site — row entrances, the
+       masthead, marker transitions, and the map's own fly-to. */
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-store-row],
+      [data-bb-masthead] h1,
+      [data-bb-featured] {
+        animation: none !important;
+      }
+      [data-bb-store-row],
+      [data-bb-directions],
+      [data-bb-type-filter],
+      [data-bb-row-link],
+      [data-bb-empty-action],
+      [data-bb-locate],
+      [data-bb-see-all],
+      [data-bb-locator-list] {
+        transition: none !important;
+      }
+    }
+
     @media (max-width: 900px) {
       [data-bb-locator] {
         height: auto !important;
@@ -343,6 +474,16 @@
         padding: 14px 20px !important;
         gap: 2px 12px !important;
       }
+      /* WCAG 2.5.8 wants 24x24 minimum. Sized to their text, the short filter
+         labels fell well under — "All" measured 14px wide at 320px. */
+      [data-bb-type-filter] {
+        min-height: 34px !important;
+        display: inline-flex !important;
+        align-items: center;
+        padding: 6px 6px 10px !important;
+      }
+      [data-bb-locate] { width: 34px !important; height: 34px !important; }
+      [data-bb-sheet-handle] { padding: 14px 0 10px !important; }
       [data-bb-nav] { row-gap: 8px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
       [data-bb-see-all] {
@@ -350,7 +491,23 @@
         right: 12px !important;
       }
     }
-  </style>
+      /* Keyboard users land here first; visible only when focused. */
+    [data-bb-skiplink] {
+      position: absolute;
+      left: 8px;
+      top: -60px;
+      z-index: 2000;
+      background: #3c3a34;
+      color: #eeeee4;
+      font-family: 'Garamond Pro', Garamond, serif;
+      font-size: 16px;
+      padding: 10px 16px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: top 0.15s;
+    }
+    [data-bb-skiplink]:focus { top: 8px; }
+</style>
   <title>Store Locator | Brisa Bay</title>
   <meta name="description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
   <meta name="theme-color" content="#3c3a34">
@@ -365,6 +522,7 @@
 </helmet>
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; font-family: 'Garamond Pro', Garamond, serif; color: #57544a">
+  <main id="bb-content" tabindex="-1">
 
   <!-- ================= LOCATOR VIEWPORT ================= -->
   <div data-screen-label="Store Locator" data-bb-locator="" style="height: 100svh; min-height: 640px; display: flex; flex-direction: column; overflow: hidden">
@@ -386,14 +544,14 @@
       <div data-bb-search-wrap="">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="20" y1="20" x2="16.2" y2="16.2"></line></svg>
         <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
-          <input type="search" placeholder="search" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}">
+          <input type="search" placeholder="City, ZIP or store name" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}">
         </sc-if>
-        <div data-bb-locate="" role="button" aria-label="Use my current location" onClick="{{ requestLoc }}" title="{{ locPromptLabel }}">
+        <div data-bb-locate="" role="button" tabindex="0" aria-label="Use my current location" onClick="{{ requestLoc }}" onKeyDown="{{ requestLocKey }}" title="{{ locPromptLabel }}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
         </div>
       </div>
 
-      <label data-bb-radius="" aria-label="Search radius">
+      <label data-bb-radius="" aria-label="Search radius" title="{{ radiusHint }}">
         <select value="{{ radius }}" onChange="{{ onRadius }}">
           <sc-for list="{{ radiusOptions }}" as="opt" hint-placeholder-count="4">
             <option value="{{ opt.value }}" selected="{{ opt.selected }}">{{ opt.label }}</option>
@@ -403,32 +561,46 @@
 
       <div data-bb-type-filters="" role="group" aria-label="Filter by type">
         <sc-for list="{{ typeFilters }}" as="chip" hint-placeholder-count="4">
-          <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}">{{ chip.label }}</div>
+          <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" tabindex="0" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}" onKeyDown="{{ chip.onKey }}">{{ chip.label }}</div>
         </sc-for>
       </div>
 
-      <div data-bb-toolbar-status="">{{ statusCopy }}</div>
+      <div data-bb-toolbar-status="" role="status" aria-live="polite" aria-atomic="true">{{ statusCopy }}</div>
     </div>
 
     <div data-bb-locator-body="" style="flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch">
 
       <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
         <div data-bb-locator-list="" data-sheet="{{ sheetState }}" style="flex: 0 0 34%; display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.14)">
-          <div data-bb-sheet-handle="" role="button" aria-label="Expand or collapse stockist list" onClick="{{ toggleSheet }}"></div>
+          <div data-bb-sheet-handle="" role="button" tabindex="0" aria-label="Expand or collapse stockist list" aria-expanded="{{ sheetExpanded }}" onClick="{{ toggleSheet }}" onKeyDown="{{ toggleSheetKey }}"></div>
           <div data-bb-store-scroll="" style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
             <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ false }}">
-              <div data-bb-featured="" role="button" onClick="{{ featured.onSelect }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
+              <div data-bb-featured="" data-out-of-range="{{ outOfRange }}" role="button" tabindex="0" onClick="{{ featured.onSelect }}" onKeyDown="{{ featured.onKey }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
                 <div data-bb-label="" style="color: #60b98f">{{ featured.eyebrow }}</div>
                 <div data-bb-featured-name="">{{ featured.name }}</div>
                 <div data-bb-featured-line="">{{ featured.line }}</div>
               </div>
             </sc-if>
+            <sc-if value="{{ outOfRange }}" hint-placeholder-val="{{ false }}">
+              <div data-bb-ask="">
+                <div data-bb-ask-copy="">Want Brisa Bay in {{ askPlace }}? Tell us and we&rsquo;ll pass it to our distributors.</div>
+                <a data-bb-ask-link="" href="{{ askMailto }}" onClick="{{ onAskClick }}">Request a stockist</a>
+              </div>
+            </sc-if>
             <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
-              <div data-bb-store-row="" data-store-id="{{ store.id }}" data-active="{{ store.isActive }}" data-hover="{{ store.isHover }}" role="button" onClick="{{ store.onSelect }}" onMouseEnter="{{ store.onHover }}" onMouseLeave="{{ store.onLeave }}" style="animation-delay: {{ store.delay }}">
+              <div data-bb-store-row="" data-store-id="{{ store.id }}" data-active="{{ store.isActive }}" data-hover="{{ store.isHover }}" role="button" tabindex="0" aria-label="{{ store.label }}" aria-pressed="{{ store.isActive }}" onClick="{{ store.onSelect }}" onKeyDown="{{ store.onKey }}" onFocus="{{ store.onHover }}" onBlur="{{ store.onLeave }}" onMouseEnter="{{ store.onHover }}" onMouseLeave="{{ store.onLeave }}" style="animation-delay: {{ store.delay }}">
                 <div data-bb-store-main="">
                   <div data-bb-store-name="">{{ store.name }}</div>
                   <div data-bb-store-addr="">{{ store.address }}<br>{{ store.city }}</div>
-                  <a data-bb-directions="" href="{{ store.directions }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Get Directions</a>
+                  <div data-bb-row-actions="">
+                    <a data-bb-directions="" href="{{ store.directions }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Get Directions</a>
+                    <sc-if value="{{ store.hasPhone }}" hint-placeholder-val="{{ false }}">
+                      <a data-bb-row-link="" href="{{ store.tel }}" onClick="{{ store.stop }}">{{ store.phone }}</a>
+                    </sc-if>
+                    <sc-if value="{{ store.hasUrl }}" hint-placeholder-val="{{ false }}">
+                      <a data-bb-row-link="" href="{{ store.url }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Website</a>
+                    </sc-if>
+                  </div>
                 </div>
                 <div data-bb-store-side="">
                   <div data-bb-store-index="" aria-hidden="true">{{ store.index }}</div>
@@ -436,20 +608,47 @@
                 </div>
               </div>
             </sc-for>
+            <sc-if value="{{ storesFailed }}" hint-placeholder-val="{{ false }}">
+              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">The stockist list could not be loaded. Please refresh, or email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a> and we will point you to a shop.</div>
+            </sc-if>
             <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
-              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</div>
+              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">
+                <div>Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</div>
+                <sc-if value="{{ showClearFilters }}" hint-placeholder-val="{{ false }}">
+                  <div data-bb-empty-action="" role="button" tabindex="0" onClick="{{ clearFilters }}" onKeyDown="{{ clearFiltersKey }}">Clear filters</div>
+                </sc-if>
+                <sc-if value="{{ showBeyond }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top: clamp(18px, 1.6vw, 28px)">
+                    <div data-bb-label="">{{ beyondLabel }}</div>
+                    <sc-for list="{{ beyondStores }}" as="far" hint-placeholder-count="3">
+                      <div data-bb-beyond-row="" role="button" tabindex="0" onClick="{{ far.onSelect }}" onKeyDown="{{ far.onKey }}">
+                        <div data-bb-store-name="">{{ far.name }}</div>
+                        <div data-bb-featured-line="">{{ far.line }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
             </sc-if>
           </div>
         </div>
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=5" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
-        <div data-bb-see-all="" onClick="{{ resetView }}" role="button" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=15" storesjson="{{ storesJson }}" active="{{ activeId }}" holdview="{{ holdView }}" hint-size="100%,100%"></x-import>
+        <sc-if value="{{ showAreaSearch }}" hint-placeholder-val="{{ false }}">
+          <div data-bb-area-search="" role="button" tabindex="0" onClick="{{ searchArea }}" onKeyDown="{{ searchAreaKey }}">{{ areaSearchLabel }}</div>
+        </sc-if>
+        <sc-if value="{{ showAreaClear }}" hint-placeholder-val="{{ false }}">
+          <div data-bb-area-clear="" role="button" tabindex="0" onClick="{{ clearArea }}" onKeyDown="{{ clearAreaKey }}">{{ areaClearLabel }}</div>
+        </sc-if>
+        <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
     </div>
   </div>
+
+  </main>
 
   <!-- ================= FOOTER ================= -->
   <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(56px, 10vw, 190px) clamp(20px, 5vw, 190px) clamp(40px, 5vw, 90px); box-sizing: border-box">
@@ -462,7 +661,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(16px, 2vw, 38px); color: #eeeee4">
           <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
-          <a href="mailto:hello@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+          <a href="mailto:info@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
           <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
         </div>
       </div>
@@ -471,6 +670,7 @@
       <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 2vw, 38px); color: #eeeee4">
         <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Privacy Policy</a>
         <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
+        <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Accessibility</a>
         <span>© Brisa Bay 2026</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.3vw, 24px)">
@@ -483,9 +683,9 @@
 
 <!-- ================= FAQ MODAL ================= -->
 <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
+  <div role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
-      <div onClick="{{ closeFaq }}" role="button" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
+      <div onClick="{{ closeFaq }}" onKeyDown="{{ closeFaqKey }}" role="button" tabindex="0" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
       <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
       <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
       <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
@@ -494,14 +694,14 @@
           <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
         </div>
       </sc-for>
-      <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:hello@brisabay.com" style="color: #e6393a">hello@brisabay.com</a>.</p>
+      <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</p>
     </div>
   </div>
 </sc-if>
 
 <!-- ================= AGE GATE ================= -->
 <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" aria-label="Age verification" style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
+  <div role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
       <div style="font-size: clamp(24px, 2.3vw, 44px); color: #57544a; margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
       <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">
@@ -509,8 +709,8 @@
           <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Welcome to the brighter side of Napa.</h2>
           <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Before you come in, please confirm you are of legal drinking age &mdash; 21 or older in the United States.</p>
           <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 1.2vw, 22px); justify-content: center">
-            <div onClick="{{ acceptAge }}" role="button" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
-            <div onClick="{{ denyAge }}" role="button" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
+            <div onClick="{{ acceptAge }}" onKeyDown="{{ acceptAgeKey }}" role="button" tabindex="0" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
+            <div onClick="{{ denyAge }}" onKeyDown="{{ denyAgeKey }}" role="button" tabindex="0" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
           </div>
           <p style="margin: clamp(26px, 2.5vw, 48px) 0 0; font-size: clamp(14px, 1.2vw, 22px); line-height: 1.5; color: rgba(87,84,74,0.7); text-wrap: pretty">We never sell or market alcohol to anyone under the legal drinking age. Please enjoy Brisa Bay responsibly.</p>
         </div>
@@ -527,140 +727,88 @@
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;storeList&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;search&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
-const STORES = [
-  { id: 'ke-uh', name: 'Ke-uH', type: 'Restaurant', address: '2278 Weston Rd', city: 'Weston, FL', lat: 26.091884, lng: -80.370623 },
-  { id: 'grand-vin', name: 'Grand Vin Wine Bar', type: 'Wine Bar', address: '1107 Duval St', city: 'Key West, FL', lat: 24.549894, lng: -81.798362 },
-  { id: 'key-food-119th', name: 'Key Food Supermarket', type: 'Grocery', address: '1701 NW 119th St', city: 'Miami, FL', lat: 25.883151, lng: -80.227124 },
-  { id: 'price-choice-5', name: 'Price Choice Food Market #5', type: 'Grocery', address: '1851 NE 2nd Ave #5', city: 'Miami, FL', lat: 25.794358, lng: -80.190402 },
-  { id: 'seed-to-table', name: 'Seed to Table', type: 'Grocery', address: '4835 Immokalee Rd', city: 'Naples, FL', lat: 26.274556, lng: -81.752683 },
-  { id: 'royal-palm-yacht', name: 'Royal Palm Yacht & Country Club', type: 'Country Club', address: '2425 W Maya Palm Dr', city: 'Boca Raton, FL', lat: 26.326229, lng: -80.087608 },
-  { id: 'meat-town', name: 'Meat Town Market', type: 'Grocery', address: '14225 S Dixie Hwy', city: 'Miami, FL', lat: 25.638038, lng: -80.336476 },
-  { id: 'golden-hog', name: 'The Golden Hog', type: 'Grocery', address: '91 Harbor Dr', city: 'Key Biscayne, FL', lat: 25.700209, lng: -80.162965 },
-  { id: 'super-liquors-fwb', name: 'Super Liquors', type: 'Liquor Store', address: '507 Mary Esther Cut Off NW', city: 'Fort Walton Beach, FL', lat: 30.423976, lng: -86.648154 },
-  { id: '1910-miami-lakes', name: '1910 Restaurant', type: 'Restaurant', address: '6743 Main St', city: 'Miami Lakes, FL', lat: 25.913297, lng: -80.310105 },
-  { id: 'paradise-liquors', name: 'Paradise Liquors & Wine', type: 'Liquor Store', address: '15928 W State Rd 84', city: 'Sunrise, FL', lat: 26.123451, lng: -80.358340 },
-  { id: 'carmines', name: "Carmine's Gourmet Market", type: 'Grocery', address: '2401 PGA Blvd, Suite 172', city: 'Palm Beach Gardens, FL', lat: 26.84512, lng: -80.07133 },
-  { id: 'carmela-avenir', name: 'Carmela Coffee - Avenir', type: 'Café', address: '12515 Northlake Blvd #110', city: 'Palm Beach Gardens, FL', lat: 26.812101, lng: -80.235739 },
-  { id: 'carmela-boynton', name: 'Carmela Coffee - Boynton Beach', type: 'Café', address: '1750 N Congress Ave STE 100', city: 'Boynton Beach, FL', lat: 26.541138, lng: -80.090380 },
-  { id: 'carmela-east-boca', name: 'Carmela Coffee - East Boca', type: 'Café', address: '3200 N Federal Hwy #106', city: 'Boca Raton, FL', lat: 26.380387, lng: -80.075979 },
-  { id: 'carmela-ft-lauderdale', name: 'Carmela Coffee - Fort Lauderdale', type: 'Café', address: '201 S Federal Hwy', city: 'Fort Lauderdale, FL', lat: 26.120232, lng: -80.137340 },
-  { id: 'carmela-parkland', name: 'Carmela Coffee - Parkland', type: 'Café', address: '7967 N University Dr', city: 'Parkland, FL', lat: 26.328910, lng: -80.252956 },
-  { id: 'carmela-port-st-lucie', name: 'Carmela Coffee - Port St Lucie', type: 'Café', address: '10308 SW Discovery Wy', city: 'Port St. Lucie, FL', lat: 27.253052, lng: -80.429607 },
-  { id: 'carmela-uptown-boca', name: 'Carmela Coffee - Uptown Boca', type: 'Café', address: '9658 Glades Rd', city: 'Boca Raton, FL', lat: 26.366308, lng: -80.197914 },
-  { id: 'carmela-wellington', name: 'Carmela Coffee - Wellington', type: 'Café', address: '10630 Forest Hill Blvd, Suite 60', city: 'Wellington, FL', lat: 26.649942, lng: -80.215376 },
-  { id: 'carmela-westlake', name: 'Carmela Coffee - Westlake', type: 'Café', address: '16881 Persimmon Blvd', city: 'Loxahatchee, FL', lat: 26.755276, lng: -80.309470 },
-  { id: 'carmela-bric', name: 'Carmela Coffee - BRIC', type: 'Café', address: '4800 T-Rex Ave Suite #150', city: 'Boca Raton, FL', lat: 26.389761, lng: -80.107600 },
-  { id: 'carmela-clematis', name: 'Carmela Coffee - Clematis St', type: 'Café', address: '319 Clematis St', city: 'West Palm Beach, FL', lat: 26.713360, lng: -80.052723 },
-  { id: 'carmela-east-delray', name: 'Carmela Coffee - East Delray', type: 'Café', address: '247 SE 6th Ave', city: 'Delray Beach, FL', lat: 26.457066, lng: -80.066652 },
-  { id: 'carmela-park-place', name: 'Carmela Coffee - Park Place', type: 'Café', address: '5560 N Military Trl', city: 'Boca Raton, FL', lat: 26.400409, lng: -80.121369 },
-  { id: 'carmela-pompano', name: 'Carmela Coffee - Pompano Beach', type: 'Café', address: '1182 S Powerline Rd', city: 'Pompano Beach, FL', lat: 26.214616, lng: -80.156098 },
-  { id: 'carmela-stuart', name: 'Carmela Coffee - Stuart', type: 'Café', address: '2644 SE Federal Hwy', city: 'Stuart, FL', lat: 27.172151, lng: -80.232487 },
-  { id: 'carmela-village-commons', name: 'Carmela Coffee - Village Commons', type: 'Café', address: '711 Village Blvd', city: 'West Palm Beach, FL', lat: 26.713401, lng: -80.100278 },
-  { id: 'carmela-west-delray', name: 'Carmela Coffee - West Delray', type: 'Café', address: '8918 W Atlantic Ave', city: 'Delray Beach, FL', lat: 26.453189, lng: -80.186247 },
-  { id: 'carmela-west-village', name: 'Carmela Coffee - West Village', type: 'Café', address: '10 5th Ave', city: 'New York, NY', lat: 40.732373, lng: -73.996640 },
-  { id: 'desert-mountain-club', name: 'Desert Mountain Club', type: 'Country Club', address: '37700 N Desert Mountain Pkwy', city: 'Scottsdale, AZ', lat: 33.8269651, lng: -111.8748624 },
-  { id: 'my-friends-bottle-shop', name: "My Friend's Bottle Shop", type: 'Liquor Store', address: '275 Memorial Dr SE Suite A', city: 'Atlanta, GA', lat: 33.747476, lng: -84.3464095 },
-  { id: 'local-vine-cobb', name: 'Local Vine - Cobb Parkway (Buckhead Area)', type: 'Liquor Store', address: '3101 Cobb Pkwy, Suite 102', city: 'Atlanta, GA', lat: 33.8790523, lng: -84.4564879 },
-  { id: 'local-vine-johns-creek', name: "Local Vine - John's Creek", type: 'Liquor Store', address: '5805 State Bridge Rd #200', city: 'Johns Creek, GA', lat: 34.0182247, lng: -84.1877314 },
-  { id: 'bobby-jones-golf', name: 'Bobby Jones Golf Course', type: 'Golf Course', address: '2205 Northside Dr NW', city: 'Atlanta, GA', lat: 33.814733, lng: -84.407632 },
-  { id: 'cafe-lily', name: 'Cafe Lilly', type: 'Café', address: '308 W Ponce De Leon Ave Ste B', city: 'Decatur, GA', lat: 33.775531, lng: -84.300287 },
-  { id: 'candler-park-market', name: 'Candler Park Market', type: 'Grocery', address: '1642 McLendon Ave NE', city: 'Atlanta, GA', lat: 33.764902, lng: -84.333862 },
-  { id: 'enso-izakaya', name: 'Enso Izakaya Restaurant', type: 'Restaurant', address: '6 Olive St Ste 105B', city: 'Avondale Estates, GA', lat: 33.775944, lng: -84.274260 },
-  { id: 'ruths-chris-kennesaw', name: "Ruth's Chris Steak House Kennesaw", type: 'Restaurant', address: '620 Chastain Rd NW', city: 'Kennesaw, GA', lat: 34.037429, lng: -84.566570 },
-  { id: 'seasons-52-dunwoody', name: 'Seasons 52 #4507', type: 'Restaurant', address: '90 Perimeter Ctr West', city: 'Dunwoody, GA', lat: 33.926904, lng: -84.341085 },
-  { id: 'the-james-room', name: 'The James Room', type: 'Restaurant', address: '661 Auburn Ave NE Ste 280', city: 'Atlanta, GA', lat: 33.756983, lng: -84.366275 },
-  { id: 'the-stratford', name: 'The Stratford Restaurant', type: 'Restaurant', address: '17 North Avondale Plaza', city: 'Avondale Estates, GA', lat: 33.776194, lng: -84.266595 },
-  { id: 'capitol-grille-buckhead', name: 'Capitol Grille Buckhead', type: 'Restaurant', address: '255 E Paces Ferry Rd NE, FL 8', city: 'Atlanta, GA', lat: 33.839138, lng: -84.378819 },
-  { id: 'cumming-beverage-mart', name: 'Cumming Beverage Mart', type: 'Liquor Store', address: '1770 Buford Hwy Ste A', city: 'Cumming, GA', lat: 34.159723, lng: -84.112107 },
-  { id: 'eddie-vs-alpharetta', name: "Eddie V's 8537", type: 'Restaurant', address: '11405 Haynes Bridge Rd', city: 'Alpharetta, GA', lat: 34.058746, lng: -84.287454 },
-  { id: 'lake-pointe-package', name: 'Lake Pointe Package', type: 'Liquor Store', address: '5285 Lake Pointe Center Dr, Ste G', city: 'Cumming, GA', lat: 34.249274, lng: -84.051541 },
-  { id: 'oakhurst-market', name: 'Oakhurst Market', type: 'Grocery', address: '650 E Lake Dr Ste A', city: 'Decatur, GA', lat: 33.759746, lng: -84.304501 },
-  { id: 'rox-wine-cumming', name: 'Rox Wine & Spirits (Cumming)', type: 'Liquor Store', address: '910 Peachtree Pkwy', city: 'Cumming, GA', lat: 34.140841, lng: -84.172883 },
-  { id: 'savi-decatur', name: 'Savi Decatur', type: 'Grocery', address: '180 W Ponce De Leon Ave', city: 'Decatur, GA', lat: 33.775505, lng: -84.298469 },
-  { id: 'savi-midtown', name: 'Savi Midtown', type: 'Grocery', address: '988 Peachtree St NE', city: 'Atlanta, GA', lat: 33.780739, lng: -84.384164 },
-  { id: 'suds-bottles', name: 'Suds & Bottles', type: 'Liquor Store', address: '225 Reformation Pkwy Ste 104A', city: 'Canton, GA', lat: 34.235167, lng: -84.495195 },
-  { id: 'the-imperial-decatur', name: 'The Imperial', type: 'Restaurant', address: '724 & 726 West College Ave', city: 'Decatur, GA', lat: 33.766415, lng: -84.305727 },
-  { id: 'tuxedo-wine', name: 'Tuxedo Wine & Spirits', type: 'Liquor Store', address: '3861 Roswell Rd NE Ste A', city: 'Atlanta, GA', lat: 33.860158, lng: -84.380488 },
-  { id: 'deep-roots-marietta', name: 'Deep Roots - Market Square', type: 'Grocery', address: '107 Church St', city: 'Marietta, GA', lat: 33.954729, lng: -84.550245 },
-  { id: 'towe-beer', name: 'Towe Beer', type: 'Liquor Store', address: '2161 Piedmont Rd NE', city: 'Atlanta, GA', lat: 33.815583, lng: -84.3660131 },
-  { id: 'mcloones-asbury', name: "McLoone's (Asbury Park)", type: 'Restaurant', address: '1200 Ocean Ave', city: 'Asbury Park, NJ', lat: 40.222525, lng: -73.999484 },
-  { id: 'iron-whale', name: 'Iron Whale', type: 'Restaurant', address: '1200 Ocean Ave Unit 504', city: 'Asbury Park, NJ', lat: 40.2229618, lng: -73.9990314 },
-  { id: 'saltwater-liquors', name: 'Saltwater Liquors', type: 'Liquor Store', address: '9-11 Bayshore Plaza', city: 'Atlantic Highlands, NJ', lat: 40.4092473, lng: -74.0412074 },
-  { id: 'brant-beach-yacht', name: 'Brant Beach Yacht Club', type: 'Yacht Club', address: '6106 Bayview Ave', city: 'Brant Beach, NJ', lat: 39.6213982, lng: -74.1988585 },
-  { id: 'manasquan-river-golf', name: 'Manasquan River Golf Club', type: 'Golf Course', address: '843 Riverview Dr', city: 'Brielle, NJ', lat: 40.10187, lng: -74.065855 },
-  { id: 'national-hotel-frenchtown', name: 'National Hotel', type: 'Restaurant', address: '31 Race St', city: 'Frenchtown, NJ', lat: 40.527046, lng: -75.060305 },
-  { id: 'butchers-block-long-branch', name: "The Butcher's Block", type: 'Restaurant', address: '235 West Ave', city: 'Long Branch, NJ', lat: 40.2965061, lng: -73.9890338 },
-  { id: 'mcloones-pier-house', name: "McLoone's Pier House", type: 'Restaurant', address: '1 Ocean Ave N', city: 'Long Branch, NJ', lat: 40.310364, lng: -73.977047 },
-  { id: 'robinson-ale-long-branch', name: 'The Robinson Ale House (Long Branch)', type: 'Restaurant', address: '68 Ocean Ave', city: 'Long Branch, NJ', lat: 40.307193, lng: -73.977926 },
-  { id: 'manasquan-liquors', name: 'Manasquan Liquors', type: 'Liquor Store', address: '139 Main St', city: 'Manasquan, NJ', lat: 40.1231837, lng: -74.050678 },
-  { id: 'canals-bottlestop', name: "Canal's Bottlestop", type: 'Liquor Store', address: '10 Route 70 W', city: 'Marlton, NJ', lat: 39.894025, lng: -74.921661 },
-  { id: 'liquor-city-south', name: 'Liquor City South', type: 'Liquor Store', address: '1345 Rt 1, South Dr', city: 'North Brunswick, NJ', lat: 40.4589164, lng: -74.4726668 },
-  { id: 'troy-social', name: 'Troy Social Restaurant & Bar', type: 'Restaurant', address: '8 Wood Hollow Rd', city: 'Parsippany, NJ', lat: 40.8616388, lng: -74.4147847 },
-  { id: 'catezza', name: 'Catezza', type: 'Restaurant', address: '19 Broad St', city: 'Red Bank, NJ', lat: 40.351583, lng: -74.065381 },
-  { id: 'cafe-pari', name: 'Cafe Pari', type: 'Café', address: '17 Broad St', city: 'Red Bank, NJ', lat: 40.3516458, lng: -74.0652944 },
-  { id: 'robinson-ale-red-bank', name: 'The Robinson Ale House (Red Bank)', type: 'Restaurant', address: '26 Broad St', city: 'Red Bank, NJ', lat: 40.351216, lng: -74.065512 },
-  { id: 'mcloones-sea-bright', name: "McLoone's Rum Runner (Sea Bright)", type: 'Restaurant', address: '816 Ocean Ave', city: 'Sea Bright, NJ', lat: 40.371408, lng: -73.974249 },
-  { id: 'shell-liquor', name: 'Shell Liquors', type: 'Liquor Store', address: '1414 Long Beach Blvd', city: 'Ship Bottom, NJ', lat: 39.6508263, lng: -74.1747899 },
-  { id: 'fine-spirits-tenafly', name: 'Tenafly Fine Wine & Spirits', type: 'Liquor Store', address: '14 Riveredge Rd', city: 'Tenafly, NJ', lat: 40.926367, lng: -73.965409 },
-  { id: 'raeyas', name: "Raeya's", type: 'Restaurant', address: '37 Berdan Ave', city: 'Wayne, NJ', lat: 40.9616446, lng: -74.2417246 },
-  { id: 'shoprite-westfield', name: 'ShopRite Wines & Spirits', type: 'Liquor Store', address: '333 South Ave E', city: 'Westfield, NJ', lat: 40.649818, lng: -74.337454 },
-  { id: 'mcloones-boathouse', name: "McLoone's Boathouse", type: 'Restaurant', address: '9 Cherry Ln', city: 'West Orange, NJ', lat: 40.758174, lng: -74.291626 },
-  { id: 'scotland-run-golf', name: 'Scotland Run Golf Club', type: 'Golf Course', address: '2626 Fries Mill Rd', city: 'Williamstown, NJ', lat: 39.669, lng: -74.994 },
-  { id: 'rats-restaurant', name: "Rat's Restaurant", type: 'Restaurant', address: '16 Fairgrounds Rd', city: 'Hamilton, NJ', lat: 40.238327, lng: -74.717747 },
-  { id: 'panther-valley-golf', name: 'Panther Valley Golf & Country Club', type: 'Golf Course', address: '1 Forest Dr', city: 'Allamuchy, NJ', lat: 40.9083016, lng: -74.8306091 },
-  { id: 'lavallette-liquors', name: 'Lavallette Liquors', type: 'Liquor Store', address: '66 Grand Central Ave', city: 'Lavallette, NJ', lat: 39.9802931, lng: -74.0673924 },
-  { id: 'jimmy-vs-downtown', name: "Jimmy V's Pub & Grill - Downtown", type: 'Restaurant', address: '1788 W 5th Ave', city: 'Columbus, OH', lat: 39.9893498, lng: -83.0543143 },
-  { id: 'jimmy-vs-westerville', name: "Jimmy V's Pub & Grill - Westerville", type: 'Restaurant', address: '1 S State Street', city: 'Westerville, OH', lat: 40.1257284, lng: -82.9316958 },
-  { id: 'stone-kitchen', name: 'Stone Kitchen', type: 'Restaurant', address: '1045 Bethel Rd', city: 'Columbus, OH', lat: 40.0633212, lng: -83.0479738 },
-  { id: 'panini-opa', name: 'Panini Opa', type: 'Restaurant', address: '4799 Sawmill Rd', city: 'Columbus, OH', lat: 40.0653007, lng: -83.0937258 },
-  { id: 'santaella', name: 'Santaella', type: 'Restaurant', address: '219 C. Canals', city: 'San Juan, PR', lat: 18.450056, lng: -66.069854 },
-  { id: 'set-the-bar', name: 'Set the Bar Aguadilla', type: 'Restaurant', address: '2032 Ave Pedro Albizu Campos', city: 'Aguadilla, PR', lat: 18.4506033, lng: -67.152372 },
-  { id: 'wine-spot', name: 'Wine Spot', type: 'Wine Bar', address: '1075 Av. Juan Ponce de León', city: 'San Juan, PR', lat: 18.452591, lng: -66.076663 },
-  { id: 'la-central-mario-pagan', name: 'La Central by Mario Pagán', type: 'Restaurant', address: '250 Convention Boulevard', city: 'San Juan, PR', lat: 18.453324, lng: -66.092585 },
-  { id: 'cocina-al-fondo', name: 'Cocina al Fondo', type: 'Restaurant', address: '658 Calle San Juan', city: 'San Juan, PR', lat: 18.451401, lng: -66.077284 },
-  { id: 'el-mamposteao', name: 'El Mamposteao', type: 'Restaurant', address: 'Carretera 2 Km. 85', city: 'Hatillo, PR', lat: 18.474252, lng: -66.789148 },
-  { id: 'ropa-vieja-grill-condado', name: 'Ropa Vieja (Condado)', type: 'Restaurant', address: '55 Avenida Condado', city: 'San Juan, PR', lat: 18.45558, lng: -66.07166 },
-  { id: 'pyp-restaurant', name: 'PYP Restaurant (Caguas)', type: 'Restaurant', address: '52 Calle Betances', city: 'Caguas, PR', lat: 18.234164, lng: -66.03564 },
-  { id: 'vin-us', name: "Vin'Us", type: 'Wine Bar', address: '1000 Mall of San Juan Blvd, Suite 231', city: 'San Juan, PR', lat: 18.412243, lng: -66.025011 },
-  { id: 'tetas-by-karla-z', name: 'Tetas by Karla Z', type: 'Restaurant', address: 'Hacienda Las Cecilias S/N', city: 'Cayey, PR', lat: 18.1029116, lng: -66.1640614 },
-  { id: 'ojala-speakeasy', name: 'Ojala Speakeasy (Caguas)', type: 'Wine Bar', address: 'Carretera 189 Km. 2.2, Santa Elvira Mall', city: 'Caguas, PR', lat: 18.240365, lng: -66.011986 },
-  { id: 'calichi-gastrobar', name: 'Calichi Gastrobar', type: 'Restaurant', address: 'Carr. PR-152 Km 18.3', city: 'Naranjito, PR', lat: 18.28744, lng: -66.27116 },
-  { id: 'salitre-meson-costero', name: 'Salitre Mesón Costero', type: 'Restaurant', address: 'Carretera PR-681 Km 3.8', city: 'Arecibo, PR', lat: 18.477614, lng: -66.656476 },
-  { id: 'la-enoteca-uvas', name: 'La Enoteca (UVAS PR)', type: 'Wine Bar', address: 'Galería de Artes y Ciencias III, Carretera 693 #877', city: 'Dorado, PR', lat: 18.4288576, lng: -66.2887923 },
-  { id: 'mr-sandwich-bistro', name: 'Mr. Sandwich Bistro', type: 'Restaurant', address: 'Calle Guarionex BK-1 Ave Bairoa', city: 'Caguas, PR', lat: 18.259136, lng: -66.044973 },
-  { id: 'atirantado-bar-grill', name: 'Atirantado Bar & Grill', type: 'Restaurant', address: 'Carretera PR-5 S/N', city: 'Naranjito, PR', lat: 18.316264, lng: -66.220842 },
-  { id: 'don-pepe-restaurant', name: 'Don Pepe Restaurant', type: 'Restaurant', address: 'Carr. PR-3 Km. 29.0 Carola', city: 'Rio Grande, PR', lat: 18.372443, lng: -65.770376 }
-];
+// Stockists live in stores.json so a distribution change is a data edit, not a
+// markup edit. Loaded at runtime; STORES stays empty for the first paint, which
+// every consumer below is written to tolerate.
+let STORES = [];
+let storesStatus = 'loading';   // loading | ready | error
 
-function milesBetween(a, b) {
-  const R = 3958.8;
-  const toRad = (d) => (d * Math.PI) / 180;
-  const dLat = toRad(b.lat - a.lat);
-  const dLng = toRad(b.lng - a.lng);
-  const lat1 = toRad(a.lat);
-  const lat2 = toRad(b.lat);
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
-  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+async function loadStores() {
+  const cfg = (window.BB_LOCATOR_CONFIG && window.BB_LOCATOR_CONFIG.stores) || {};
+  const url = cfg.url || 'stores.json';
+  const res = await fetch(url, { cache: 'no-cache' });
+  if (!res.ok) throw new Error('stores ' + res.status);
+  const data = await res.json();
+  const list = Array.isArray(data) ? data : (data.stores || []);
+  // Anything missing coordinates cannot be mapped or measured, so drop it here
+  // rather than letting it produce NaN distances downstream.
+  return list.filter((s) => s && s.id && Number.isFinite(s.lat) && Number.isFinite(s.lng));
 }
 
-function formatMiles(mi) {
-  if (mi < 0.1) return '< 0.1 mi';
-  if (mi < 10) return mi.toFixed(1) + ' mi';
-  return Math.round(mi) + ' mi';
-}
+const { milesBetween, formatMiles, directionsUrl, telHref } = window.BBLocator;
 
 const NEARBY_MI = 60;
+// Past this, calling the result "near you" would be a stretch, so the page says
+// so plainly instead.
+const OUT_OF_RANGE_MI = 75;
 
-function textMatchesQuery(s, q) {
-  if (!q) return true;
-  return (s.name + ' ' + s.city + ' ' + s.type + ' ' + s.address).toLowerCase().includes(q);
+/** Fold case, accents and punctuation so "ruths chris" finds "Ruth's Chris"
+   and "cafe" finds "Café". The dataset is full of both. */
+function normalizeText(s) {
+  let out = String(s == null ? '' : s).toLowerCase();
+  if (out.normalize) out = out.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return out.replace(/[\u2019'`]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
+function queryTokens(q) {
+  return normalizeText(q).split(' ').filter(Boolean);
+}
+
+/** Every token must appear somewhere, and where it appears decides the rank.
+   A single contiguous match would fail on ordinary two-word queries like
+   "carmela boca" or "wine bar key west". */
+function searchScore(s, tokens) {
+  if (!tokens.length) return 1;
+  if (!s._norm) {
+    s._norm = {
+      name: normalizeText(s.name),
+      city: normalizeText(s.city),
+      type: normalizeText(s.type),
+      addr: normalizeText(s.address)
+    };
+  }
+  const { name, city, type } = s._norm;
+  const hay = name + ' ' + city + ' ' + type + ' ' + s._norm.addr;
+  let score = 0;
+  for (const t of tokens) {
+    if (!hay.includes(t)) return 0;
+    if (name.startsWith(t)) score += 5;
+    else if (name.includes(t)) score += 4;
+    else if (city.startsWith(t)) score += 3;
+    else if (city.includes(t)) score += 2;
+    else if (type.includes(t)) score += 2;
+    else score += 1;
+  }
+  return score;
+}
+
+function textMatchesQuery(s, q) {
+  return searchScore(s, queryTokens(q)) > 0;
+}
+
+/** Centroid of the stockist footprint, computed once. The previous version took
+   the median latitude and the median longitude independently — two unrelated
+   numbers describing a point that sits near no store at all. */
+let _biasMemo = null;
 function storeBias() {
-  const lats = STORES.map((s) => s.lat).sort((a, b) => a - b);
-  const lngs = STORES.map((s) => s.lng).sort((a, b) => a - b);
-  const mid = (arr) => arr[Math.floor(arr.length / 2)];
-  return { lat: mid(lats), lng: mid(lngs) };
+  if (_biasMemo) return _biasMemo;
+  // Do not memoise before the data arrives, or every later geocode is biased
+  // to a centroid computed from nothing.
+  if (!STORES.length) return { lat: 31.14, lng: -77.78 };
+  const n = STORES.length;
+  const sum = STORES.reduce((acc, s) => ({ lat: acc.lat + s.lat, lng: acc.lng + s.lng }), { lat: 0, lng: 0 });
+  _biasMemo = { lat: sum.lat / n, lng: sum.lng / n };
+  return _biasMemo;
 }
 
 function featureLabel(p, fallback) {
@@ -672,44 +820,98 @@ function featureLabel(p, fallback) {
     .join(', ') || fallback;
 }
 
-function scoreGeocodeFeature(f, bias) {
+// How prominent a place is, independent of where our stores happen to be. A
+// city outranks a hamlet of the same name no matter how far away it is.
+const PLACE_PROMINENCE = {
+  city: 100, postcode: 92, town: 78, county: 62, municipality: 62,
+  suburb: 55, village: 48, borough: 48, neighbourhood: 40, quarter: 38,
+  hamlet: 28, locality: 24, isolated_dwelling: 12,
+  house: 70, building: 66, commercial: 62, retail: 62,
+  residential: 20, tertiary: 20, secondary: 20, primary: 20, unclassified: 15
+};
+
+// Photon already returns candidates in relevance order, and that ordering
+// encodes real-world prominence better than anything we can reconstruct from
+// the fields it exposes: "columbus" comes back Ohio-first, "portland"
+// Oregon-first, "springfield" Massachusetts-first. Treat that rank as the
+// primary signal rather than throwing it away by re-sorting.
+const RANK_WEIGHT = 12;
+
+// The distance term is a tiebreaker between adjacent, equally-prominent
+// candidates — never a filter. Capped well below one rank step so it can settle
+// a tie but never overturn Photon's ordering or promote a hamlet over a city.
+// Getting this wrong previously made every place more than ~1,080 miles away
+// report as "could not find that place".
+const MAX_DISTANCE_PENALTY = 8;
+
+function scoreGeocodeFeature(f, bias, rank = 0) {
   const p = f.properties || {};
   const [lng, lat] = f.geometry.coordinates;
   let score = 0;
+
   const country = String(p.country || '');
   const cc = String(p.countrycode || '').toUpperCase();
-  if (cc === 'US' || /united states/i.test(country)) score += 120;
-  else score -= 80;
+  // The stockist footprint is entirely US/PR, so a non-US hit is almost always
+  // the wrong Springfield. Still a ranking signal, not a veto.
+  if (cc === 'US' || cc === 'PR' || /united states|puerto rico/i.test(country)) score += 120;
+  else score -= 60;
+
   const kind = String(p.osm_value || p.type || '').toLowerCase();
-  if (['city', 'town', 'village', 'suburb', 'neighbourhood', 'hamlet', 'postcode', 'county'].includes(kind)) score += 55;
-  else if (['house', 'building', 'commercial', 'retail'].includes(kind)) score += 45;
-  else if (['residential', 'tertiary', 'secondary', 'primary', 'unclassified'].includes(kind)) score -= 25;
+  score += PLACE_PROMINENCE[kind] != null ? PLACE_PROMINENCE[kind] : 30;
+
+  score += Math.max(0, 8 - rank) * RANK_WEIGHT;
+
   const mi = milesBetween(bias, { lat, lng });
-  score -= Math.min(mi, 2500) / 8;
+  score -= Math.min(mi / 250, MAX_DISTANCE_PENALTY);
   return score;
 }
 
-async function geocodePlace(q) {
-  const bias = storeBias();
+/** Did we get a real place, as opposed to nothing usable? Deliberately not a
+   judgement about whether we have stores near it — that is a separate question
+   the page answers separately. */
+function isPlausiblePlace(f, bias, rank = 0) {
+  const p = f.properties || {};
+  const cc = String(p.countrycode || '').toUpperCase();
+  const isUs = cc === 'US' || cc === 'PR' || /united states|puerto rico/i.test(String(p.country || ''));
+  return isUs && scoreGeocodeFeature(f, bias, rank) > 0;
+}
+
+const geocodeCache = new Map();
+
+async function geocodePlace(q, { near = null, signal = null } = {}) {
+  // Where the visitor actually is beats the dataset centroid every time.
+  const bias = near || storeBias();
+  const key = q.toLowerCase() + '@' + bias.lat.toFixed(2) + ',' + bias.lng.toFixed(2);
+  if (geocodeCache.has(key)) return geocodeCache.get(key);
   // Bias toward stockist region. Do not append ", USA" — that can drown out
   // local city hits (e.g. Coral Gables, FL) with unrelated US street names.
+  const cfg = (window.BB_LOCATOR_CONFIG && window.BB_LOCATOR_CONFIG.geocode) || {};
   const params = new URLSearchParams({
     q: q,
-    limit: '8',
+    limit: String(cfg.limit || 8),
     lang: 'en',
     lat: String(bias.lat),
     lon: String(bias.lng)
   });
-  const res = await fetch('https://photon.komoot.io/api/?' + params.toString());
+  const endpoint = cfg.endpoint || 'https://photon.komoot.io/api/';
+  const res = await fetch(endpoint + '?' + params.toString(), { signal });
   if (!res.ok) throw new Error('geocode failed');
   const data = await res.json();
   const features = (data.features || []).filter((f) => f && f.geometry && f.geometry.coordinates);
-  if (!features.length) return null;
-  features.sort((a, b) => scoreGeocodeFeature(b, bias) - scoreGeocodeFeature(a, bias));
-  const f = features[0];
-  if (scoreGeocodeFeature(f, bias) < 40) return null;
-  const [lng, lat] = f.geometry.coordinates;
-  return { lat, lng, label: featureLabel(f.properties || {}, q) };
+  let out = null;
+  if (features.length) {
+    // Carry each candidate's original rank into the score, then re-sort.
+    const ranked = features
+      .map((f, i) => ({ f, score: scoreGeocodeFeature(f, bias, i), rank: i }))
+      .sort((a, b) => b.score - a.score);
+    const best = ranked[0];
+    if (isPlausiblePlace(best.f, bias, best.rank)) {
+      const [lng, lat] = best.f.geometry.coordinates;
+      out = { lat, lng, label: featureLabel(best.f.properties || {}, q) };
+    }
+  }
+  geocodeCache.set(key, out);
+  return out;
 }
 
 class Component extends DCLogic {
@@ -719,7 +921,10 @@ class Component extends DCLogic {
     userLoc: null, locStatus: 'idle',
     searchLoc: null, geoStatus: 'idle', geoQuery: '',
     sheetOpen: false, hoverId: null,
-    radius: 0
+    radius: 0, storesReady: false,
+    // areaBounds: the viewport the visitor asked us to filter to.
+    // areaOffer: a viewport they have moved to but not yet asked about.
+    areaBounds: null, areaOffer: null, areaOffscreen: 0
   };
   _geoTimer = null;
   _geoSeq = 0;
@@ -747,23 +952,247 @@ class Component extends DCLogic {
     document.addEventListener('store-deselect', this._onDeselect);
     document.addEventListener('store-locate', this._onLocate);
     document.addEventListener('store-hover', this._onMapHover);
-    if (ageOk || !(this.props.ageGate ?? true)) this._requestLocation();
+    this._onMapMoved = (e) => {
+      const b = e.detail;
+      if (!b) return;
+      const m = this._map();
+      const offscreen = m && m.offscreenCount ? m.offscreenCount() : 0;
+      // Already filtered to almost this view, or nothing is hidden by it —
+      // then there is nothing useful to offer.
+      if (this.state.areaBounds && offscreen === 0) {
+        this.setState({ areaOffer: null, areaOffscreen: 0 });
+        return;
+      }
+      this.setState({ areaOffer: b, areaOffscreen: offscreen });
+    };
+    document.addEventListener('store-map-moved', this._onMapMoved);
+    // Escape closes the FAQ. It deliberately does NOT close the age gate —
+    // dismissing a legal check with a keypress would defeat the point of it.
+    this._onKeyDown = (e) => {
+      if (e.key !== 'Escape' || !this.state.faqOpen) return;
+      e.preventDefault();
+      this.setState({ faqOpen: false });
+    };
+    document.addEventListener('keydown', this._onKeyDown);
+    // URL state names stores and types, so it can only be validated once the
+    // data is in. Everything else can start without it.
+    loadStores().then((list) => {
+      STORES = list;
+      storesStatus = 'ready';
+      _biasMemo = null;
+      if (window.BBStructuredData) window.BBStructuredData.emit(list);
+      this.setState({ storesReady: true }, () => this._readUrlState());
+    }).catch((err) => {
+      storesStatus = 'error';
+      this.setState({ storesReady: true });
+      if (window.console && console.error) console.error('[locator] stores.json', err);
+    });
+    this._resumeLocationIfGranted();
+    // The gate is up on first paint, before any state change would trigger an
+    // update, so seal the page now rather than waiting for one.
+    setTimeout(() => this._syncModal(), 0);
+  }
+
+  /** ?near / ?type / ?radius / ?store make a result shareable, survivable
+     across a refresh, and linkable from anywhere else on the site. */
+  _readUrlState() {
+    let params;
+    try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+    const near = (params.get('near') || '').trim();
+    const type = (params.get('type') || '').trim();
+    const radius = Number(params.get('radius')) || 0;
+    const store = (params.get('store') || '').trim();
+
+    const patch = {};
+    if (near) patch.query = near;
+    if (type && STORES.some((s) => s.type === type)) patch.typeFilter = type;
+    if ([10, 25, 50, 100].includes(radius)) patch.radius = radius;
+    if (store && STORES.some((s) => s.id === store)) {
+      patch.active = store;
+      patch.sheetOpen = true;
+    }
+    if (!Object.keys(patch).length) return;
+    this.setState(patch, () => {
+      if (patch.query && !this._pool().some((s) => textMatchesQuery(s, patch.query))) {
+        this._runGeocode(patch.query);
+      }
+      if (patch.active) setTimeout(() => this.select(patch.active), 400);
+    });
+  }
+
+  _writeUrlState() {
+    if (!window.history || !window.history.replaceState) return;
+    clearTimeout(this._urlTimer);
+    this._urlTimer = setTimeout(() => {
+      const params = new URLSearchParams();
+      const q = this.state.query.trim();
+      if (q) params.set('near', q);
+      if (this.state.typeFilter) params.set('type', this.state.typeFilter);
+      if (this.state.radius) params.set('radius', String(this.state.radius));
+      if (this.state.active) params.set('store', this.state.active);
+      const qs = params.toString();
+      const next = window.location.pathname + (qs ? '?' + qs : '');
+      if (next === window.location.pathname + window.location.search) return;
+      // replaceState, not pushState: typing a query should not bury the page
+      // the visitor arrived from under a dozen history entries.
+      try { window.history.replaceState(null, '', next); } catch (e) {}
+    }, 300);
+  }
+
+
+  /** Only auto-locate for people who have already granted the permission on a
+     previous visit. Prompting an unknown visitor on load is the pattern people
+     reflexively deny, and a denial sticks for the whole origin. */
+  _resumeLocationIfGranted() {
+    if (!navigator.geolocation || !navigator.permissions || !navigator.permissions.query) return;
+    try {
+      navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+        if (status && status.state === 'granted') this._requestLocation();
+      }).catch(() => {});
+    } catch (e) { /* Safari <16 throws on unknown descriptors */ }
   }
   componentDidUpdate() {
     if (this.state.active && this.state.active !== this._scrolledFor) {
       this._scrolledFor = this.state.active;
       this._scrollStoreIntoView(this.state.active);
     }
+    this._writeUrlState();
+    this._syncModal();
+  }
+
+  /** Both overlays carried aria-modal="true" while the whole page stayed
+     tabbable behind them — 234 focusable elements, focus never entering the
+     dialog. For the age gate that is not just an accessibility defect: a
+     keyboard user could tab straight past the check into the site.
+
+     `inert` on the page container is what actually fixes it. It removes
+     everything behind from the tab order, from hit testing and from the
+     accessibility tree in one go, so no hand-rolled focus trap is needed. */
+  /** `inert` needs Safari 15.5+. On anything older, assigning it is a silent
+     no-op — which would quietly make the age gate bypassable again on exactly
+     the devices least likely to be noticed. Fall back to neutralising the
+     subtree by hand, restoring each element's original tabindex afterwards.
+
+     Not equivalent to real inert: tabindex="-1" takes an element out of the
+     tab order and aria-hidden takes it out of the accessibility tree, but
+     programmatic .focus() still reaches it. That closes the realistic hole —
+     someone pressing Tab — and not the theoretical one, which needs devtools
+     that would defeat any client-side gate anyway. */
+  _setInert(el, on) {
+    if (!el) return;
+    if ('inert' in HTMLElement.prototype) { el.inert = on; return; }
+    const SEL = 'a[href],button,input,select,textarea,iframe,[tabindex]';
+    if (on) {
+      el.setAttribute('aria-hidden', 'true');
+      el.querySelectorAll(SEL).forEach((n) => {
+        if (!n.hasAttribute('data-bb-prev-tabindex')) {
+          n.setAttribute('data-bb-prev-tabindex', n.getAttribute('tabindex') ?? '');
+        }
+        n.setAttribute('tabindex', '-1');
+      });
+    } else {
+      el.removeAttribute('aria-hidden');
+      el.querySelectorAll('[data-bb-prev-tabindex]').forEach((n) => {
+        const prev = n.getAttribute('data-bb-prev-tabindex');
+        if (prev === '') n.removeAttribute('tabindex');
+        else n.setAttribute('tabindex', prev);
+        n.removeAttribute('data-bb-prev-tabindex');
+      });
+    }
+  }
+
+  _syncModal() {
+    const gateOpen = (this.props.ageGate ?? true) && !this.state.ageOk;
+    const faqOpen = !!this.state.faqOpen;
+    const open = gateOpen || faqOpen;
+    const key = gateOpen ? 'gate' : (faqOpen ? 'faq' : null);
+    if (key === this._modalKey) return;
+
+    const page = document.getElementById('bb-content');
+    const foot = document.querySelector('[role="contentinfo"]');
+    const skip = document.querySelector('[data-bb-skiplink]');
+
+    if (open) {
+      if (!this._modalKey) this._returnFocusTo = document.activeElement;
+      [page, foot, skip].forEach((el) => this._setInert(el, true));
+      document.body.style.overflow = 'hidden';
+      // Focus the dialog itself rather than its first control: a screen reader
+      // then reads the dialog's label and purpose before its options.
+      setTimeout(() => {
+        const dlg = document.querySelector('[role="dialog"]');
+        if (!dlg) return;
+        if (!dlg.hasAttribute('tabindex')) dlg.setAttribute('tabindex', '-1');
+        dlg.focus();
+      }, 0);
+    } else {
+      [page, foot, skip].forEach((el) => this._setInert(el, false));
+      document.body.style.overflow = '';
+      const back = this._returnFocusTo;
+      this._returnFocusTo = null;
+      if (back && back.focus) setTimeout(() => back.focus(), 0);
+    }
+    this._modalKey = key;
   }
   componentWillUnmount() {
     document.removeEventListener('store-select', this._onPick);
     document.removeEventListener('store-deselect', this._onDeselect);
     document.removeEventListener('store-locate', this._onLocate);
     document.removeEventListener('store-hover', this._onMapHover);
+    document.removeEventListener('store-map-moved', this._onMapMoved);
+    document.removeEventListener('keydown', this._onKeyDown);
     clearTimeout(this._geoTimer);
+    clearTimeout(this._urlTimer);
+    // Never leave the page inert behind an unmounted dialog.
+    ['bb-content'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.inert = false;
+    });
+    document.body.style.overflow = '';
   }
 
   _map() { return document.querySelector('store-map'); }
+
+  _track(name, props) {
+    if (window.BBAnalytics) window.BBAnalytics.track(name, props);
+  }
+
+  /** Report a settled search once the user stops typing, not per keystroke, and
+     record whether it found anything. Zero-result searches are the point. */
+  _trackSearch() {
+    clearTimeout(this._trackTimer);
+    this._trackTimer = setTimeout(() => {
+      const q = this.state.query.trim();
+      if (q.length < 2) return;
+      const { matches } = this._filteredStores();
+      const nearest = matches.length && matches[0].mi != null ? Math.round(matches[0].mi) : null;
+      this._track('locator_search', {
+        query: q.toLowerCase().slice(0, 80),
+        results: matches.length,
+        nearest_mi: nearest,
+        geo: this.state.geoStatus,
+        type_filter: this.state.typeFilter || null,
+        radius: this.state.radius || null
+      });
+      if (!matches.length || (nearest != null && nearest > OUT_OF_RANGE_MI)) {
+        // The commercially interesting one: someone looked, and we are not there.
+        this._track('locator_gap', {
+          query: q.toLowerCase().slice(0, 80),
+          place: this.state.searchLoc ? this.state.searchLoc.label : null,
+          nearest_mi: nearest
+        });
+      }
+    }, 1200);
+  }
+
+  /** Every control here is a div[role=button], so Enter/Space have to be wired
+     by hand to match what a real <button> would do. */
+  _activate(fn) {
+    return (e) => {
+      if (!e || (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar')) return;
+      if (e.preventDefault) e.preventDefault();
+      fn();
+    };
+  }
 
   _scrollStoreIntoView(id) {
     if (id == null) return;
@@ -800,6 +1229,8 @@ class Component extends DCLogic {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        // Grant/deny rate only — never the coordinates themselves.
+        this._track('locator_geolocation', { outcome: 'granted' });
         this.setState({ userLoc: loc, locStatus: 'ready' });
         this._syncMapLocation(loc);
         let tries = 0;
@@ -813,6 +1244,7 @@ class Component extends DCLogic {
       },
       (err) => {
         const denied = err && err.code === 1;
+        this._track('locator_geolocation', { outcome: denied ? 'denied' : 'error' });
         this.setState({ locStatus: denied ? 'denied' : 'error', userLoc: null });
       },
       { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 }
@@ -823,6 +1255,12 @@ class Component extends DCLogic {
     this.setState({ active: id, sheetOpen: true }, () => this._scrollStoreIntoView(id));
     const m = this._map();
     if (m && m.focusStore) m.focusStore(id, true);
+    const store = STORES.find((s) => s.id === id);
+    this._track('locator_store_select', {
+      store_id: id,
+      store_city: store ? store.city : null,
+      store_type: store ? store.type : null
+    });
   }
 
   _refLoc() {
@@ -852,9 +1290,15 @@ class Component extends DCLogic {
 
   async _runGeocode(q) {
     const seq = ++this._geoSeq;
+    if (this._geoAbort) this._geoAbort.abort();
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    this._geoAbort = ctrl;
     this.setState({ geoStatus: 'pending', geoQuery: q });
     try {
-      const place = await geocodePlace(q);
+      const place = await geocodePlace(q, {
+        near: this.state.userLoc,
+        signal: ctrl ? ctrl.signal : null
+      });
       if (seq !== this._geoSeq || this.state.query.trim() !== q) return;
       if (!place) {
         this.setState({ searchLoc: null, geoStatus: 'miss' });
@@ -866,27 +1310,38 @@ class Component extends DCLogic {
       const sync = () => {
         const map = this._map();
         if (map && map.setSearchLocation) map.setSearchLocation(place.lat, place.lng, { fit: true, animate: true });
+        if (map && map.setRadius) map.setRadius(Number(this.state.radius) || 0);
       };
       sync();
       setTimeout(sync, 120);
     } catch (e) {
-      if (seq !== this._geoSeq) return;
-      this.setState({ searchLoc: null, geoStatus: 'miss' });
+      if (seq !== this._geoSeq || (e && e.name === 'AbortError')) return;
+      // A dead endpoint is not the same as "no such place" — say so.
+      const offline = !(e instanceof TypeError) ? 'miss' : 'error';
+      this.setState({ searchLoc: null, geoStatus: offline });
     }
   }
 
+  /** Returns { matches, beyond } — beyond holds the closest stores that the
+     radius filter excluded, so the empty state can offer them instead of a
+     dead end. */
   _filteredStores() {
-    const q = this.state.query.trim().toLowerCase();
+    const q = this.state.query.trim();
+    const tokens = queryTokens(q);
     const pool = this._pool();
     const loc = this._refLoc();
     let matches;
+    let textRanked = false;
 
-    if (!q) {
+    if (!tokens.length) {
       matches = pool.slice();
     } else {
-      const textHits = pool.filter((s) => textMatchesQuery(s, q));
+      const textHits = pool
+        .map((s) => ({ s, score: searchScore(s, tokens) }))
+        .filter((x) => x.score > 0);
       if (textHits.length) {
-        matches = textHits;
+        matches = textHits.map((x) => ({ ...x.s, score: x.score }));
+        textRanked = true;
       } else if (this.state.searchLoc && this.state.geoStatus === 'ready') {
         // Address/ZIP lookup: nearest stockists to that place
         matches = pool.slice();
@@ -899,29 +1354,53 @@ class Component extends DCLogic {
       const mi = loc ? milesBetween(loc, s) : null;
       return { ...s, mi };
     });
-    if (loc) matches.sort((a, b) => a.mi - b.mi);
 
-    // Radius only means something once we have somewhere to measure from.
-    const radius = Number(this.state.radius) || 0;
-    if (loc && radius > 0) matches = matches.filter((s) => s.mi != null && s.mi <= radius);
+    // Relevance first when the visitor typed a name; distance decides ties and
+    // is the only ordering when they didn't.
+    if (textRanked) {
+      matches.sort((a, b) => (b.score - a.score) || ((a.mi == null ? 0 : a.mi) - (b.mi == null ? 0 : b.mi)));
+    } else if (loc) {
+      matches.sort((a, b) => a.mi - b.mi);
+    }
 
     // When searching by place, prefer stores within range; otherwise keep closest few
-    if (q && !pool.some((s) => textMatchesQuery(s, q)) && this.state.searchLoc && matches.length) {
+    if (!textRanked && tokens.length && this.state.searchLoc && matches.length) {
       const near = matches.filter((s) => s.mi != null && s.mi <= NEARBY_MI);
       matches = near.length ? near : matches.slice(0, 8);
     }
-    return matches;
+
+    // Filtering to the viewport the visitor chose. Applied before radius so the
+    // two compose rather than fight.
+    const area = this.state.areaBounds;
+    if (area) {
+      matches = matches.filter((s) =>
+        s.lat <= area.north && s.lat >= area.south
+        && s.lng <= area.east && s.lng >= area.west);
+    }
+
+    // Radius only means something once we have somewhere to measure from.
+    const radius = Number(this.state.radius) || 0;
+    let beyond = [];
+    if (loc && radius > 0) {
+      const within = matches.filter((s) => s.mi != null && s.mi <= radius);
+      beyond = matches
+        .filter((s) => s.mi != null && s.mi > radius)
+        .sort((a, b) => a.mi - b.mi)
+        .slice(0, 3);
+      matches = within;
+    }
+    return { matches, beyond };
   }
 
   renderVals() {
     const userLoc = this.state.userLoc;
     const searchLoc = this.state.searchLoc;
     const loc = this._refLoc();
-    const matches = this._filteredStores();
+    const { matches, beyond } = this._filteredStores();
     const active = this._activeIfVisible(this.state.active, matches);
     const q = this.state.query.trim();
-    const qLower = q.toLowerCase();
-    const hasTextHits = !qLower || this._pool().some((s) => textMatchesQuery(s, qLower));
+    const radius = Number(this.state.radius) || 0;
+    const hasTextHits = !q || this._pool().some((s) => textMatchesQuery(s, q));
 
     const types = [...new Set(STORES.map((s) => s.type))].sort((a, b) => a.localeCompare(b));
     const typeFilters = [
@@ -939,7 +1418,7 @@ class Component extends DCLogic {
           this.setState({ typeFilter, active: this._activeIfVisible(this.state.active, next) });
         }
       }))
-    ];
+    ].map((chip) => ({ ...chip, onKey: this._activate(chip.onSelect) }));
 
     const nearest = loc && matches.length ? matches[0] : null;
     const status = this.state.locStatus;
@@ -950,9 +1429,15 @@ class Component extends DCLogic {
     else if (status === 'error') locPromptLabel = 'Try again';
     else if (status === 'unsupported') locPromptLabel = 'Unavailable';
 
-    let statusCopy = matches.length ? (matches.length + ' stockists') : 'Browse the map';
-    if (status === 'pending') statusCopy = 'Looking around your neighborhood…';
+    // No running total. The status line is for things the visitor cannot see
+    // for themselves — what we are doing, where we searched, whether we are
+    // anywhere near them — not for counting rows they can already scroll.
+    let statusCopy = '';
+    if (storesStatus === 'loading') statusCopy = 'Loading stockists…';
+    else if (storesStatus === 'error') statusCopy = 'Could not load the stockist list.';
+    else if (status === 'pending') statusCopy = 'Looking around your neighborhood…';
     else if (this.state.geoStatus === 'pending' && !hasTextHits) statusCopy = 'Looking around that neighborhood…';
+    else if (this.state.geoStatus === 'error' && !hasTextHits && q.length >= 3) statusCopy = 'Place search is unavailable right now — try a store or city name.';
     else if (this.state.geoStatus === 'miss' && !hasTextHits && q.length >= 3) statusCopy = 'Could not find that place — try a city or ZIP.';
     else if (searchLoc && this.state.geoStatus === 'ready') {
       statusCopy = 'Near ' + searchLoc.label + (nearest ? ' · ' + formatMiles(nearest.mi) : '');
@@ -960,35 +1445,98 @@ class Component extends DCLogic {
       statusCopy = 'Nearest first · ' + formatMiles(nearest.mi);
     }
 
+    // The page promises "Find the Brisa Near You". For most of the country the
+    // honest answer is "not yet" — say it, rather than quietly offering a shop
+    // several states away as though it answered the question.
+    const outOfRange = !!(nearest && nearest.mi != null && nearest.mi > OUT_OF_RANGE_MI);
+    const searchPlace = searchLoc ? searchLoc.label.split(',')[0] : 'your area';
+
     const showFeatured = !!(nearest && (locReady || (searchLoc && this.state.geoStatus === 'ready')));
     const featured = showFeatured ? {
-      eyebrow: searchLoc ? 'Close to your search' : 'Closest to you',
-      name: nearest.name,
-      line: [nearest.type, nearest.city, nearest.mi != null ? formatMiles(nearest.mi) : ''].filter(Boolean).join(' · '),
-      onSelect: () => this.select(nearest.id)
-    } : { eyebrow: '', name: '', line: '', onSelect: () => {} };
+      eyebrow: outOfRange
+        ? 'Not here yet'
+        : (searchLoc ? 'Close to your search' : 'Closest to you'),
+      name: outOfRange ? ('No stockists in ' + searchPlace + ' yet') : nearest.name,
+      line: outOfRange
+        ? ('The nearest is ' + nearest.name + ' in ' + nearest.city + ', ' + formatMiles(nearest.mi) + ' away.')
+        : [nearest.type, nearest.city, nearest.mi != null ? formatMiles(nearest.mi) : ''].filter(Boolean).join(' · '),
+      onSelect: () => this.select(nearest.id),
+      onKey: this._activate(() => this.select(nearest.id))
+    } : { eyebrow: '', name: '', line: '', onSelect: () => {}, onKey: () => {} };
+
+    if (outOfRange && searchLoc) {
+      statusCopy = 'Nothing in ' + searchPlace + ' yet · nearest ' + formatMiles(nearest.mi);
+    }
 
     const dirOrigin = loc;
-    const mapStores = matches.map((s) => {
-      const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
-      const directions = dirOrigin
-        ? 'https://www.google.com/maps/dir/?api=1&origin=' + dirOrigin.lat + ',' + dirOrigin.lng + '&destination=' + dest
-        : 'https://www.google.com/maps/search/?api=1&query=' + dest;
-      return {
-        id: s.id,
-        name: s.name,
-        type: s.type,
-        address: s.address,
-        city: s.city,
-        lat: s.lat,
-        lng: s.lng,
-        distance: s.mi != null ? formatMiles(s.mi) : '',
-        directions
-      };
-    });
+    const mapStores = matches.map((s) => ({
+      id: s.id,
+      name: s.name,
+      type: s.type,
+      address: s.address,
+      city: s.city,
+      lat: s.lat,
+      lng: s.lng,
+      phone: s.phone || '',
+      tel: telHref(s.phone),
+      url: s.url || '',
+      distance: formatMiles(s.mi),
+      directions: directionsUrl(s, dirOrigin)
+    }));
 
     // When featuring the nearest store, keep it in the list too (directory feel)
     const listStores = matches;
+
+    // Named once so click and Enter/Space share an implementation.
+    const doReset = () => {
+      clearTimeout(this._geoTimer);
+      this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null, radius: 0, areaBounds: null, areaOffer: null, areaOffscreen: 0 });
+      const m = this._map();
+      if (m && m.clearSearchLocation) m.clearSearchLocation();
+      if (m && m.highlightStore) m.highlightStore(null);
+      if (m && m.setRadius) m.setRadius(0);
+      if (m && m.resetView) setTimeout(() => { const map = this._map(); if (map && map.resetView) map.resetView(); }, 50);
+    };
+    const doAcceptAge = () => {
+      try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {}
+      this.setState({ ageOk: true });
+    };
+    const doDenyAge = () => this.setState({ gateDenied: true });
+    const doCloseFaq = () => this.setState({ faqOpen: false });
+    const doClearFilters = () => {
+      this.setState({ typeFilter: null, radius: 0, areaBounds: null, areaOffer: null });
+      const m = this._map();
+      if (m && m.setRadius) m.setRadius(0);
+    };
+    const doSearchArea = () => {
+      // Adopt the viewport as a filter and leave the map exactly where it is.
+      this._track('locator_area_search', { hidden: this.state.areaOffscreen });
+      this.setState({
+        areaBounds: this.state.areaOffer,
+        areaOffer: null,
+        active: null,
+        sheetOpen: true
+      });
+    };
+    const doClearArea = () => {
+      this.setState({ areaBounds: null, areaOffer: null, areaOffscreen: 0 });
+      const m = this._map();
+      if (m && m.fitWithoutPrompting) {
+        setTimeout(() => {
+          const map = this._map();
+          if (map && map.fitWithoutPrompting) {
+            map.fitWithoutPrompting(null, {
+              animate: true,
+              includeAnchor: !!this._refLoc(),
+              anchor: null
+            });
+          }
+        }, 50);
+      }
+    };
+
+    // The radius select is meaningless without somewhere to measure from.
+    const radiusHint = loc ? '' : 'Set your location to filter by distance';
 
     return {
       showList: this.props.storeList ?? true,
@@ -996,9 +1544,8 @@ class Component extends DCLogic {
       query: this.state.query,
       onQuery: (e) => {
         const query = e.target.value;
-        const qTrim = query.trim().toLowerCase();
-        const typeFilter = this.state.typeFilter;
-        const pool = STORES.filter((s) => !typeFilter || s.type === typeFilter);
+        const qTrim = query.trim();
+        const pool = this._pool();
         const textHits = !qTrim ? pool : pool.filter((s) => textMatchesQuery(s, qTrim));
         const patch = {
           query,
@@ -1007,6 +1554,7 @@ class Component extends DCLogic {
         };
         if (!qTrim) {
           clearTimeout(this._geoTimer);
+          clearTimeout(this._trackTimer);
           patch.searchLoc = null;
           patch.geoStatus = 'idle';
           patch.geoQuery = '';
@@ -1015,6 +1563,9 @@ class Component extends DCLogic {
           if (m && m.clearSearchLocation) m.clearSearchLocation();
           return;
         }
+        // Every non-empty search reports, whether it resolved by text or by
+        // geocode. The debounce inside means only the settled query is sent.
+        this._trackSearch();
         if (textHits.length) {
           clearTimeout(this._geoTimer);
           patch.searchLoc = null;
@@ -1038,35 +1589,90 @@ class Component extends DCLogic {
         { value: '100', label: '100 mi' }
       ].map((o) => ({ ...o, selected: String(this.state.radius) === o.value ? 'selected' : '' })),
       onRadius: (e) => {
-        const v = e && e.target ? e.target.value : '0';
-        this.setState({ radius: Number(v) || 0 });
+        const v = Number((e && e.target ? e.target.value : '0')) || 0;
+        this.setState({ radius: v });
+        const m = this._map();
+        if (m && m.setRadius) m.setRadius(v);
+        // A radius is a request to measure from somewhere. If we have nowhere
+        // to measure from yet, that is the moment to ask.
+        if (v > 0 && !this._refLoc()) this._requestLocation();
       },
-      noResults: matches.length === 0 && this.state.geoStatus !== 'pending',
+      radiusHint,
+      // "Nothing nearby" is only true once we know what there is.
+      noResults: storesStatus === 'ready' && matches.length === 0 && this.state.geoStatus !== 'pending',
+      storesFailed: storesStatus === 'error',
+      showBeyond: matches.length === 0 && beyond.length > 0,
+      beyondLabel: radius ? 'Nothing within ' + radius + ' mi. The closest are:' : 'The closest are:',
+      beyondStores: beyond.map((s) => ({
+        id: s.id,
+        name: s.name,
+        line: [s.type, s.city, s.mi != null ? formatMiles(s.mi) : ''].filter(Boolean).join(' · '),
+        onSelect: () => this.select(s.id),
+        onKey: this._activate(() => this.select(s.id))
+      })),
+      showClearFilters: matches.length === 0 && !!(this.state.typeFilter || radius || this.state.areaBounds),
+      clearFilters: doClearFilters,
+      clearFiltersKey: this._activate(doClearFilters),
       storesJson: JSON.stringify(mapStores),
       activeId: active || '',
+      holdView: this.state.areaBounds ? 'true' : 'false',
       statusCopy,
       showFeatured,
       featured,
+      showAreaSearch: !!this.state.areaOffer && !this.state.areaBounds,
+      areaSearchLabel: this.state.areaOffscreen
+        ? 'Search this area · ' + this.state.areaOffscreen + ' hidden'
+        : 'Search this area',
+      searchArea: doSearchArea,
+      searchAreaKey: this._activate(doSearchArea),
+      showAreaClear: !!this.state.areaBounds,
+      areaClearLabel: 'Showing this area only · clear',
+      clearArea: doClearArea,
+      clearAreaKey: this._activate(doClearArea),
+      outOfRange,
+      askPlace: searchPlace,
+      // mailto keeps this working with no backend. Swap for a POST to a
+      // capture endpoint once one exists — the interesting signal is which
+      // places get asked for, and that belongs in a database, not an inbox.
+      onAskClick: () => this._track('locator_stockist_request', {
+        place: searchPlace,
+        nearest_mi: nearest && nearest.mi != null ? Math.round(nearest.mi) : null
+      }),
+      askMailto: 'mailto:info@brisabay.com'
+        + '?subject=' + encodeURIComponent('Stockist request: ' + searchPlace)
+        + '&body=' + encodeURIComponent(
+            'I\'d like to buy Brisa Bay near ' + searchPlace + '.\n\n'
+            + '(Nearest listed stockist: ' + (nearest ? nearest.name + ', ' + nearest.city : 'n/a') + ')'),
       showLocPrompt,
       locPromptLabel,
       requestLoc: () => this._requestLocation(),
+      requestLocKey: this._activate(() => this._requestLocation()),
       sheetState: this.state.sheetOpen ? 'open' : 'peek',
+      sheetExpanded: this.state.sheetOpen ? 'true' : 'false',
       toggleSheet: () => this.setState({ sheetOpen: !this.state.sheetOpen }),
+      toggleSheetKey: this._activate(() => this.setState({ sheetOpen: !this.state.sheetOpen })),
       visibleStores: listStores.map((s, i) => {
-        const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
-        const directions = dirOrigin
-          ? 'https://www.google.com/maps/dir/?api=1&origin=' + dirOrigin.lat + ',' + dirOrigin.lng + '&destination=' + dest
-          : 'https://www.google.com/maps/search/?api=1&query=' + dest;
         return {
           ...s,
           isActive: active === s.id ? 'true' : 'false',
           isHover: this.state.hoverId === s.id ? 'true' : 'false',
           index: String(i + 1).padStart(2, '0'),
-          stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+          stop: (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            this._track('locator_directions', { store_id: s.id, store_city: s.city });
+          },
           delay: Math.min(i, 8) * 0.04 + 's',
-          distance: s.mi != null ? formatMiles(s.mi) : '',
-          directions,
+          distance: formatMiles(s.mi),
+          directions: directionsUrl(s, dirOrigin),
+          hasPhone: !!s.phone,
+          phone: s.phone || '',
+          tel: telHref(s.phone),
+          hasUrl: !!s.url,
+          url: s.url || '',
+          label: [s.name, s.type, s.address, s.city, s.mi != null ? formatMiles(s.mi) + ' away' : '']
+            .filter(Boolean).join(', '),
           onSelect: () => this.select(s.id),
+          onKey: this._activate(() => this.select(s.id)),
           onHover: () => {
             if (this.state.hoverId === s.id) return;
             this.setState({ hoverId: s.id });
@@ -1081,32 +1687,25 @@ class Component extends DCLogic {
           }
         };
       }),
-      resetView: () => {
-        clearTimeout(this._geoTimer);
-        this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null });
-        const m = this._map();
-        if (m && m.clearSearchLocation) m.clearSearchLocation();
-        if (m && m.highlightStore) m.highlightStore(null);
-        if (m && m.resetView) setTimeout(() => { const map = this._map(); if (map && map.resetView) map.resetView(); }, 50);
-      },
+      resetView: doReset,
+      resetViewKey: this._activate(doReset),
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
-      acceptAge: () => {
-        try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {}
-        this.setState({ ageOk: true });
-        this._requestLocation();
-      },
-      denyAge: () => this.setState({ gateDenied: true }),
+      acceptAge: doAcceptAge,
+      acceptAgeKey: this._activate(doAcceptAge),
+      denyAge: doDenyAge,
+      denyAgeKey: this._activate(doDenyAge),
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
-      closeFaq: () => this.setState({ faqOpen: false }),
+      closeFaq: doCloseFaq,
+      closeFaqKey: this._activate(doCloseFaq),
       faqItems: [
-        { q: 'Where can I buy Brisa Bay?', a: 'Share your location, or search a city, ZIP, or address to see the nearest stockists. You can also filter by type. If your favourite spot does not carry us yet, ask them to order it.' },
+        { q: 'Where can I buy Brisa Bay?', a: 'Search a store, city, ZIP or address, or tap the crosshair to use your location. You can also filter by type and by distance. If your favourite spot does not carry us yet, ask them to order it.' },
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
         { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
         { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
-        { q: 'How do I get in touch?', a: 'Email hello@brisabay.com for trade, press or anything else. We read everything.' }
+        { q: 'How do I get in touch?', a: 'Email info@brisabay.com for trade, press or anything else. We read everything.' }
       ]
     };
   }
