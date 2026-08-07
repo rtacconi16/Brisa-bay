@@ -32,6 +32,10 @@
   const userPin = () => `<div style="width:14px;height:14px;border-radius:50%;background:#3c3a34;border:2px solid #eeeee4;box-shadow:0 0 0 5px rgba(60,58,52,.16)"></div>`;
   const searchPin = () => `<div style="width:14px;height:14px;border-radius:50%;background:#60b98f;border:2px solid #eeeee4;box-shadow:0 0 0 5px rgba(96,185,143,.22)"></div>`;
 
+  // Fallback view: the densest part of the stockist footprint. Used before the
+  // container is measurable and whenever a fit cannot be computed.
+  const HOME_VIEW = { center: [26.6, -80.4], zoom: 8 };
+
   function milesBetween(a, b) {
     const R = 3958.8;
     const toRad = (d) => (d * Math.PI) / 180;
@@ -146,6 +150,11 @@
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors', maxZoom: 19
       }).addTo(this._map);
+      // A provisional view before anything else. Until a map is _loaded,
+      // invalidateSize() is a no-op, so Leaflet would keep serving whatever
+      // container size it cached at construction — often 0 during first layout,
+      // which is what made every subsequent fit calculation nonsense.
+      this._map.setView(HOME_VIEW.center, HOME_VIEW.zoom);
       L.control.zoom({ position: 'bottomright' }).addTo(this._map);
       this._addLocateControl(L);
       this._map.getContainer().style.filter = 'saturate(0.42) brightness(1.04) contrast(0.96) sepia(0.08)';
@@ -164,13 +173,46 @@
         this._pendingSearch = null;
         this.setSearchLocation(p.lat, p.lng, p.opts);
       }
-      requestAnimationFrame(() => this._map.invalidateSize());
+      requestAnimationFrame(() => {
+        if (!this._map) return;
+        this._map.invalidateSize();
+        this._flushFit();
+      });
+      // Once the visitor has touched the map, its view is theirs — never re-fit
+      // underneath them.
+      this._userMoved = false;
+      const markUserMoved = () => { this._userMoved = true; };
+      ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach((ev) => {
+        this._el.addEventListener(ev, markUserMoved, { passive: true });
+      });
+
       if (window.ResizeObserver) {
         this._ro = new ResizeObserver(() => {
           if (!this._map) return;
           this._map.invalidateSize({ animate: false });
+          if (this._flushFit()) return;
+          // A fit computed against a container that has since changed size is
+          // just a stale fit. Replay it while the view is still ours.
+          if (this._userMoved || !this._lastFit || !this._sizeReady()) return;
+          const w = this._el.clientWidth;
+          const h = this._el.clientHeight;
+          if (Math.abs(w - this._fitW) < 40 && Math.abs(h - this._fitH) < 40) return;
+          const { list, opts } = this._lastFit;
+          this._fitSmart(list, { ...opts, animate: false });
         });
         this._ro.observe(this);
+      }
+      // Crossing the stylesheet's breakpoint changes _pad(), so the current
+      // view needs re-fitting to the new safe area.
+      if (window.matchMedia) {
+        this._mq = window.matchMedia('(max-width: 900px)');
+        this._onMq = () => {
+          if (!this._map) return;
+          this._map.invalidateSize({ animate: false });
+          this.resetView();
+        };
+        if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
+        else if (this._mq.addListener) this._mq.addListener(this._onMq);
       }
     }
 
@@ -198,18 +240,54 @@
       this._map.addControl(new Locate());
     }
 
-    disconnectedCallback() { if (this._ro) this._ro.disconnect(); }
-
-    /** Padding so pins stay clear of the list panel / mobile sheet / chrome. */
-    _pad() {
-      const w = this.clientWidth || 800;
-      const h = this.clientHeight || 600;
-      const mobile = w < 900;
-      if (mobile) {
-        // Sheet covers the lower portion of the viewport; keep pins in the upper map band
-        return { paddingTopLeft: [28, 56], paddingBottomRight: [28, Math.round(h * 0.42)] };
+    disconnectedCallback() {
+      clearTimeout(this._fitTimer);
+      if (this._ro) this._ro.disconnect();
+      if (this._mq && this._onMq) {
+        if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
+        else if (this._mq.removeListener) this._mq.removeListener(this._onMq);
       }
-      return { paddingTopLeft: [36, 48], paddingBottomRight: [48, 48] };
+    }
+
+    /** True when the stylesheet has stacked the map above the sheet.
+       Must track the CSS media query, not the map element's own width: the map
+       is 66% of the row, so on a 1280px desktop it measures ~845px and any
+       element-width test would wrongly report mobile. */
+    _isNarrow() {
+      if (typeof window === 'undefined') return false;
+      if (window.matchMedia) return window.matchMedia('(max-width: 900px)').matches;
+      return (window.innerWidth || 1280) <= 900;
+    }
+
+    /** Padding so pins stay clear of the list panel / mobile sheet / chrome.
+       Never allows padding to consume more than 60% of an axis — beyond that
+       fitBounds is working with a negative viewport and returns nonsense. */
+    _pad() {
+      const h = this.clientHeight || 600;
+      const raw = this._isNarrow()
+        // Sheet covers the lower portion of the viewport; keep pins in the upper map band
+        ? { paddingTopLeft: [28, 56], paddingBottomRight: [28, Math.round(h * 0.42)] }
+        : { paddingTopLeft: [36, 48], paddingBottomRight: [48, 48] };
+      return this._clampPad(raw);
+    }
+
+    _clampPad(pad) {
+      const size = this._map ? this._map.getSize() : null;
+      const w = (size && size.x) || this.clientWidth || 800;
+      const h = (size && size.y) || this.clientHeight || 600;
+      const tl = pad.paddingTopLeft.slice();
+      const br = pad.paddingBottomRight.slice();
+      const fit = (i, limit) => {
+        const total = tl[i] + br[i];
+        const max = limit * 0.6;
+        if (total <= max || total <= 0) return;
+        const scale = max / total;
+        tl[i] = Math.floor(tl[i] * scale);
+        br[i] = Math.floor(br[i] * scale);
+      };
+      fit(0, w);
+      fit(1, h);
+      return { paddingTopLeft: tl, paddingBottomRight: br };
     }
 
     _popupOpts() {
@@ -279,7 +357,7 @@
       this._plotById = {};
       if (!list.length) {
         if (this._userLatLng) this._ensureUserMarker();
-        else this._map.setView([26.2, -80.2], 8);
+        else this._map.setView(HOME_VIEW.center, HOME_VIEW.zoom);
         return;
       }
       list.forEach((s) => {
@@ -391,9 +469,70 @@
       this._refreshIcons();
     }
 
-    _fitSmart(list, { animate = true, includeAnchor = false, anchor = null } = {}) {
+    /** Leaflet's fit maths needs a laid-out container; before that getBoundsZoom
+       returns non-finite garbage that the maxZoom clamp happily turns into a
+       plausible-looking wrong zoom. */
+    _sizeReady() {
+      if (!this._map || !this._el) return false;
+      // Measure the element, not map.getSize() — that returns a cached value
+      // which is exactly what goes stale during first layout.
+      return this._el.clientWidth >= 120 && this._el.clientHeight >= 120;
+    }
+
+    _flushFit() {
+      if (!this._pendingFit || !this._sizeReady()) return false;
+      const { list, opts } = this._pendingFit;
+      this._pendingFit = null;
+      this._fitSmart(list, { ...opts, animate: false });
+      return true;
+    }
+
+    /** The ResizeObserver covers most late layouts, but it only fires on an
+       actual size change — if the container is measurable a beat after we ask
+       and never changes again, no callback arrives. Poll briefly as a backstop. */
+    _scheduleFitFlush() {
+      clearTimeout(this._fitTimer);
+      this._fitTries = 0;
+      const tick = () => {
+        if (!this._pendingFit || !this._map) return;
+        this._map.invalidateSize({ animate: false });
+        if (this._flushFit()) return;
+        if (++this._fitTries >= 24) return;
+        this._fitTimer = setTimeout(tick, 125);
+      };
+      this._fitTimer = setTimeout(tick, 60);
+    }
+
+    /** fitBounds, but the zoom is computed and sanity-checked first so a bad
+       measurement can never be mistaken for "zoom all the way to maxZoom". */
+    _applyFit(bounds, { animate, maxZoom, pad }) {
+      const map = this._map;
+      const padTotal = this._L.point(pad.paddingTopLeft).add(this._L.point(pad.paddingBottomRight));
+      let zoom = map.getBoundsZoom(bounds, false, padTotal);
+      if (!Number.isFinite(zoom)) zoom = map.getBoundsZoom(bounds, false);
+      if (!Number.isFinite(zoom)) zoom = 9;
+      const opts = { ...pad, maxZoom: Math.min(zoom, maxZoom) };
+      if (animate) map.flyToBounds(bounds, { ...opts, duration: 0.85 });
+      else map.fitBounds(bounds, opts);
+    }
+
+    _fitSmart(list, opts = {}) {
       if (!this._map || !this._L) return;
       this._map.invalidateSize({ animate: false });
+      if (!this._sizeReady()) {
+        // Container not measured yet — replay once it is.
+        this._pendingFit = { list, opts };
+        this._scheduleFitFlush();
+        return;
+      }
+      this._pendingFit = null;
+      clearTimeout(this._fitTimer);
+      // Remember what we fitted and at what size, so a later resize can replay it.
+      this._lastFit = { list, opts };
+      this._fitW = this._el.clientWidth;
+      this._fitH = this._el.clientHeight;
+
+      const { animate = true, includeAnchor = false, anchor = null } = opts;
       const pin = anchor || this._searchLatLng || this._userLatLng;
       const pad = this._pad();
       if (!list.length) {
@@ -410,9 +549,7 @@
         const nearby = ranked.filter((x) => x.mi <= 40).slice(0, 8);
         points = (nearby.length ? nearby : ranked.slice(0, 5)).map((x) => x.s);
         const bounds = this._L.latLngBounds([[ulat, ulng], ...points.map((s) => [s.lat, s.lng])]);
-        const opts = { ...pad, maxZoom: 12 };
-        if (animate) this._map.flyToBounds(bounds, { ...opts, duration: 0.85 });
-        else this._map.fitBounds(bounds, opts);
+        this._applyFit(bounds, { animate, maxZoom: 12, pad });
         return;
       }
 
@@ -425,9 +562,7 @@
         points = densestCluster(points, 1.6);
       }
       const bounds = this._L.latLngBounds(points.map((s) => [s.lat, s.lng]));
-      const opts = { ...pad, maxZoom: points.length === 1 ? 13 : 11 };
-      if (animate) this._map.flyToBounds(bounds, { ...opts, duration: 0.85 });
-      else this._map.fitBounds(bounds, opts);
+      this._applyFit(bounds, { animate, maxZoom: points.length === 1 ? 13 : 11, pad });
     }
 
     focusNearby({ animate = true } = {}) {
@@ -447,7 +582,7 @@
       const targetZoom = Math.max(this._map.getZoom(), 13);
       const pad = this._pad();
       // Offset center upward on mobile so the pin sits above the sheet
-      const mobile = (this.clientWidth || 800) < 900;
+      const mobile = this._isNarrow();
       const done = () => {
         if (openPopup && this._markers[s.id]) this._markers[s.id].openPopup();
       };

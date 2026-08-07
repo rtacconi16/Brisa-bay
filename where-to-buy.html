@@ -37,6 +37,14 @@
     [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
+    /* Every control in the locator is a div[role=button]; without this there is
+       no visible focus at all against the cream palette. */
+    [data-bb-locator] :focus-visible,
+    [role="dialog"] :focus-visible {
+      outline: 2px solid #e6393a;
+      outline-offset: 2px;
+    }
+    [data-bb-store-row]:focus-visible { outline-offset: -3px; }
     .leaflet-popup-content-wrapper {
       border-radius: 0;
       background: #eeeee4;
@@ -388,7 +396,7 @@
         <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
           <input type="search" placeholder="search" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}">
         </sc-if>
-        <div data-bb-locate="" role="button" aria-label="Use my current location" onClick="{{ requestLoc }}" title="{{ locPromptLabel }}">
+        <div data-bb-locate="" role="button" tabindex="0" aria-label="Use my current location" onClick="{{ requestLoc }}" onKeyDown="{{ requestLocKey }}" title="{{ locPromptLabel }}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
         </div>
       </div>
@@ -403,28 +411,28 @@
 
       <div data-bb-type-filters="" role="group" aria-label="Filter by type">
         <sc-for list="{{ typeFilters }}" as="chip" hint-placeholder-count="4">
-          <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}">{{ chip.label }}</div>
+          <div data-bb-type-filter="" data-active="{{ chip.active }}" role="button" tabindex="0" aria-pressed="{{ chip.active }}" onClick="{{ chip.onSelect }}" onKeyDown="{{ chip.onKey }}">{{ chip.label }}</div>
         </sc-for>
       </div>
 
-      <div data-bb-toolbar-status="">{{ statusCopy }}</div>
+      <div data-bb-toolbar-status="" role="status" aria-live="polite" aria-atomic="true">{{ statusCopy }}</div>
     </div>
 
     <div data-bb-locator-body="" style="flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch">
 
       <sc-if value="{{ showList }}" hint-placeholder-val="{{ true }}">
         <div data-bb-locator-list="" data-sheet="{{ sheetState }}" style="flex: 0 0 34%; display: flex; flex-direction: column; min-height: 0; background: #eeeee4; border-right: 1px solid rgba(87,84,74,0.14)">
-          <div data-bb-sheet-handle="" role="button" aria-label="Expand or collapse stockist list" onClick="{{ toggleSheet }}"></div>
+          <div data-bb-sheet-handle="" role="button" tabindex="0" aria-label="Expand or collapse stockist list" aria-expanded="{{ sheetExpanded }}" onClick="{{ toggleSheet }}" onKeyDown="{{ toggleSheetKey }}"></div>
           <div data-bb-store-scroll="" style="flex: 1 1 auto; min-height: 0; overflow-y: auto">
             <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ false }}">
-              <div data-bb-featured="" role="button" onClick="{{ featured.onSelect }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
+              <div data-bb-featured="" role="button" tabindex="0" onClick="{{ featured.onSelect }}" onKeyDown="{{ featured.onKey }}" style="margin: 4px clamp(20px, 1.9vw, 38px) 8px; padding: clamp(16px, 1.3vw, 24px) 0 clamp(18px, 1.4vw, 26px); border-top: 1px solid rgba(87,84,74,0.14); border-bottom: 1px solid rgba(87,84,74,0.14); cursor: pointer">
                 <div data-bb-label="" style="color: #60b98f">{{ featured.eyebrow }}</div>
                 <div data-bb-featured-name="">{{ featured.name }}</div>
                 <div data-bb-featured-line="">{{ featured.line }}</div>
               </div>
             </sc-if>
             <sc-for list="{{ visibleStores }}" as="store" hint-placeholder-count="6">
-              <div data-bb-store-row="" data-store-id="{{ store.id }}" data-active="{{ store.isActive }}" data-hover="{{ store.isHover }}" role="button" onClick="{{ store.onSelect }}" onMouseEnter="{{ store.onHover }}" onMouseLeave="{{ store.onLeave }}" style="animation-delay: {{ store.delay }}">
+              <div data-bb-store-row="" data-store-id="{{ store.id }}" data-active="{{ store.isActive }}" data-hover="{{ store.isHover }}" role="button" tabindex="0" aria-label="{{ store.label }}" aria-pressed="{{ store.isActive }}" onClick="{{ store.onSelect }}" onKeyDown="{{ store.onKey }}" onFocus="{{ store.onHover }}" onBlur="{{ store.onLeave }}" onMouseEnter="{{ store.onHover }}" onMouseLeave="{{ store.onLeave }}" style="animation-delay: {{ store.delay }}">
                 <div data-bb-store-main="">
                   <div data-bb-store-name="">{{ store.name }}</div>
                   <div data-bb-store-addr="">{{ store.address }}<br>{{ store.city }}</div>
@@ -444,8 +452,8 @@
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=5" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
-        <div data-bb-see-all="" onClick="{{ resetView }}" role="button" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=6" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
     </div>
@@ -486,7 +494,7 @@
 <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
   <div role="dialog" aria-modal="true" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
-      <div onClick="{{ closeFaq }}" role="button" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
+      <div onClick="{{ closeFaq }}" onKeyDown="{{ closeFaqKey }}" role="button" tabindex="0" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
       <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
       <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
       <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
@@ -510,8 +518,8 @@
           <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Welcome to the brighter side of Napa.</h2>
           <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Before you come in, please confirm you are of legal drinking age &mdash; 21 or older in the United States.</p>
           <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 1.2vw, 22px); justify-content: center">
-            <div onClick="{{ acceptAge }}" role="button" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
-            <div onClick="{{ denyAge }}" role="button" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
+            <div onClick="{{ acceptAge }}" onKeyDown="{{ acceptAgeKey }}" role="button" tabindex="0" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
+            <div onClick="{{ denyAge }}" onKeyDown="{{ denyAgeKey }}" role="button" tabindex="0" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
           </div>
           <p style="margin: clamp(26px, 2.5vw, 48px) 0 0; font-size: clamp(14px, 1.2vw, 22px); line-height: 1.5; color: rgba(87,84,74,0.7); text-wrap: pretty">We never sell or market alcohol to anyone under the legal drinking age. Please enjoy Brisa Bay responsibly.</p>
         </div>
@@ -748,7 +756,19 @@ class Component extends DCLogic {
     document.addEventListener('store-deselect', this._onDeselect);
     document.addEventListener('store-locate', this._onLocate);
     document.addEventListener('store-hover', this._onMapHover);
-    if (ageOk || !(this.props.ageGate ?? true)) this._requestLocation();
+    this._resumeLocationIfGranted();
+  }
+
+  /** Only auto-locate for people who have already granted the permission on a
+     previous visit. Prompting an unknown visitor on load is the pattern people
+     reflexively deny, and a denial sticks for the whole origin. */
+  _resumeLocationIfGranted() {
+    if (!navigator.geolocation || !navigator.permissions || !navigator.permissions.query) return;
+    try {
+      navigator.permissions.query({ name: 'geolocation' }).then((status) => {
+        if (status && status.state === 'granted') this._requestLocation();
+      }).catch(() => {});
+    } catch (e) { /* Safari <16 throws on unknown descriptors */ }
   }
   componentDidUpdate() {
     if (this.state.active && this.state.active !== this._scrolledFor) {
@@ -765,6 +785,16 @@ class Component extends DCLogic {
   }
 
   _map() { return document.querySelector('store-map'); }
+
+  /** Every control here is a div[role=button], so Enter/Space have to be wired
+     by hand to match what a real <button> would do. */
+  _activate(fn) {
+    return (e) => {
+      if (!e || (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar')) return;
+      if (e.preventDefault) e.preventDefault();
+      fn();
+    };
+  }
 
   _scrollStoreIntoView(id) {
     if (id == null) return;
@@ -940,7 +970,7 @@ class Component extends DCLogic {
           this.setState({ typeFilter, active: this._activeIfVisible(this.state.active, next) });
         }
       }))
-    ];
+    ].map((chip) => ({ ...chip, onKey: this._activate(chip.onSelect) }));
 
     const nearest = loc && matches.length ? matches[0] : null;
     const status = this.state.locStatus;
@@ -966,8 +996,9 @@ class Component extends DCLogic {
       eyebrow: searchLoc ? 'Close to your search' : 'Closest to you',
       name: nearest.name,
       line: [nearest.type, nearest.city, nearest.mi != null ? formatMiles(nearest.mi) : ''].filter(Boolean).join(' · '),
-      onSelect: () => this.select(nearest.id)
-    } : { eyebrow: '', name: '', line: '', onSelect: () => {} };
+      onSelect: () => this.select(nearest.id),
+      onKey: this._activate(() => this.select(nearest.id))
+    } : { eyebrow: '', name: '', line: '', onSelect: () => {}, onKey: () => {} };
 
     const dirOrigin = loc;
     const mapStores = matches.map((s) => {
@@ -990,6 +1021,23 @@ class Component extends DCLogic {
 
     // When featuring the nearest store, keep it in the list too (directory feel)
     const listStores = matches;
+
+    // Named once so click and Enter/Space share an implementation.
+    const doReset = () => {
+      clearTimeout(this._geoTimer);
+      this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null, radius: 0 });
+      const m = this._map();
+      if (m && m.clearSearchLocation) m.clearSearchLocation();
+      if (m && m.highlightStore) m.highlightStore(null);
+      if (m && m.setRadius) m.setRadius(0);
+      if (m && m.resetView) setTimeout(() => { const map = this._map(); if (map && map.resetView) map.resetView(); }, 50);
+    };
+    const doAcceptAge = () => {
+      try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {}
+      this.setState({ ageOk: true });
+    };
+    const doDenyAge = () => this.setState({ gateDenied: true });
+    const doCloseFaq = () => this.setState({ faqOpen: false });
 
     return {
       showList: this.props.storeList ?? true,
@@ -1051,8 +1099,11 @@ class Component extends DCLogic {
       showLocPrompt,
       locPromptLabel,
       requestLoc: () => this._requestLocation(),
+      requestLocKey: this._activate(() => this._requestLocation()),
       sheetState: this.state.sheetOpen ? 'open' : 'peek',
+      sheetExpanded: this.state.sheetOpen ? 'true' : 'false',
       toggleSheet: () => this.setState({ sheetOpen: !this.state.sheetOpen }),
+      toggleSheetKey: this._activate(() => this.setState({ sheetOpen: !this.state.sheetOpen })),
       visibleStores: listStores.map((s, i) => {
         const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
         const directions = dirOrigin
@@ -1067,7 +1118,10 @@ class Component extends DCLogic {
           delay: Math.min(i, 8) * 0.04 + 's',
           distance: s.mi != null ? formatMiles(s.mi) : '',
           directions,
+          label: [s.name, s.type, s.address, s.city, s.mi != null ? formatMiles(s.mi) + ' away' : '']
+            .filter(Boolean).join(', '),
           onSelect: () => this.select(s.id),
+          onKey: this._activate(() => this.select(s.id)),
           onHover: () => {
             if (this.state.hoverId === s.id) return;
             this.setState({ hoverId: s.id });
@@ -1082,26 +1136,19 @@ class Component extends DCLogic {
           }
         };
       }),
-      resetView: () => {
-        clearTimeout(this._geoTimer);
-        this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null });
-        const m = this._map();
-        if (m && m.clearSearchLocation) m.clearSearchLocation();
-        if (m && m.highlightStore) m.highlightStore(null);
-        if (m && m.resetView) setTimeout(() => { const map = this._map(); if (map && map.resetView) map.resetView(); }, 50);
-      },
+      resetView: doReset,
+      resetViewKey: this._activate(doReset),
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
-      acceptAge: () => {
-        try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {}
-        this.setState({ ageOk: true });
-        this._requestLocation();
-      },
-      denyAge: () => this.setState({ gateDenied: true }),
+      acceptAge: doAcceptAge,
+      acceptAgeKey: this._activate(doAcceptAge),
+      denyAge: doDenyAge,
+      denyAgeKey: this._activate(doDenyAge),
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
-      closeFaq: () => this.setState({ faqOpen: false }),
+      closeFaq: doCloseFaq,
+      closeFaqKey: this._activate(doCloseFaq),
       faqItems: [
         { q: 'Where can I buy Brisa Bay?', a: 'Share your location, or search a city, ZIP, or address to see the nearest stockists. You can also filter by type. If your favourite spot does not carry us yet, ask them to order it.' },
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
