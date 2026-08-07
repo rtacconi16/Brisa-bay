@@ -223,6 +223,26 @@
       color: rgba(87, 84, 74, 0.62);
     }
 
+    [data-bb-empty-action] {
+      display: inline-block;
+      margin-top: clamp(12px, 1.1vw, 18px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: #eeeee4;
+      background: #3c3a34;
+      padding: 7px 13px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    [data-bb-empty-action]:hover { background: #e6393a; }
+    [data-bb-beyond-row] {
+      padding: clamp(12px, 1vw, 18px) 0;
+      border-top: 1px solid rgba(87,84,74,0.12);
+      cursor: pointer;
+    }
+    [data-bb-beyond-row]:hover [data-bb-store-name] { color: #e6393a; }
+
     [data-bb-type-filters] {
       display: flex;
       flex-wrap: nowrap;
@@ -394,14 +414,14 @@
       <div data-bb-search-wrap="">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="20" y1="20" x2="16.2" y2="16.2"></line></svg>
         <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
-          <input type="search" placeholder="search" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}">
+          <input type="search" placeholder="City, ZIP or store name" aria-label="Search stockists by name, city, ZIP, or address" value="{{ query }}" onInput="{{ onQuery }}" onChange="{{ onQuery }}">
         </sc-if>
         <div data-bb-locate="" role="button" tabindex="0" aria-label="Use my current location" onClick="{{ requestLoc }}" onKeyDown="{{ requestLocKey }}" title="{{ locPromptLabel }}">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
         </div>
       </div>
 
-      <label data-bb-radius="" aria-label="Search radius">
+      <label data-bb-radius="" aria-label="Search radius" title="{{ radiusHint }}">
         <select value="{{ radius }}" onChange="{{ onRadius }}">
           <sc-for list="{{ radiusOptions }}" as="opt" hint-placeholder-count="4">
             <option value="{{ opt.value }}" selected="{{ opt.selected }}">{{ opt.label }}</option>
@@ -445,14 +465,30 @@
               </div>
             </sc-for>
             <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
-              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</div>
+              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">
+                <div>Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</div>
+                <sc-if value="{{ showClearFilters }}" hint-placeholder-val="{{ false }}">
+                  <div data-bb-empty-action="" role="button" tabindex="0" onClick="{{ clearFilters }}" onKeyDown="{{ clearFiltersKey }}">Clear filters</div>
+                </sc-if>
+                <sc-if value="{{ showBeyond }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top: clamp(18px, 1.6vw, 28px)">
+                    <div data-bb-label="">{{ beyondLabel }}</div>
+                    <sc-for list="{{ beyondStores }}" as="far" hint-placeholder-count="3">
+                      <div data-bb-beyond-row="" role="button" tabindex="0" onClick="{{ far.onSelect }}" onKeyDown="{{ far.onKey }}">
+                        <div data-bb-store-name="">{{ far.name }}</div>
+                        <div data-bb-featured-line="">{{ far.line }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
             </sc-if>
           </div>
         </div>
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=6" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=9" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
         <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
@@ -660,16 +696,60 @@ function formatMiles(mi) {
 
 const NEARBY_MI = 60;
 
-function textMatchesQuery(s, q) {
-  if (!q) return true;
-  return (s.name + ' ' + s.city + ' ' + s.type + ' ' + s.address).toLowerCase().includes(q);
+/** Fold case, accents and punctuation so "ruths chris" finds "Ruth's Chris"
+   and "cafe" finds "Café". The dataset is full of both. */
+function normalizeText(s) {
+  let out = String(s == null ? '' : s).toLowerCase();
+  if (out.normalize) out = out.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return out.replace(/[\u2019'`]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
+function queryTokens(q) {
+  return normalizeText(q).split(' ').filter(Boolean);
+}
+
+/** Every token must appear somewhere, and where it appears decides the rank.
+   A single contiguous match would fail on ordinary two-word queries like
+   "carmela boca" or "wine bar key west". */
+function searchScore(s, tokens) {
+  if (!tokens.length) return 1;
+  if (!s._norm) {
+    s._norm = {
+      name: normalizeText(s.name),
+      city: normalizeText(s.city),
+      type: normalizeText(s.type),
+      addr: normalizeText(s.address)
+    };
+  }
+  const { name, city, type } = s._norm;
+  const hay = name + ' ' + city + ' ' + type + ' ' + s._norm.addr;
+  let score = 0;
+  for (const t of tokens) {
+    if (!hay.includes(t)) return 0;
+    if (name.startsWith(t)) score += 5;
+    else if (name.includes(t)) score += 4;
+    else if (city.startsWith(t)) score += 3;
+    else if (city.includes(t)) score += 2;
+    else if (type.includes(t)) score += 2;
+    else score += 1;
+  }
+  return score;
+}
+
+function textMatchesQuery(s, q) {
+  return searchScore(s, queryTokens(q)) > 0;
+}
+
+/** Centroid of the stockist footprint, computed once. The previous version took
+   the median latitude and the median longitude independently — two unrelated
+   numbers describing a point that sits near no store at all. */
+let _biasMemo = null;
 function storeBias() {
-  const lats = STORES.map((s) => s.lat).sort((a, b) => a - b);
-  const lngs = STORES.map((s) => s.lng).sort((a, b) => a - b);
-  const mid = (arr) => arr[Math.floor(arr.length / 2)];
-  return { lat: mid(lats), lng: mid(lngs) };
+  if (_biasMemo) return _biasMemo;
+  const n = STORES.length || 1;
+  const sum = STORES.reduce((acc, s) => ({ lat: acc.lat + s.lat, lng: acc.lng + s.lng }), { lat: 0, lng: 0 });
+  _biasMemo = { lat: sum.lat / n, lng: sum.lng / n };
+  return _biasMemo;
 }
 
 function featureLabel(p, fallback) {
@@ -698,8 +778,13 @@ function scoreGeocodeFeature(f, bias) {
   return score;
 }
 
-async function geocodePlace(q) {
-  const bias = storeBias();
+const geocodeCache = new Map();
+
+async function geocodePlace(q, { near = null, signal = null } = {}) {
+  // Where the visitor actually is beats the dataset centroid every time.
+  const bias = near || storeBias();
+  const key = q.toLowerCase() + '@' + bias.lat.toFixed(2) + ',' + bias.lng.toFixed(2);
+  if (geocodeCache.has(key)) return geocodeCache.get(key);
   // Bias toward stockist region. Do not append ", USA" — that can drown out
   // local city hits (e.g. Coral Gables, FL) with unrelated US street names.
   const params = new URLSearchParams({
@@ -709,16 +794,21 @@ async function geocodePlace(q) {
     lat: String(bias.lat),
     lon: String(bias.lng)
   });
-  const res = await fetch('https://photon.komoot.io/api/?' + params.toString());
+  const res = await fetch('https://photon.komoot.io/api/?' + params.toString(), { signal });
   if (!res.ok) throw new Error('geocode failed');
   const data = await res.json();
   const features = (data.features || []).filter((f) => f && f.geometry && f.geometry.coordinates);
-  if (!features.length) return null;
-  features.sort((a, b) => scoreGeocodeFeature(b, bias) - scoreGeocodeFeature(a, bias));
-  const f = features[0];
-  if (scoreGeocodeFeature(f, bias) < 40) return null;
-  const [lng, lat] = f.geometry.coordinates;
-  return { lat, lng, label: featureLabel(f.properties || {}, q) };
+  let out = null;
+  if (features.length) {
+    features.sort((a, b) => scoreGeocodeFeature(b, bias) - scoreGeocodeFeature(a, bias));
+    const f = features[0];
+    if (scoreGeocodeFeature(f, bias) >= 40) {
+      const [lng, lat] = f.geometry.coordinates;
+      out = { lat, lng, label: featureLabel(f.properties || {}, q) };
+    }
+  }
+  geocodeCache.set(key, out);
+  return out;
 }
 
 class Component extends DCLogic {
@@ -883,9 +973,15 @@ class Component extends DCLogic {
 
   async _runGeocode(q) {
     const seq = ++this._geoSeq;
+    if (this._geoAbort) this._geoAbort.abort();
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    this._geoAbort = ctrl;
     this.setState({ geoStatus: 'pending', geoQuery: q });
     try {
-      const place = await geocodePlace(q);
+      const place = await geocodePlace(q, {
+        near: this.state.userLoc,
+        signal: ctrl ? ctrl.signal : null
+      });
       if (seq !== this._geoSeq || this.state.query.trim() !== q) return;
       if (!place) {
         this.setState({ searchLoc: null, geoStatus: 'miss' });
@@ -897,27 +993,38 @@ class Component extends DCLogic {
       const sync = () => {
         const map = this._map();
         if (map && map.setSearchLocation) map.setSearchLocation(place.lat, place.lng, { fit: true, animate: true });
+        if (map && map.setRadius) map.setRadius(Number(this.state.radius) || 0);
       };
       sync();
       setTimeout(sync, 120);
     } catch (e) {
-      if (seq !== this._geoSeq) return;
-      this.setState({ searchLoc: null, geoStatus: 'miss' });
+      if (seq !== this._geoSeq || (e && e.name === 'AbortError')) return;
+      // A dead endpoint is not the same as "no such place" — say so.
+      const offline = !(e instanceof TypeError) ? 'miss' : 'error';
+      this.setState({ searchLoc: null, geoStatus: offline });
     }
   }
 
+  /** Returns { matches, beyond } — beyond holds the closest stores that the
+     radius filter excluded, so the empty state can offer them instead of a
+     dead end. */
   _filteredStores() {
-    const q = this.state.query.trim().toLowerCase();
+    const q = this.state.query.trim();
+    const tokens = queryTokens(q);
     const pool = this._pool();
     const loc = this._refLoc();
     let matches;
+    let textRanked = false;
 
-    if (!q) {
+    if (!tokens.length) {
       matches = pool.slice();
     } else {
-      const textHits = pool.filter((s) => textMatchesQuery(s, q));
+      const textHits = pool
+        .map((s) => ({ s, score: searchScore(s, tokens) }))
+        .filter((x) => x.score > 0);
       if (textHits.length) {
-        matches = textHits;
+        matches = textHits.map((x) => ({ ...x.s, score: x.score }));
+        textRanked = true;
       } else if (this.state.searchLoc && this.state.geoStatus === 'ready') {
         // Address/ZIP lookup: nearest stockists to that place
         matches = pool.slice();
@@ -930,29 +1037,44 @@ class Component extends DCLogic {
       const mi = loc ? milesBetween(loc, s) : null;
       return { ...s, mi };
     });
-    if (loc) matches.sort((a, b) => a.mi - b.mi);
 
-    // Radius only means something once we have somewhere to measure from.
-    const radius = Number(this.state.radius) || 0;
-    if (loc && radius > 0) matches = matches.filter((s) => s.mi != null && s.mi <= radius);
+    // Relevance first when the visitor typed a name; distance decides ties and
+    // is the only ordering when they didn't.
+    if (textRanked) {
+      matches.sort((a, b) => (b.score - a.score) || ((a.mi == null ? 0 : a.mi) - (b.mi == null ? 0 : b.mi)));
+    } else if (loc) {
+      matches.sort((a, b) => a.mi - b.mi);
+    }
 
     // When searching by place, prefer stores within range; otherwise keep closest few
-    if (q && !pool.some((s) => textMatchesQuery(s, q)) && this.state.searchLoc && matches.length) {
+    if (!textRanked && tokens.length && this.state.searchLoc && matches.length) {
       const near = matches.filter((s) => s.mi != null && s.mi <= NEARBY_MI);
       matches = near.length ? near : matches.slice(0, 8);
     }
-    return matches;
+
+    // Radius only means something once we have somewhere to measure from.
+    const radius = Number(this.state.radius) || 0;
+    let beyond = [];
+    if (loc && radius > 0) {
+      const within = matches.filter((s) => s.mi != null && s.mi <= radius);
+      beyond = matches
+        .filter((s) => s.mi != null && s.mi > radius)
+        .sort((a, b) => a.mi - b.mi)
+        .slice(0, 3);
+      matches = within;
+    }
+    return { matches, beyond };
   }
 
   renderVals() {
     const userLoc = this.state.userLoc;
     const searchLoc = this.state.searchLoc;
     const loc = this._refLoc();
-    const matches = this._filteredStores();
+    const { matches, beyond } = this._filteredStores();
     const active = this._activeIfVisible(this.state.active, matches);
     const q = this.state.query.trim();
-    const qLower = q.toLowerCase();
-    const hasTextHits = !qLower || this._pool().some((s) => textMatchesQuery(s, qLower));
+    const radius = Number(this.state.radius) || 0;
+    const hasTextHits = !q || this._pool().some((s) => textMatchesQuery(s, q));
 
     const types = [...new Set(STORES.map((s) => s.type))].sort((a, b) => a.localeCompare(b));
     const typeFilters = [
@@ -981,9 +1103,15 @@ class Component extends DCLogic {
     else if (status === 'error') locPromptLabel = 'Try again';
     else if (status === 'unsupported') locPromptLabel = 'Unavailable';
 
-    let statusCopy = matches.length ? (matches.length + ' stockists') : 'Browse the map';
+    const countCopy = matches.length
+      ? (matches.length + (matches.length === 1 ? ' stockist' : ' stockists')
+         + (this.state.typeFilter ? ' · ' + this.state.typeFilter : '')
+         + (loc && radius ? ' within ' + radius + ' mi' : ''))
+      : 'Browse the map';
+    let statusCopy = countCopy;
     if (status === 'pending') statusCopy = 'Looking around your neighborhood…';
     else if (this.state.geoStatus === 'pending' && !hasTextHits) statusCopy = 'Looking around that neighborhood…';
+    else if (this.state.geoStatus === 'error' && !hasTextHits && q.length >= 3) statusCopy = 'Place search is unavailable right now — try a store or city name.';
     else if (this.state.geoStatus === 'miss' && !hasTextHits && q.length >= 3) statusCopy = 'Could not find that place — try a city or ZIP.';
     else if (searchLoc && this.state.geoStatus === 'ready') {
       statusCopy = 'Near ' + searchLoc.label + (nearest ? ' · ' + formatMiles(nearest.mi) : '');
@@ -1038,6 +1166,14 @@ class Component extends DCLogic {
     };
     const doDenyAge = () => this.setState({ gateDenied: true });
     const doCloseFaq = () => this.setState({ faqOpen: false });
+    const doClearFilters = () => {
+      this.setState({ typeFilter: null, radius: 0 });
+      const m = this._map();
+      if (m && m.setRadius) m.setRadius(0);
+    };
+
+    // The radius select is meaningless without somewhere to measure from.
+    const radiusHint = loc ? '' : 'Set your location to filter by distance';
 
     return {
       showList: this.props.storeList ?? true,
@@ -1045,9 +1181,8 @@ class Component extends DCLogic {
       query: this.state.query,
       onQuery: (e) => {
         const query = e.target.value;
-        const qTrim = query.trim().toLowerCase();
-        const typeFilter = this.state.typeFilter;
-        const pool = STORES.filter((s) => !typeFilter || s.type === typeFilter);
+        const qTrim = query.trim();
+        const pool = this._pool();
         const textHits = !qTrim ? pool : pool.filter((s) => textMatchesQuery(s, qTrim));
         const patch = {
           query,
@@ -1087,10 +1222,28 @@ class Component extends DCLogic {
         { value: '100', label: '100 mi' }
       ].map((o) => ({ ...o, selected: String(this.state.radius) === o.value ? 'selected' : '' })),
       onRadius: (e) => {
-        const v = e && e.target ? e.target.value : '0';
-        this.setState({ radius: Number(v) || 0 });
+        const v = Number((e && e.target ? e.target.value : '0')) || 0;
+        this.setState({ radius: v });
+        const m = this._map();
+        if (m && m.setRadius) m.setRadius(v);
+        // A radius is a request to measure from somewhere. If we have nowhere
+        // to measure from yet, that is the moment to ask.
+        if (v > 0 && !this._refLoc()) this._requestLocation();
       },
+      radiusHint,
       noResults: matches.length === 0 && this.state.geoStatus !== 'pending',
+      showBeyond: matches.length === 0 && beyond.length > 0,
+      beyondLabel: radius ? 'Nothing within ' + radius + ' mi. The closest are:' : 'The closest are:',
+      beyondStores: beyond.map((s) => ({
+        id: s.id,
+        name: s.name,
+        line: [s.type, s.city, s.mi != null ? formatMiles(s.mi) : ''].filter(Boolean).join(' · '),
+        onSelect: () => this.select(s.id),
+        onKey: this._activate(() => this.select(s.id))
+      })),
+      showClearFilters: matches.length === 0 && !!(this.state.typeFilter || radius),
+      clearFilters: doClearFilters,
+      clearFiltersKey: this._activate(doClearFilters),
       storesJson: JSON.stringify(mapStores),
       activeId: active || '',
       statusCopy,
@@ -1150,7 +1303,7 @@ class Component extends DCLogic {
       closeFaq: doCloseFaq,
       closeFaqKey: this._activate(doCloseFaq),
       faqItems: [
-        { q: 'Where can I buy Brisa Bay?', a: 'Share your location, or search a city, ZIP, or address to see the nearest stockists. You can also filter by type. If your favourite spot does not carry us yet, ask them to order it.' },
+        { q: 'Where can I buy Brisa Bay?', a: 'Search a store, city, ZIP or address, or tap the crosshair to use your location. You can also filter by type and by distance. If your favourite spot does not carry us yet, ask them to order it.' },
         { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
         { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
         { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },

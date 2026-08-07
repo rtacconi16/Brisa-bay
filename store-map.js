@@ -435,6 +435,7 @@
       }
       this._userLatLng = [lat, lng];
       this._ensureUserMarker();
+      this._drawRadius();
       if (opts.fit !== false) this.focusNearby({ animate: opts.animate !== false });
     }
 
@@ -446,6 +447,7 @@
       }
       this._searchLatLng = [lat, lng];
       this._ensureSearchMarker();
+      this._drawRadius();
       if (opts.fit !== false) {
         this._fitSmart(this.stores, {
           animate: opts.animate !== false,
@@ -462,6 +464,40 @@
         this._searchMarker.remove();
         this._searchMarker = null;
       }
+      this._drawRadius();
+    }
+
+    /** Show the chosen radius as an area, so "25 mi" is something you can see
+       rather than an invisible rule the list silently obeys. */
+    setRadius(miles) {
+      const next = Number(miles) || 0;
+      if (next === this._radiusMi) return;
+      this._radiusMi = next;
+      this._drawRadius();
+      this._fitSmart(this.stores, {
+        animate: true,
+        includeAnchor: true,
+        anchor: this._searchLatLng || this._userLatLng
+      });
+    }
+
+    _drawRadius() {
+      if (!this._map || !this._L) return;
+      if (this._radiusCircle) {
+        this._radiusCircle.remove();
+        this._radiusCircle = null;
+      }
+      const c = this._searchLatLng || this._userLatLng;
+      if (!c || !this._radiusMi) return;
+      this._radiusCircle = this._L.circle(c, {
+        radius: this._radiusMi * 1609.34,
+        interactive: false,
+        color: '#e6393a',
+        weight: 1,
+        opacity: 0.45,
+        fillColor: '#e6393a',
+        fillOpacity: 0.05
+      }).addTo(this._map);
     }
 
     highlightStore(id) {
@@ -474,9 +510,12 @@
        plausible-looking wrong zoom. */
     _sizeReady() {
       if (!this._map || !this._el) return false;
-      // Measure the element, not map.getSize() — that returns a cached value
-      // which is exactly what goes stale during first layout.
-      return this._el.clientWidth >= 120 && this._el.clientHeight >= 120;
+      // Both measurements must agree. The element is the truth, but every fit
+      // calculation runs on map.getSize(), which is a cache that can still be
+      // holding a zero from before first layout.
+      if (this._el.clientWidth < 120 || this._el.clientHeight < 120) return false;
+      const s = this._map.getSize();
+      return s.x >= 120 && s.y >= 120;
     }
 
     _flushFit() {
@@ -535,6 +574,13 @@
       const { animate = true, includeAnchor = false, anchor = null } = opts;
       const pin = anchor || this._searchLatLng || this._userLatLng;
       const pad = this._pad();
+      // While a radius is set, that circle *is* the area under discussion — every
+      // fit shows it, so the marker redraw that follows a filter change cannot
+      // quietly reframe the map somewhere else.
+      if (this._radiusCircle) {
+        this._applyFit(this._radiusCircle.getBounds(), { animate, maxZoom: 13, pad });
+        return;
+      }
       if (!list.length) {
         if (pin) this._map.setView(pin, 11);
         return;

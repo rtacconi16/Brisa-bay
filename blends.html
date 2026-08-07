@@ -52,7 +52,7 @@
       100% { transform: translateY(-112vh); visibility: hidden }
     }
     @supports (animation-timeline: view()) {
-      @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+      @media (prefers-reduced-motion: no-preference) {
         [data-bb-blend-scroll] { view-timeline-name: --bb-blend-scrub }
         [data-bb-blend-hero-copy] h1 {
           animation: bb-headline-exit linear both;
@@ -299,91 +299,81 @@
       }
       [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
     }
+    /* Mobile keeps the desktop pin-scrub theatre: sticky photo, stage overlaid
+       with copy | bottle. Only density and type scale are retuned. */
     @media (max-width: 900px) {
-      [data-bb-blend-scroll] { height: auto !important; }
-      [data-bb-blend-pin] {
-        position: relative !important;
-        height: auto !important;
-        min-height: 0 !important;
-        display: flex;
-        flex-direction: column;
+      [data-bb-nav] { row-gap: 10px !important; }
+      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
+      [data-bb-blend-hero-copy] {
+        padding: 0 18px clamp(22px, 3.4vh, 36px) !important;
+        gap: 12px !important;
       }
+      [data-bb-blend-hero-copy] h1 {
+        font-size: clamp(32px, 9vw, 48px) !important;
+      }
+      [data-bb-blend-stage] {
+        /* Same absolute overlay + scrim as desktop; tighter pad for the phone plate. */
+        padding: clamp(64px, 10vh, 88px) 16px clamp(16px, 2.4vh, 28px) !important;
+        column-gap: 10px !important;
+        row-gap: clamp(10px, 1.6vh, 18px) !important;
+      }
+      [data-bb-stage-copy] {
+        grid-column: 1 / span 7 !important;
+        grid-row: 1 !important;
+      }
+      [data-bb-stage-copy] [data-bb-copy-panel] {
+        gap: clamp(8px, 1.4vh, 16px) !important;
+      }
+      [data-bb-stage-copy] h2 {
+        font-size: clamp(28px, min(8.2vw, 9vh), 44px) !important;
+        line-height: 0.96 !important;
+        min-height: 1.92em !important;
+      }
+      [data-bb-stage-copy] p {
+        font-size: clamp(13px, 3.4vw, 16px) !important;
+        line-height: 1.45 !important;
+        max-width: 42ch !important;
+      }
+      [data-bb-spec] > div {
+        grid-template-columns: minmax(72px, 0.36fr) 1fr !important;
+        gap: 8px !important;
+        padding: clamp(6px, 1.1vh, 12px) 0 !important;
+      }
+      [data-bb-spec] dt { font-size: 10px !important; }
+      [data-bb-spec] dd {
+        font-size: clamp(12px, 3.2vw, 15px) !important;
+        min-height: 2.6em !important;
+      }
+      [data-bb-blend-stage] [data-bb-stage-row] {
+        grid-column: 8 / span 5 !important;
+        grid-row: 1 !important;
+      }
+      [data-bb-bottle-plinth] { width: min(100%, 42vw) !important; }
+      [data-bb-stage-nav] {
+        padding-top: 8px !important;
+      }
+      [data-bb-label] {
+        font-size: 10px !important;
+        letter-spacing: 0.14em !important;
+      }
+    }
+    /* Un-pinned reduced-motion flow on phones: give the photo real height and a
+       solid stage ground so the stack does not collapse under absolute rules. */
+    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
       [data-bb-blend-photo] {
         position: relative !important;
         inset: auto !important;
         width: 100% !important;
-        height: 62svh !important;
-        min-height: 62svh !important;
+        height: 56svh !important;
+        min-height: 56svh !important;
         object-position: center 72% !important;
       }
-      [data-bb-blend-hero-copy] {
-        position: absolute !important;
-        top: 0 !important;
-        bottom: auto !important;
-        height: 62svh !important;
-        opacity: 1 !important;
-        transform: none !important;
-        align-items: flex-end !important;
-        padding-top: 0 !important;
-      }
-      [data-bb-blend-stage],
-      [data-bb-stage-copy],
-      [data-bb-blend-stage] [data-bb-stage-row],
-      [data-bb-stage-arrow] {
-        opacity: 1 !important;
-        transform: none !important;
-        filter: none !important;
-      }
-      /* Mobile stacks below the photo rather than over it, so it takes the same
-         dark ground directly. The 12-column grid collapses to one and the bottle leads. */
       [data-bb-blend-stage] {
         position: relative !important;
         inset: auto !important;
-        pointer-events: auto !important;
-        min-height: 70svh;
-        grid-template-columns: minmax(0, 1fr) !important;
-        grid-template-rows: auto auto auto !important;
-        row-gap: 20px !important;
-        padding: clamp(24px, 4vh, 40px) clamp(18px, 4vw, 28px) 32px !important;
-        background: #2d2d2a;
-      }
-      /* Bottle, then copy, then the prev/next rule at the foot. */
-      [data-bb-stage-nav] {
-        grid-column: 1 !important;
-        grid-row: 3 !important;
-      }
-      [data-bb-stage-copy] {
-        grid-column: 1 !important;
-        grid-row: 2 !important;
-        max-width: none !important;
-        min-width: 0 !important;
-      }
-      /* Nothing is sharing a frame here — the stage is content-height and
-         stacked — so drop the reserved space rather than spend it. */
-      [data-bb-stage-copy] h2 {
-        font-size: clamp(34px, 11vw, 56px) !important;
-        line-height: 1 !important;
+        background: #2d2d2a !important;
         min-height: 0 !important;
       }
-      [data-bb-spec] dd { min-height: 0 !important; }
-      [data-bb-stage-copy] [data-bb-spec] { margin-top: 0 !important; }
-      [data-bb-stage-copy] p,
-      [data-bb-spec] {
-        max-width: none !important;
-      }
-      [data-bb-blend-stage] [data-bb-stage-row] {
-        grid-column: 1 !important;
-        grid-row: 1 !important;
-        height: auto !important;
-        min-height: clamp(300px, 66vw, 420px) !important;
-      }
-      [data-bb-bottle-slot] {
-        height: clamp(300px, 66vw, 420px) !important;
-      }
-      [data-bb-bottle-plinth] { width: min(100%, 60vw) !important; }
-      [data-bottle] { height: clamp(300px, 66vw, 620px) !important; }
-      [data-bb-nav] { row-gap: 10px !important; }
-      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
     }
 
     /* ---- Pouring moments carousel (Graza-inspired editorial strip) ---- */
@@ -528,34 +518,35 @@
       [data-bb-pour-track] { animation: none; }
     }
     @media (max-width: 900px) {
+      /* Same head lockup as desktop (title + IG in the h2); denser spacing only. */
       [data-bb-pour] {
         min-height: 0;
-        padding: clamp(48px, 8vh, 88px) 0 clamp(40px, 6vh, 72px);
+        padding: clamp(40px, 7vh, 72px) 0 clamp(36px, 5vh, 64px);
       }
-      /* The section is content-height here, so there is no band to centre in:
-         back to a plain block with its own spacing. */
       [data-bb-pour-head] {
         flex: 0 0 auto;
-        min-height: 0;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 0 clamp(20px, 5vw, 40px);
-        margin-bottom: clamp(28px, 4vh, 40px);
+        min-height: clamp(72px, 12vh, 120px);
+        padding: 0 clamp(18px, 5vw, 40px);
+        margin-bottom: clamp(20px, 3.2vh, 32px);
+        gap: clamp(12px, 2vw, 24px);
       }
       [data-bb-pour-head] h2 {
-        font-size: clamp(22px, 6.2vw, 34px);
+        font-size: clamp(22px, 5.8vw, 32px);
+        white-space: normal;
         text-align: center;
       }
-      [data-bb-pour-cta-desk] { display: none; }
-      [data-bb-pour-cta-mob] { display: inline-flex; }
-      [data-bb-pour-foot] {
-        display: flex;
-        justify-content: center;
-        margin-top: clamp(24px, 4vw, 40px);
-        padding: 0 clamp(20px, 5vw, 40px);
+      [data-bb-pour-head] h2 [data-bb-pour-cta] {
+        margin-left: clamp(8px, 1.5vw, 14px);
       }
-      [data-bb-pour] { --pour-w: clamp(230px, 64vw, 330px); }
+      [data-bb-pour-cta] svg {
+        width: clamp(24px, 6vw, 32px);
+        height: clamp(24px, 6vw, 32px);
+      }
+      /* Keep the desk CTA in the head; foot stays unused on mobile too. */
+      [data-bb-pour-cta-desk] { display: inline-flex; }
+      [data-bb-pour-cta-mob],
+      [data-bb-pour-foot] { display: none; }
+      [data-bb-pour] { --pour-w: clamp(220px, 58vw, 300px); }
       [data-bb-pour-track] { animation-duration: 56s; }
     }
   </style>
@@ -828,10 +819,10 @@ class Component extends DCLogic {
 <script>
 (function () {
   const motionOn = () => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const narrow = window.matchMedia('(max-width: 900px)').matches;
-    return !reduce && !narrow;
+    // Same path as About: keep pin-scrub on mobile; only reduced-motion opts out.
+    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   };
+  const narrowMq = window.matchMedia('(max-width: 900px)');
 
   let raf = 0;
   let cleanup = null;
@@ -953,10 +944,12 @@ class Component extends DCLogic {
           : `translate3d(${(1 - copyIn) * -56}px, ${(1 - copyIn) * 24}px, 0)`;
       }
 
-      // Bottle rises just behind the wine copy
+      // Bottle rises just behind the wine copy (shorter travel on phones so it
+      // does not overshoot the tighter plate).
       const bottleIn = easeOut(range(p, 0.44, 0.8));
       if (row) {
-        const y = (1 - bottleIn) * 48;
+        const rise = narrowMq.matches ? 32 : 48;
+        const y = (1 - bottleIn) * rise;
         const scale = 0.9 + bottleIn * 0.1;
         row.style.opacity = String(bottleIn);
         row.style.transform = bottleIn >= 0.999
