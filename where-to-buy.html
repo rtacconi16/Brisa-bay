@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="./locator-config.js?v=1"></script>
 <script src="./locator-util.js?v=1"></script>
 </head>
 <body>
@@ -330,6 +331,27 @@
 
     [data-bb-sheet-handle] { display: none; }
 
+    /* Same contract as index/about/blends: nothing moves that does not have to.
+       The locator is the most animated page on the site — row entrances, the
+       masthead, marker transitions, and the map's own fly-to. */
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-store-row],
+      [data-bb-masthead] h1,
+      [data-bb-featured] {
+        animation: none !important;
+      }
+      [data-bb-store-row],
+      [data-bb-directions],
+      [data-bb-type-filter],
+      [data-bb-row-link],
+      [data-bb-empty-action],
+      [data-bb-locate],
+      [data-bb-see-all],
+      [data-bb-locator-list] {
+        transition: none !important;
+      }
+    }
+
     @media (max-width: 900px) {
       [data-bb-locator] {
         height: auto !important;
@@ -514,7 +536,7 @@
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=11" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=12" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
         <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
@@ -779,21 +801,60 @@ function featureLabel(p, fallback) {
     .join(', ') || fallback;
 }
 
-function scoreGeocodeFeature(f, bias) {
+// How prominent a place is, independent of where our stores happen to be. A
+// city outranks a hamlet of the same name no matter how far away it is.
+const PLACE_PROMINENCE = {
+  city: 100, postcode: 92, town: 78, county: 62, municipality: 62,
+  suburb: 55, village: 48, borough: 48, neighbourhood: 40, quarter: 38,
+  hamlet: 28, locality: 24, isolated_dwelling: 12,
+  house: 70, building: 66, commercial: 62, retail: 62,
+  residential: 20, tertiary: 20, secondary: 20, primary: 20, unclassified: 15
+};
+
+// Photon already returns candidates in relevance order, and that ordering
+// encodes real-world prominence better than anything we can reconstruct from
+// the fields it exposes: "columbus" comes back Ohio-first, "portland"
+// Oregon-first, "springfield" Massachusetts-first. Treat that rank as the
+// primary signal rather than throwing it away by re-sorting.
+const RANK_WEIGHT = 12;
+
+// The distance term is a tiebreaker between adjacent, equally-prominent
+// candidates — never a filter. Capped well below one rank step so it can settle
+// a tie but never overturn Photon's ordering or promote a hamlet over a city.
+// Getting this wrong previously made every place more than ~1,080 miles away
+// report as "could not find that place".
+const MAX_DISTANCE_PENALTY = 8;
+
+function scoreGeocodeFeature(f, bias, rank = 0) {
   const p = f.properties || {};
   const [lng, lat] = f.geometry.coordinates;
   let score = 0;
+
   const country = String(p.country || '');
   const cc = String(p.countrycode || '').toUpperCase();
-  if (cc === 'US' || /united states/i.test(country)) score += 120;
-  else score -= 80;
+  // The stockist footprint is entirely US/PR, so a non-US hit is almost always
+  // the wrong Springfield. Still a ranking signal, not a veto.
+  if (cc === 'US' || cc === 'PR' || /united states|puerto rico/i.test(country)) score += 120;
+  else score -= 60;
+
   const kind = String(p.osm_value || p.type || '').toLowerCase();
-  if (['city', 'town', 'village', 'suburb', 'neighbourhood', 'hamlet', 'postcode', 'county'].includes(kind)) score += 55;
-  else if (['house', 'building', 'commercial', 'retail'].includes(kind)) score += 45;
-  else if (['residential', 'tertiary', 'secondary', 'primary', 'unclassified'].includes(kind)) score -= 25;
+  score += PLACE_PROMINENCE[kind] != null ? PLACE_PROMINENCE[kind] : 30;
+
+  score += Math.max(0, 8 - rank) * RANK_WEIGHT;
+
   const mi = milesBetween(bias, { lat, lng });
-  score -= Math.min(mi, 2500) / 8;
+  score -= Math.min(mi / 250, MAX_DISTANCE_PENALTY);
   return score;
+}
+
+/** Did we get a real place, as opposed to nothing usable? Deliberately not a
+   judgement about whether we have stores near it — that is a separate question
+   the page answers separately. */
+function isPlausiblePlace(f, bias, rank = 0) {
+  const p = f.properties || {};
+  const cc = String(p.countrycode || '').toUpperCase();
+  const isUs = cc === 'US' || cc === 'PR' || /united states|puerto rico/i.test(String(p.country || ''));
+  return isUs && scoreGeocodeFeature(f, bias, rank) > 0;
 }
 
 const geocodeCache = new Map();
@@ -805,24 +866,29 @@ async function geocodePlace(q, { near = null, signal = null } = {}) {
   if (geocodeCache.has(key)) return geocodeCache.get(key);
   // Bias toward stockist region. Do not append ", USA" — that can drown out
   // local city hits (e.g. Coral Gables, FL) with unrelated US street names.
+  const cfg = (window.BB_LOCATOR_CONFIG && window.BB_LOCATOR_CONFIG.geocode) || {};
   const params = new URLSearchParams({
     q: q,
-    limit: '8',
+    limit: String(cfg.limit || 8),
     lang: 'en',
     lat: String(bias.lat),
     lon: String(bias.lng)
   });
-  const res = await fetch('https://photon.komoot.io/api/?' + params.toString(), { signal });
+  const endpoint = cfg.endpoint || 'https://photon.komoot.io/api/';
+  const res = await fetch(endpoint + '?' + params.toString(), { signal });
   if (!res.ok) throw new Error('geocode failed');
   const data = await res.json();
   const features = (data.features || []).filter((f) => f && f.geometry && f.geometry.coordinates);
   let out = null;
   if (features.length) {
-    features.sort((a, b) => scoreGeocodeFeature(b, bias) - scoreGeocodeFeature(a, bias));
-    const f = features[0];
-    if (scoreGeocodeFeature(f, bias) >= 40) {
-      const [lng, lat] = f.geometry.coordinates;
-      out = { lat, lng, label: featureLabel(f.properties || {}, q) };
+    // Carry each candidate's original rank into the score, then re-sort.
+    const ranked = features
+      .map((f, i) => ({ f, score: scoreGeocodeFeature(f, bias, i), rank: i }))
+      .sort((a, b) => b.score - a.score);
+    const best = ranked[0];
+    if (isPlausiblePlace(best.f, bias, best.rank)) {
+      const [lng, lat] = best.f.geometry.coordinates;
+      out = { lat, lng, label: featureLabel(best.f.properties || {}, q) };
     }
   }
   geocodeCache.set(key, out);

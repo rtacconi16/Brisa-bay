@@ -1,54 +1,53 @@
-// <store-map> — Leaflet + OpenStreetMap stockist map for Brisa Bay.
-// Loads Leaflet itself (pinned + hash-verified) so it never races its container.
+// <store-map> — Leaflet stockist map for Brisa Bay.
+// Loads Leaflet itself so it never races its container. Every outside service
+// it touches is configured in locator-config.js.
 (() => {
   let pending;
 
-  function addStyle(href, integrity) {
+  /** Read live rather than cached: visitors change this setting mid-session. */
+  const reduceMotion = () => !!(window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  const CFG = (window.BB_LOCATOR_CONFIG) || {};
+  const ASSETS = CFG.assets || {};
+  const TILES = CFG.tiles || {};
+
+  function addStyle(href) {
+    if (!href) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = href;
-    link.integrity = integrity;
-    link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
   }
 
-  function addScript(src, integrity) {
+  function addScript(src) {
     return new Promise((resolve, reject) => {
+      if (!src) { reject(new Error('no src')); return; }
       const s = document.createElement('script');
       s.src = src;
-      s.integrity = integrity;
-      s.crossOrigin = 'anonymous';
       s.onload = resolve;
-      s.onerror = reject;
+      s.onerror = () => reject(new Error('failed to load ' + src));
       document.head.appendChild(s);
     });
   }
 
+  // Assets are served from our own origin, so no SRI or crossorigin: integrity
+  // guards a third party changing the bytes under us, and there is no third
+  // party here any more.
   function loadLeaflet() {
     if (window.L && window.L.markerClusterGroup) return Promise.resolve(window.L);
     if (pending) return pending;
     pending = (async () => {
       if (!window.L) {
-        addStyle(
-          'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-          'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H'
-        );
-        await addScript(
-          'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-          'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH'
-        );
+        addStyle(ASSETS.leafletCss);
+        await addScript(ASSETS.leafletJs);
       }
+      if (!window.L) throw new Error('Leaflet did not initialise');
       // Clustering is a progressive enhancement: if the plugin fails to load,
       // the map still works, just with every pin drawn individually.
       try {
-        addStyle(
-          'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
-          'sha384-pmjIAcz2bAn0xukfxADbZIb3t8oRT9Sv0rvO+BR5Csr6Dhqq+nZs59P0pPKQJkEV'
-        );
-        await addScript(
-          'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
-          'sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr'
-        );
+        addStyle(ASSETS.clusterCss);
+        await addScript(ASSETS.clusterJs);
       } catch (e) { /* no clustering, still a map */ }
       return window.L;
     })();
@@ -157,7 +156,34 @@
       this.appendChild(this._el);
       this.appendChild(this._tone);
       this._hoverId = null;
-      loadLeaflet().then((L) => this._init(L));
+      loadLeaflet()
+        .then((L) => this._init(L))
+        .catch((err) => this._failGracefully(err));
+    }
+
+    /** The map is an enhancement, not the product: the list beside it already
+       does everything except show where things are. If Leaflet cannot load —
+       blocked by an extension, a corporate proxy, or an offline visitor — say
+       so plainly instead of leaving a blank rectangle. */
+    _failGracefully(err) {
+      if (this._failed) return;
+      this._failed = true;
+      if (this._tone) this._tone.style.display = 'none';
+      this._el.innerHTML = '';
+      this._el.style.display = 'flex';
+      this._el.style.alignItems = 'center';
+      this._el.style.justifyContent = 'center';
+      this._el.style.padding = '24px';
+      this._el.style.boxSizing = 'border-box';
+      const msg = document.createElement('div');
+      msg.setAttribute('role', 'status');
+      msg.style.cssText = "max-width:34ch;text-align:center;font-family:'Garamond Pro',Garamond,serif;"
+        + 'color:#57544a;font-size:clamp(15px,1.05vw,20px);line-height:1.5';
+      msg.innerHTML = '<div style="font-size:1.15em;color:#3c3a34;margin-bottom:8px">Map unavailable</div>'
+        + '<div>Every stockist is still listed alongside, with addresses and directions.</div>';
+      this._el.appendChild(msg);
+      this.dispatchEvent(new CustomEvent('store-map-failed', { bubbles: true }));
+      if (window.console && console.warn) console.warn('[store-map]', err);
     }
 
     attributeChangedCallback(name) {
@@ -183,6 +209,7 @@
       this._L = L;
       this._map = L.map(this._el, {
         zoomControl: false,
+        minZoom: TILES.minZoom || 0,
         // The locator fills the viewport with a footer below it. A map that
         // eats the wheel traps the page; require a modifier, as maps embedded
         // in scrolling pages conventionally do.
@@ -190,8 +217,10 @@
         attributionControl: true,
         tapTolerance: 18
       });
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors', maxZoom: 19
+      L.tileLayer(TILES.url, {
+        attribution: TILES.attribution,
+        maxZoom: TILES.maxZoom || 19,
+        minZoom: TILES.minZoom || 0
       }).addTo(this._map);
       // A provisional view before anything else. Until a map is _loaded,
       // invalidateSize() is a no-op, so Leaflet would keep serving whatever
@@ -200,7 +229,14 @@
       this._map.setView(HOME_VIEW.center, HOME_VIEW.zoom);
       L.control.zoom({ position: 'bottomright' }).addTo(this._map);
       this._addLocateControl(L);
-      this._map.getContainer().style.filter = 'saturate(0.42) brightness(1.04) contrast(0.96) sepia(0.08)';
+      const container = this._map.getContainer();
+      container.style.filter = 'saturate(0.42) brightness(1.04) contrast(0.96) sepia(0.08)';
+      // Focusable so it can be panned and zoomed from the keyboard, and named
+      // so a screen reader can say what it is and where the real content is.
+      container.setAttribute('role', 'application');
+      container.setAttribute('aria-label',
+        'Map of Brisa Bay stockists. Arrow keys pan, plus and minus zoom. '
+        + 'The same stockists are listed as buttons alongside this map.');
       this._markers = {};
       if (L.markerClusterGroup) {
         this._cluster = L.markerClusterGroup({
@@ -219,6 +255,13 @@
           })
         });
         this._map.addLayer(this._cluster);
+        // Cluster bubbles are Markers the plugin builds itself, so they take
+        // Leaflet's default keyboard:true and land in the tab order. Sweep them
+        // out whenever the cluster layer redraws — with real markers already
+        // opted out, anything still carrying a tabindex here is a bubble.
+        const sweep = () => this._stripMarkerTabIndex();
+        this._cluster.on('animationend', sweep);
+        this._map.on('zoomend moveend', sweep);
       }
       this._map.on('click', () => {
         this.dispatchEvent(new CustomEvent('store-deselect', { bubbles: true }));
@@ -448,9 +491,16 @@
       if (closePopups) Object.values(this._markers || {}).forEach((m) => m.closePopup());
     }
 
+    _stripMarkerTabIndex() {
+      if (!this._el) return;
+      const nodes = this._el.querySelectorAll('.leaflet-marker-icon[tabindex]');
+      for (let i = 0; i < nodes.length; i++) nodes[i].removeAttribute('tabindex');
+    }
+
     _addMarkers(markers) {
       if (this._cluster) this._cluster.addLayers(markers);
       else markers.forEach((m) => m.addTo(this._map));
+      this._stripMarkerTabIndex();
     }
 
     _removeMarkers(markers) {
@@ -499,7 +549,13 @@
           title: s.name,
           zIndexOffset: isActive ? 1000 : 0,
           icon: this._iconFor(id),
-          riseOnHover: true
+          riseOnHover: true,
+          // The stockist list beside the map is the accessible representation:
+          // it is ordered, labelled and fully operable. Leaflet's default puts
+          // every marker in the tab order too, which makes a keyboard user
+          // traverse the same hundred stores a second time with only title
+          // text to go on.
+          keyboard: false
         });
         m.bindPopup(this._popupHtml(s), this._popupOpts());
         m.on('click', (e) => {
@@ -685,8 +741,8 @@
       if (!Number.isFinite(zoom)) zoom = map.getBoundsZoom(bounds, false);
       if (!Number.isFinite(zoom)) zoom = 9;
       const opts = { ...pad, maxZoom: Math.min(zoom, maxZoom) };
-      if (animate) map.flyToBounds(bounds, { ...opts, duration: 0.85 });
-      else map.fitBounds(bounds, opts);
+      if (animate && !reduceMotion()) map.flyToBounds(bounds, { ...opts, duration: 0.85 });
+      else map.fitBounds(bounds, { ...opts, animate: false });
     }
 
     _fitSmart(list, opts = {}) {
@@ -774,6 +830,27 @@
         }
         marker.openPopup();
       };
+      // Reduced motion: jump straight there and open the popup, no flight.
+      if (reduceMotion()) {
+        if (mobile) {
+          this._map.setView(plot, targetZoom, { animate: false });
+          const p = this._map.latLngToContainerPoint(plot);
+          const shifted = this._map.containerPointToLatLng([p.x, p.y + Math.round(this.clientHeight * 0.16)]);
+          this._map.panTo(shifted, { animate: false });
+        } else {
+          this._map.setView(plot, targetZoom, { animate: false });
+          const marker = this._markers[String(s.id)];
+          if (marker) {
+            this._map.panInside(marker.getLatLng(), {
+              paddingTopLeft: pad.paddingTopLeft,
+              paddingBottomRight: pad.paddingBottomRight,
+              animate: false
+            });
+          }
+        }
+        done();
+        return;
+      }
       if (mobile) {
         this._map.flyTo(plot, targetZoom, { duration: 0.7 });
         this._map.once('moveend', () => {
