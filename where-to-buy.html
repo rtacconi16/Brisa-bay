@@ -1429,13 +1429,10 @@ class Component extends DCLogic {
     else if (status === 'error') locPromptLabel = 'Try again';
     else if (status === 'unsupported') locPromptLabel = 'Unavailable';
 
-    const countCopy = matches.length
-      ? (matches.length + (matches.length === 1 ? ' stockist' : ' stockists')
-         + (this.state.typeFilter ? ' · ' + this.state.typeFilter : '')
-         + (this.state.areaBounds ? ' in this area' : '')
-         + (loc && radius ? ' within ' + radius + ' mi' : ''))
-      : 'Browse the map';
-    let statusCopy = countCopy;
+    // No running total. The status line is for things the visitor cannot see
+    // for themselves — what we are doing, where we searched, whether we are
+    // anywhere near them — not for counting rows they can already scroll.
+    let statusCopy = '';
     if (storesStatus === 'loading') statusCopy = 'Loading stockists…';
     else if (storesStatus === 'error') statusCopy = 'Could not load the stockist list.';
     else if (status === 'pending') statusCopy = 'Looking around your neighborhood…';
