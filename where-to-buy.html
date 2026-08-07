@@ -8,6 +8,7 @@
 <script src="./locator-config.js?v=2"></script>
 <script src="./locator-util.js?v=1"></script>
 <script src="./locator-analytics.js?v=1"></script>
+<script src="./locator-jsonld.js?v=1"></script>
 </head>
 <body>
 <x-dc>
@@ -969,6 +970,7 @@ class Component extends DCLogic {
       STORES = list;
       storesStatus = 'ready';
       _biasMemo = null;
+      if (window.BBStructuredData) window.BBStructuredData.emit(list);
       this.setState({ storesReady: true }, () => this._readUrlState());
     }).catch((err) => {
       storesStatus = 'error';
