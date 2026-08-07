@@ -2,24 +2,56 @@
 // Loads Leaflet itself (pinned + hash-verified) so it never races its container.
 (() => {
   let pending;
-  function loadLeaflet() {
-    if (window.L) return Promise.resolve(window.L);
-    if (pending) return pending;
-    pending = new Promise((resolve, reject) => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-      link.integrity = 'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H';
-      link.crossOrigin = 'anonymous';
-      document.head.appendChild(link);
+
+  function addStyle(href, integrity) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.integrity = integrity;
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  }
+
+  function addScript(src, integrity) {
+    return new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      s.integrity = 'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH';
+      s.src = src;
+      s.integrity = integrity;
       s.crossOrigin = 'anonymous';
-      s.onload = () => resolve(window.L);
+      s.onload = resolve;
       s.onerror = reject;
       document.head.appendChild(s);
     });
+  }
+
+  function loadLeaflet() {
+    if (window.L && window.L.markerClusterGroup) return Promise.resolve(window.L);
+    if (pending) return pending;
+    pending = (async () => {
+      if (!window.L) {
+        addStyle(
+          'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+          'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H'
+        );
+        await addScript(
+          'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+          'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH'
+        );
+      }
+      // Clustering is a progressive enhancement: if the plugin fails to load,
+      // the map still works, just with every pin drawn individually.
+      try {
+        addStyle(
+          'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css',
+          'sha384-pmjIAcz2bAn0xukfxADbZIb3t8oRT9Sv0rvO+BR5Csr6Dhqq+nZs59P0pPKQJkEV'
+        );
+        await addScript(
+          'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js',
+          'sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr'
+        );
+      } catch (e) { /* no clustering, still a map */ }
+      return window.L;
+    })();
     return pending;
   }
 
@@ -28,6 +60,13 @@
     const bg = active ? '#f5d732' : '#e6393a';
     const ring = hover && !active ? 'box-shadow:0 0 0 4px rgba(230,57,58,.28),0 1px 6px rgba(60,58,52,.35);' : 'box-shadow:0 1px 6px rgba(60,58,52,.35);';
     return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};border:2px solid #eeeee4;${ring}transition:width .2s ease,height .2s ease,background .2s ease,box-shadow .2s ease"></div>`;
+  };
+  /** Cluster bubbles in the site palette — a default-styled plugin widget would
+     read as something bolted on. Size grows with count, but only a little. */
+  const clusterPin = (count) => {
+    const size = count < 10 ? 34 : (count < 50 ? 40 : 46);
+    const font = count < 10 ? 15 : (count < 50 ? 16 : 17);
+    return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#e6393a;border:2px solid #eeeee4;box-shadow:0 1px 8px rgba(60,58,52,.35);display:flex;align-items:center;justify-content:center;font-family:'Garamond Pro',Garamond,serif;font-size:${font}px;color:#eeeee4;font-variant-numeric:tabular-nums">${count}</div>`;
   };
   const userPin = () => `<div style="width:14px;height:14px;border-radius:50%;background:#3c3a34;border:2px solid #eeeee4;box-shadow:0 0 0 5px rgba(60,58,52,.16)"></div>`;
   const searchPin = () => `<div style="width:14px;height:14px;border-radius:50%;background:#60b98f;border:2px solid #eeeee4;box-shadow:0 0 0 5px rgba(96,185,143,.22)"></div>`;
@@ -143,7 +182,10 @@
       this._L = L;
       this._map = L.map(this._el, {
         zoomControl: false,
-        scrollWheelZoom: true,
+        // The locator fills the viewport with a footer below it. A map that
+        // eats the wheel traps the page; require a modifier, as maps embedded
+        // in scrolling pages conventionally do.
+        scrollWheelZoom: false,
         attributionControl: true,
         tapTolerance: 18
       });
@@ -159,6 +201,24 @@
       this._addLocateControl(L);
       this._map.getContainer().style.filter = 'saturate(0.42) brightness(1.04) contrast(0.96) sepia(0.08)';
       this._markers = {};
+      if (L.markerClusterGroup) {
+        this._cluster = L.markerClusterGroup({
+          chunkedLoading: true,
+          maxClusterRadius: 45,
+          // Below focusStore's target zoom, so selecting a store always lands on
+          // an individual pin rather than a bubble.
+          disableClusteringAtZoom: 13,
+          spiderfyOnMaxZoom: true,
+          showCoverageOnHover: false,
+          iconCreateFunction: (c) => L.divIcon({
+            html: clusterPin(c.getChildCount()),
+            className: '',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+          })
+        });
+        this._map.addLayer(this._cluster);
+      }
       this._map.on('click', () => {
         this.dispatchEvent(new CustomEvent('store-deselect', { bubbles: true }));
       });
@@ -178,6 +238,8 @@
         this._map.invalidateSize();
         this._flushFit();
       });
+      this._setupWheelZoom();
+
       // Once the visitor has touched the map, its view is theirs — never re-fit
       // underneath them.
       this._userMoved = false;
@@ -216,6 +278,31 @@
       }
     }
 
+    /** Wheel zooms only with a modifier held; a bare wheel scrolls the page and
+       says so once, briefly. Pinch and trackpad-pinch arrive as ctrlKey wheel
+       events, so they keep working untouched. */
+    _setupWheelZoom() {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'position:absolute;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;'
+        + 'background:rgba(60,58,52,0.42);color:#eeeee4;font-family:\'Garamond Pro\',Garamond,serif;font-size:19px;'
+        + 'letter-spacing:0.03em;pointer-events:none;opacity:0;transition:opacity .25s';
+      const mod = /Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘' : 'Ctrl';
+      hint.textContent = 'Hold ' + mod + ' and scroll to zoom';
+      this.appendChild(hint);
+      this._wheelHint = hint;
+
+      this._el.addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          if (!this._map.scrollWheelZoom.enabled()) this._map.scrollWheelZoom.enable();
+          return;
+        }
+        if (this._map.scrollWheelZoom.enabled()) this._map.scrollWheelZoom.disable();
+        hint.style.opacity = '1';
+        clearTimeout(this._hintTimer);
+        this._hintTimer = setTimeout(() => { hint.style.opacity = '0'; }, 1100);
+      }, { passive: true });
+    }
+
     _addLocateControl(L) {
       const self = this;
       const Locate = L.Control.extend({
@@ -242,6 +329,7 @@
 
     disconnectedCallback() {
       clearTimeout(this._fitTimer);
+      clearTimeout(this._hintTimer);
       if (this._ro) this._ro.disconnect();
       if (this._mq && this._onMq) {
         if (this._mq.removeEventListener) this._mq.removeEventListener('change', this._onMq);
@@ -348,27 +436,59 @@
       if (closePopups) Object.values(this._markers || {}).forEach((m) => m.closePopup());
     }
 
+    _addMarkers(markers) {
+      if (this._cluster) this._cluster.addLayers(markers);
+      else markers.forEach((m) => m.addTo(this._map));
+    }
+
+    _removeMarkers(markers) {
+      if (this._cluster) this._cluster.removeLayers(markers);
+      else markers.forEach((m) => m.remove());
+    }
+
     _draw({ fit = false } = {}) {
       const L = this._L;
       const list = spreadCoLocated(this.stores);
       const activeId = this.getAttribute('active');
-      Object.values(this._markers || {}).forEach((m) => m.remove());
-      this._markers = {};
+      this._markers = this._markers || {};
       this._plotById = {};
+
+      // Diff rather than rebuild. This runs on every keystroke and filter
+      // change; tearing down a hundred markers each time dropped whatever
+      // popup was open and made typing visibly stutter.
+      const nextIds = new Set(list.map((s) => String(s.id)));
+      const gone = Object.keys(this._markers).filter((id) => !nextIds.has(id));
+      if (gone.length) {
+        this._removeMarkers(gone.map((id) => this._markers[id]));
+        gone.forEach((id) => { delete this._markers[id]; });
+      }
+
       if (!list.length) {
         if (this._userLatLng) this._ensureUserMarker();
-        else this._map.setView(HOME_VIEW.center, HOME_VIEW.zoom);
+        else if (!fit) this._map.setView(HOME_VIEW.center, HOME_VIEW.zoom);
         return;
       }
+
+      const added = [];
       list.forEach((s) => {
-        const isActive = activeId && String(s.id) === String(activeId);
-        this._plotById[s.id] = [s._plotLat, s._plotLng];
+        const id = String(s.id);
+        const isActive = activeId && id === String(activeId);
+        this._plotById[id] = [s._plotLat, s._plotLng];
+        const existing = this._markers[id];
+        if (existing) {
+          existing.setLatLng([s._plotLat, s._plotLng]);
+          // Distance copy changes whenever the reference location moves.
+          existing.setPopupContent(this._popupHtml(s));
+          existing.setIcon(this._iconFor(id));
+          existing.setZIndexOffset(isActive ? 1000 : 0);
+          return;
+        }
         const m = L.marker([s._plotLat, s._plotLng], {
           title: s.name,
           zIndexOffset: isActive ? 1000 : 0,
-          icon: this._iconFor(s.id),
+          icon: this._iconFor(id),
           riseOnHover: true
-        }).addTo(this._map);
+        });
         m.bindPopup(this._popupHtml(s), this._popupOpts());
         m.on('click', (e) => {
           L.DomEvent.stopPropagation(e);
@@ -384,8 +504,10 @@
             this.dispatchEvent(new CustomEvent('store-hover', { bubbles: true, detail: null }));
           }
         });
-        this._markers[s.id] = m;
+        this._markers[id] = m;
+        added.push(m);
       });
+      if (added.length) this._addMarkers(added);
       if (this._userLatLng) this._ensureUserMarker();
       if (this._searchLatLng) this._ensureSearchMarker();
       if (fit) {
@@ -630,7 +752,15 @@
       // Offset center upward on mobile so the pin sits above the sheet
       const mobile = this._isNarrow();
       const done = () => {
-        if (openPopup && this._markers[s.id]) this._markers[s.id].openPopup();
+        const marker = this._markers[String(s.id)];
+        if (!openPopup || !marker) return;
+        // Below disableClusteringAtZoom the pin stands alone, but a spiderfied
+        // or still-clustered marker has no popup anchor until it is revealed.
+        if (this._cluster && !this._map.hasLayer(marker) && this._cluster.zoomToShowLayer) {
+          this._cluster.zoomToShowLayer(marker, () => marker.openPopup());
+          return;
+        }
+        marker.openPopup();
       };
       if (mobile) {
         this._map.flyTo(plot, targetZoom, { duration: 0.7 });
@@ -645,8 +775,8 @@
         this._map.once('moveend', done);
         // Keep pin clear of edges
         setTimeout(() => {
-          if (this._markers[s.id]) {
-            this._map.panInside(this._markers[s.id].getLatLng(), {
+          if (this._markers[String(s.id)]) {
+            this._map.panInside(this._markers[String(s.id)].getLatLng(), {
               paddingTopLeft: pad.paddingTopLeft,
               paddingBottomRight: pad.paddingBottomRight,
               animate: true
