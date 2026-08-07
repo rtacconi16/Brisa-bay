@@ -226,6 +226,39 @@
       color: rgba(87, 84, 74, 0.62);
     }
 
+    /* Viewport-driven search. Sits top-centre over the map so it reads as a
+       property of the view rather than another toolbar filter. */
+    [data-bb-area-search], [data-bb-area-clear] {
+      position: absolute;
+      top: clamp(16px, 1.4vw, 28px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      font-size: clamp(13px, 0.92vw, 16px);
+      letter-spacing: 0.04em;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(60,58,52,0.18);
+      transition: background 0.2s, color 0.2s;
+      animation: bb-row-in 0.3s ease both;
+    }
+    [data-bb-area-search] { background: #3c3a34; color: #eeeee4; }
+    [data-bb-area-search]:hover { background: #e6393a; }
+    [data-bb-area-clear] {
+      background: rgba(238,238,228,0.94);
+      color: #57544a;
+      border: 1px solid rgba(87,84,74,0.2);
+    }
+    [data-bb-area-clear]:hover { color: #e6393a; border-color: rgba(230,57,58,0.45); }
+    @media (max-width: 900px) {
+      [data-bb-area-search], [data-bb-area-clear] { top: 12px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-area-search], [data-bb-area-clear] { animation: none !important; transition: none !important; }
+    }
+
     [data-bb-featured][data-out-of-range="true"] [data-bb-label] { color: #e6393a !important; }
     [data-bb-ask] {
       margin: 0 clamp(20px, 1.9vw, 38px) 4px;
@@ -569,7 +602,13 @@
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=13" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=14" storesjson="{{ storesJson }}" active="{{ activeId }}" holdview="{{ holdView }}" hint-size="100%,100%"></x-import>
+        <sc-if value="{{ showAreaSearch }}" hint-placeholder-val="{{ false }}">
+          <div data-bb-area-search="" role="button" tabindex="0" onClick="{{ searchArea }}" onKeyDown="{{ searchAreaKey }}">{{ areaSearchLabel }}</div>
+        </sc-if>
+        <sc-if value="{{ showAreaClear }}" hint-placeholder-val="{{ false }}">
+          <div data-bb-area-clear="" role="button" tabindex="0" onClick="{{ clearArea }}" onKeyDown="{{ clearAreaKey }}">{{ areaClearLabel }}</div>
+        </sc-if>
         <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
@@ -938,7 +977,10 @@ class Component extends DCLogic {
     userLoc: null, locStatus: 'idle',
     searchLoc: null, geoStatus: 'idle', geoQuery: '',
     sheetOpen: false, hoverId: null,
-    radius: 0
+    radius: 0,
+    // areaBounds: the viewport the visitor asked us to filter to.
+    // areaOffer: a viewport they have moved to but not yet asked about.
+    areaBounds: null, areaOffer: null, areaOffscreen: 0
   };
   _geoTimer = null;
   _geoSeq = 0;
@@ -966,6 +1008,20 @@ class Component extends DCLogic {
     document.addEventListener('store-deselect', this._onDeselect);
     document.addEventListener('store-locate', this._onLocate);
     document.addEventListener('store-hover', this._onMapHover);
+    this._onMapMoved = (e) => {
+      const b = e.detail;
+      if (!b) return;
+      const m = this._map();
+      const offscreen = m && m.offscreenCount ? m.offscreenCount() : 0;
+      // Already filtered to almost this view, or nothing is hidden by it —
+      // then there is nothing useful to offer.
+      if (this.state.areaBounds && offscreen === 0) {
+        this.setState({ areaOffer: null, areaOffscreen: 0 });
+        return;
+      }
+      this.setState({ areaOffer: b, areaOffscreen: offscreen });
+    };
+    document.addEventListener('store-map-moved', this._onMapMoved);
     this._readUrlState();
     this._resumeLocationIfGranted();
   }
@@ -1040,6 +1096,7 @@ class Component extends DCLogic {
     document.removeEventListener('store-deselect', this._onDeselect);
     document.removeEventListener('store-locate', this._onLocate);
     document.removeEventListener('store-hover', this._onMapHover);
+    document.removeEventListener('store-map-moved', this._onMapMoved);
     clearTimeout(this._geoTimer);
     clearTimeout(this._urlTimer);
   }
@@ -1222,6 +1279,15 @@ class Component extends DCLogic {
       matches = near.length ? near : matches.slice(0, 8);
     }
 
+    // Filtering to the viewport the visitor chose. Applied before radius so the
+    // two compose rather than fight.
+    const area = this.state.areaBounds;
+    if (area) {
+      matches = matches.filter((s) =>
+        s.lat <= area.north && s.lat >= area.south
+        && s.lng <= area.east && s.lng >= area.west);
+    }
+
     // Radius only means something once we have somewhere to measure from.
     const radius = Number(this.state.radius) || 0;
     let beyond = [];
@@ -1276,6 +1342,7 @@ class Component extends DCLogic {
     const countCopy = matches.length
       ? (matches.length + (matches.length === 1 ? ' stockist' : ' stockists')
          + (this.state.typeFilter ? ' · ' + this.state.typeFilter : '')
+         + (this.state.areaBounds ? ' in this area' : '')
          + (loc && radius ? ' within ' + radius + ' mi' : ''))
       : 'Browse the map';
     let statusCopy = countCopy;
@@ -1334,7 +1401,7 @@ class Component extends DCLogic {
     // Named once so click and Enter/Space share an implementation.
     const doReset = () => {
       clearTimeout(this._geoTimer);
-      this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null, radius: 0 });
+      this.setState({ active: null, query: '', typeFilter: null, searchLoc: null, geoStatus: 'idle', geoQuery: '', sheetOpen: false, hoverId: null, radius: 0, areaBounds: null, areaOffer: null, areaOffscreen: 0 });
       const m = this._map();
       if (m && m.clearSearchLocation) m.clearSearchLocation();
       if (m && m.highlightStore) m.highlightStore(null);
@@ -1348,9 +1415,34 @@ class Component extends DCLogic {
     const doDenyAge = () => this.setState({ gateDenied: true });
     const doCloseFaq = () => this.setState({ faqOpen: false });
     const doClearFilters = () => {
-      this.setState({ typeFilter: null, radius: 0 });
+      this.setState({ typeFilter: null, radius: 0, areaBounds: null, areaOffer: null });
       const m = this._map();
       if (m && m.setRadius) m.setRadius(0);
+    };
+    const doSearchArea = () => {
+      // Adopt the viewport as a filter and leave the map exactly where it is.
+      this.setState({
+        areaBounds: this.state.areaOffer,
+        areaOffer: null,
+        active: null,
+        sheetOpen: true
+      });
+    };
+    const doClearArea = () => {
+      this.setState({ areaBounds: null, areaOffer: null, areaOffscreen: 0 });
+      const m = this._map();
+      if (m && m.fitWithoutPrompting) {
+        setTimeout(() => {
+          const map = this._map();
+          if (map && map.fitWithoutPrompting) {
+            map.fitWithoutPrompting(null, {
+              animate: true,
+              includeAnchor: !!this._refLoc(),
+              anchor: null
+            });
+          }
+        }, 50);
+      }
     };
 
     // The radius select is meaningless without somewhere to measure from.
@@ -1422,14 +1514,25 @@ class Component extends DCLogic {
         onSelect: () => this.select(s.id),
         onKey: this._activate(() => this.select(s.id))
       })),
-      showClearFilters: matches.length === 0 && !!(this.state.typeFilter || radius),
+      showClearFilters: matches.length === 0 && !!(this.state.typeFilter || radius || this.state.areaBounds),
       clearFilters: doClearFilters,
       clearFiltersKey: this._activate(doClearFilters),
       storesJson: JSON.stringify(mapStores),
       activeId: active || '',
+      holdView: this.state.areaBounds ? 'true' : 'false',
       statusCopy,
       showFeatured,
       featured,
+      showAreaSearch: !!this.state.areaOffer && !this.state.areaBounds,
+      areaSearchLabel: this.state.areaOffscreen
+        ? 'Search this area · ' + this.state.areaOffscreen + ' hidden'
+        : 'Search this area',
+      searchArea: doSearchArea,
+      searchAreaKey: this._activate(doSearchArea),
+      showAreaClear: !!this.state.areaBounds,
+      areaClearLabel: 'Showing this area only · clear',
+      clearArea: doClearArea,
+      clearAreaKey: this._activate(doClearArea),
       outOfRange,
       askPlace: searchPlace,
       // mailto keeps this working with no backend. Swap for a POST to a

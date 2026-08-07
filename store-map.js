@@ -143,7 +143,7 @@
   }
 
   class StoreMap extends HTMLElement {
-    static get observedAttributes() { return ['storesjson', 'stores-json', 'active']; }
+    static get observedAttributes() { return ['storesjson', 'stores-json', 'active', 'holdview']; }
 
     connectedCallback() {
       if (this._built) return;
@@ -195,7 +195,11 @@
         return;
       }
       const ids = this.stores.map((s) => s.id).join('|');
-      const fit = ids !== this._lastStoreIds;
+      // holdview is set while the list is filtered to the visitor's own
+      // viewport: the store set changes precisely *because* of where they
+      // panned, so re-fitting would yank the map away from the view they chose.
+      const holding = this.getAttribute('holdview') === 'true';
+      const fit = !holding && ids !== this._lastStoreIds;
       this._lastStoreIds = ids;
       this._draw({ fit });
     }
@@ -303,6 +307,17 @@
       const markUserMoved = () => { this._userMoved = true; };
       ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach((ev) => {
         this._el.addEventListener(ev, markUserMoved, { passive: true });
+      });
+
+      // Once the visitor drives the map themselves, the viewport becomes a
+      // question worth answering: "what is in *this* area?". Announce the move
+      // so the page can offer to filter by it.
+      this._map.on('moveend zoomend', () => {
+        if (!this._userMoved || this._suppressAreaEvent) return;
+        this.dispatchEvent(new CustomEvent('store-map-moved', {
+          bubbles: true,
+          detail: this.viewportBounds()
+        }));
       });
 
       if (window.ResizeObserver) {
@@ -721,6 +736,30 @@
     highlightStore(id) {
       this._hoverId = id || null;
       this._refreshIcons();
+    }
+
+    /** Current viewport as plain numbers, for the page to filter against. */
+    viewportBounds() {
+      if (!this._map || !this._map._loaded) return null;
+      const b = this._map.getBounds();
+      return { north: b.getNorth(), south: b.getSouth(), east: b.getEast(), west: b.getWest() };
+    }
+
+    /** How many of the stores we were given fall outside the current viewport —
+       the page uses this to say "12 more outside this view". */
+    offscreenCount() {
+      if (!this._map || !this._map._loaded) return 0;
+      const b = this._map.getBounds();
+      return this.stores.reduce((n, s) => n + (b.contains([s.lat, s.lng]) ? 0 : 1), 0);
+    }
+
+    /** Fits without arming the "search this area" prompt — used when the page
+       itself caused the move, so the visitor is not asked about a view they
+       did not choose. */
+    fitWithoutPrompting(list, opts) {
+      this._suppressAreaEvent = true;
+      this._fitSmart(list || this.stores, opts || {});
+      setTimeout(() => { this._suppressAreaEvent = false; }, 900);
     }
 
     /** Leaflet's fit maths needs a laid-out container; before that getBoundsZoom
