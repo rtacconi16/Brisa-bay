@@ -1,4 +1,30 @@
-// GENERATED from dc-runtime/src/*.ts — do not edit. Rebuild with `cd dc-runtime && bun run build`.
+// The DC runtime. Renders every page on this site: it parses <x-dc> templates,
+// compiles the per-page `class Component extends DCLogic` blocks, and mounts
+// them with React.
+//
+// ORIGIN — read before changing anything here.
+//
+// This file was bundled by esbuild from `dc-runtime/src/*.ts`. That source tree
+// is NOT in this repository and is not in its git history — support.js was
+// committed once, whole, in the initial commit and has never changed since.
+// Searches of the repo, the history and the local filesystem found nothing.
+//
+// So the instruction this header used to carry — "do not edit, rebuild with
+// `cd dc-runtime && bun run build`" — described a workflow that no longer
+// exists. It is removed rather than kept, because a pointer to a missing source
+// tree is worse than no pointer: it stops someone fixing a live bug they are
+// perfectly capable of fixing.
+//
+// What is true now:
+//   * This file is the source of truth. There is nothing upstream to regenerate
+//     from, and therefore nothing that can silently overwrite an edit here.
+//   * It is editable. The bundle is unminified and its 18 original modules are
+//     still marked by `// src/*.ts` comments, with readable identifiers.
+//   * Editing it is still a last resort. Prefer fixing a page's own logic block.
+//     If you must change this file, note the change in README.md so the next
+//     person knows the bundle has diverged from any copy found elsewhere.
+//
+// Bump the `?v=` on the <script src> in all 7 pages whenever this file changes.
 "use strict";
 (() => {
   var __defProp = Object.defineProperty;

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./resources.js?v=1"></script>
-<script src="./support.js"></script>
+<script src="./support.js?v=1"></script>
 <script src="./age-gate.js?v=2"></script>
 </head>
 <body>
@@ -40,6 +40,22 @@
     [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
     a { color: #e6393a; }
     a:hover { color: #f5d732; }
+    /* The hero is a full-bleed film with no title text, so the page's <h1> is
+       exposed to assistive tech and search engines only. Clip rather than
+       display:none or visibility:hidden — both remove it from the a11y tree,
+       which defeats the point. */
+    [data-bb-visually-hidden] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
@@ -675,6 +691,7 @@
 
 <div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; font-family: 'Garamond Pro', serif; color: #57544a">
   <main id="bb-content" tabindex="-1">
+  <h1 data-bb-visually-hidden="">Brisa Bay — bright, unpretentious Napa Valley wine</h1>
 
   <!-- ================= OPENING VIEWPORT: HERO + TICKER ================= -->
   <div data-bb-hero-scroll="" data-screen-label="Hero">
