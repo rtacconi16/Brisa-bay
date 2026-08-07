@@ -75,16 +75,17 @@
   // container is measurable and whenever a fit cannot be computed.
   const HOME_VIEW = { center: [26.6, -80.4], zoom: 8 };
 
-  function milesBetween(a, b) {
+  // Shared with the page component via locator-util.js; falls back to a local
+  // copy if this component is ever used without it.
+  const milesBetween = (window.BBLocator && window.BBLocator.milesBetween) || function (a, b) {
     const R = 3958.8;
     const toRad = (d) => (d * Math.PI) / 180;
     const dLat = toRad(b.lat - a.lat);
     const dLng = toRad(b.lng - a.lng);
-    const lat1 = toRad(a.lat);
-    const lat2 = toRad(b.lat);
-    const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+    const h = Math.sin(dLat / 2) ** 2
+      + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
     return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
-  }
+  };
 
   function escapeHtml(str) {
     return String(str == null ? '' : str)
@@ -394,15 +395,26 @@
       const dist = s.distance
         ? `<div style="margin-top:4px;font-size:13px;letter-spacing:.04em;color:#8a8578">${escapeHtml(s.distance)}</div>`
         : '';
+      const linkCss = 'font-size:15px;color:#e6393a;text-decoration:none';
       const dir = s.directions
-        ? `<a href="${escapeHtml(s.directions)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:15px;color:#e6393a;text-decoration:none">Directions →</a>`
+        ? `<a href="${escapeHtml(s.directions)}" target="_blank" rel="noopener" style="${linkCss}">Directions →</a>`
+        : '';
+      const tel = s.tel
+        ? `<a href="${escapeHtml(s.tel)}" style="${linkCss}">${escapeHtml(s.phone)}</a>`
+        : '';
+      const site = s.url
+        ? `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener" style="${linkCss}">Website</a>`
+        : '';
+      const actions = [dir, tel, site].filter(Boolean);
+      const actionRow = actions.length
+        ? `<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px">${actions.join('')}</div>`
         : '';
       return `<div style="font-family:'Garamond Pro',Garamond,serif;color:#3c3a34;min-width:170px;padding:2px 0">
          <div style="font-size:17px;font-style:italic;font-weight:700;line-height:1.2;margin-bottom:4px">${escapeHtml(s.name)}</div>
          <div style="font-size:13px;color:#8a8578;margin-bottom:6px">${escapeHtml(s.type || '')} · ${escapeHtml(s.city || '')}</div>
          <div style="font-size:14px;line-height:1.35;color:#57544a">${escapeHtml(s.address)}</div>
          ${dist}
-         ${dir}
+         ${actionRow}
        </div>`;
     }
 

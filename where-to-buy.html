@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="./locator-util.js?v=1"></script>
 </head>
 <body>
 <x-dc>
@@ -222,6 +223,23 @@
       letter-spacing: 0.13em;
       color: rgba(87, 84, 74, 0.62);
     }
+
+    [data-bb-row-actions] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(8px, 0.9vw, 16px);
+    }
+    [data-bb-row-link] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(13px, 0.92vw, 16px);
+      color: #57544a;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(87,84,74,0.3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    [data-bb-row-link]:hover { color: #e6393a; border-color: rgba(230,57,58,0.5); }
 
     [data-bb-empty-action] {
       display: inline-block;
@@ -456,7 +474,15 @@
                 <div data-bb-store-main="">
                   <div data-bb-store-name="">{{ store.name }}</div>
                   <div data-bb-store-addr="">{{ store.address }}<br>{{ store.city }}</div>
-                  <a data-bb-directions="" href="{{ store.directions }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Get Directions</a>
+                  <div data-bb-row-actions="">
+                    <a data-bb-directions="" href="{{ store.directions }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Get Directions</a>
+                    <sc-if value="{{ store.hasPhone }}" hint-placeholder-val="{{ false }}">
+                      <a data-bb-row-link="" href="{{ store.tel }}" onClick="{{ store.stop }}">{{ store.phone }}</a>
+                    </sc-if>
+                    <sc-if value="{{ store.hasUrl }}" hint-placeholder-val="{{ false }}">
+                      <a data-bb-row-link="" href="{{ store.url }}" target="_blank" rel="noopener" onClick="{{ store.stop }}">Website</a>
+                    </sc-if>
+                  </div>
                 </div>
                 <div data-bb-store-side="">
                   <div data-bb-store-index="" aria-hidden="true">{{ store.index }}</div>
@@ -488,7 +514,7 @@
       </sc-if>
 
       <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: #dfdfd6">
-        <x-import component-from-global-scope="store-map" from="./store-map.js?v=10" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
+        <x-import component-from-global-scope="store-map" from="./store-map.js?v=11" storesjson="{{ storesJson }}" active="{{ activeId }}" hint-size="100%,100%"></x-import>
         <div data-bb-see-all="" onClick="{{ resetView }}" onKeyDown="{{ resetViewKey }}" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: #3c3a34; font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: #e6393a; border-color: rgba(230,57,58,0.45)">See all</div>
       </div>
 
@@ -572,6 +598,13 @@
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;storeList&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;search&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Locator&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
+// Each record additionally accepts two optional fields, rendered only when
+// present — in the list row, in the map popup, and as a tap-to-call link on
+// mobile:
+//   phone: '(305) 555-0142'
+//   url:   'https://example.com'
+// They are deliberately unpopulated: these have to come from the POS directory
+// rather than be guessed, since a wrong number reaches a real person.
 const STORES = [
   { id: 'ke-uh', name: 'Ke-uH', type: 'Restaurant', address: '2278 Weston Rd', city: 'Weston, FL', lat: 26.091884, lng: -80.370623 },
   { id: 'grand-vin', name: 'Grand Vin Wine Bar', type: 'Wine Bar', address: '1107 Duval St', city: 'Key West, FL', lat: 24.549894, lng: -81.798362 },
@@ -677,22 +710,7 @@ const STORES = [
   { id: 'don-pepe-restaurant', name: 'Don Pepe Restaurant', type: 'Restaurant', address: 'Carr. PR-3 Km. 29.0 Carola', city: 'Rio Grande, PR', lat: 18.372443, lng: -65.770376 }
 ];
 
-function milesBetween(a, b) {
-  const R = 3958.8;
-  const toRad = (d) => (d * Math.PI) / 180;
-  const dLat = toRad(b.lat - a.lat);
-  const dLng = toRad(b.lng - a.lng);
-  const lat1 = toRad(a.lat);
-  const lat2 = toRad(b.lat);
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
-  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
-}
-
-function formatMiles(mi) {
-  if (mi < 0.1) return '< 0.1 mi';
-  if (mi < 10) return mi.toFixed(1) + ' mi';
-  return Math.round(mi) + ' mi';
-}
+const { milesBetween, formatMiles, directionsUrl, telHref } = window.BBLocator;
 
 const NEARBY_MI = 60;
 
@@ -846,8 +864,56 @@ class Component extends DCLogic {
     document.addEventListener('store-deselect', this._onDeselect);
     document.addEventListener('store-locate', this._onLocate);
     document.addEventListener('store-hover', this._onMapHover);
+    this._readUrlState();
     this._resumeLocationIfGranted();
   }
+
+  /** ?near / ?type / ?radius / ?store make a result shareable, survivable
+     across a refresh, and linkable from anywhere else on the site. */
+  _readUrlState() {
+    let params;
+    try { params = new URLSearchParams(window.location.search); } catch (e) { return; }
+    const near = (params.get('near') || '').trim();
+    const type = (params.get('type') || '').trim();
+    const radius = Number(params.get('radius')) || 0;
+    const store = (params.get('store') || '').trim();
+
+    const patch = {};
+    if (near) patch.query = near;
+    if (type && STORES.some((s) => s.type === type)) patch.typeFilter = type;
+    if ([10, 25, 50, 100].includes(radius)) patch.radius = radius;
+    if (store && STORES.some((s) => s.id === store)) {
+      patch.active = store;
+      patch.sheetOpen = true;
+    }
+    if (!Object.keys(patch).length) return;
+    this.setState(patch, () => {
+      if (patch.query && !this._pool().some((s) => textMatchesQuery(s, patch.query))) {
+        this._runGeocode(patch.query);
+      }
+      if (patch.active) setTimeout(() => this.select(patch.active), 400);
+    });
+  }
+
+  _writeUrlState() {
+    if (!window.history || !window.history.replaceState) return;
+    clearTimeout(this._urlTimer);
+    this._urlTimer = setTimeout(() => {
+      const params = new URLSearchParams();
+      const q = this.state.query.trim();
+      if (q) params.set('near', q);
+      if (this.state.typeFilter) params.set('type', this.state.typeFilter);
+      if (this.state.radius) params.set('radius', String(this.state.radius));
+      if (this.state.active) params.set('store', this.state.active);
+      const qs = params.toString();
+      const next = window.location.pathname + (qs ? '?' + qs : '');
+      if (next === window.location.pathname + window.location.search) return;
+      // replaceState, not pushState: typing a query should not bury the page
+      // the visitor arrived from under a dozen history entries.
+      try { window.history.replaceState(null, '', next); } catch (e) {}
+    }, 300);
+  }
+
 
   /** Only auto-locate for people who have already granted the permission on a
      previous visit. Prompting an unknown visitor on load is the pattern people
@@ -865,6 +931,7 @@ class Component extends DCLogic {
       this._scrolledFor = this.state.active;
       this._scrollStoreIntoView(this.state.active);
     }
+    this._writeUrlState();
   }
   componentWillUnmount() {
     document.removeEventListener('store-select', this._onPick);
@@ -872,6 +939,7 @@ class Component extends DCLogic {
     document.removeEventListener('store-locate', this._onLocate);
     document.removeEventListener('store-hover', this._onMapHover);
     clearTimeout(this._geoTimer);
+    clearTimeout(this._urlTimer);
   }
 
   _map() { return document.querySelector('store-map'); }
@@ -1129,23 +1197,20 @@ class Component extends DCLogic {
     } : { eyebrow: '', name: '', line: '', onSelect: () => {}, onKey: () => {} };
 
     const dirOrigin = loc;
-    const mapStores = matches.map((s) => {
-      const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
-      const directions = dirOrigin
-        ? 'https://www.google.com/maps/dir/?api=1&origin=' + dirOrigin.lat + ',' + dirOrigin.lng + '&destination=' + dest
-        : 'https://www.google.com/maps/search/?api=1&query=' + dest;
-      return {
-        id: s.id,
-        name: s.name,
-        type: s.type,
-        address: s.address,
-        city: s.city,
-        lat: s.lat,
-        lng: s.lng,
-        distance: s.mi != null ? formatMiles(s.mi) : '',
-        directions
-      };
-    });
+    const mapStores = matches.map((s) => ({
+      id: s.id,
+      name: s.name,
+      type: s.type,
+      address: s.address,
+      city: s.city,
+      lat: s.lat,
+      lng: s.lng,
+      phone: s.phone || '',
+      tel: telHref(s.phone),
+      url: s.url || '',
+      distance: formatMiles(s.mi),
+      directions: directionsUrl(s, dirOrigin)
+    }));
 
     // When featuring the nearest store, keep it in the list too (directory feel)
     const listStores = matches;
@@ -1258,10 +1323,6 @@ class Component extends DCLogic {
       toggleSheet: () => this.setState({ sheetOpen: !this.state.sheetOpen }),
       toggleSheetKey: this._activate(() => this.setState({ sheetOpen: !this.state.sheetOpen })),
       visibleStores: listStores.map((s, i) => {
-        const dest = encodeURIComponent(s.name + ', ' + s.address + ', ' + s.city);
-        const directions = dirOrigin
-          ? 'https://www.google.com/maps/dir/?api=1&origin=' + dirOrigin.lat + ',' + dirOrigin.lng + '&destination=' + dest
-          : 'https://www.google.com/maps/search/?api=1&query=' + dest;
         return {
           ...s,
           isActive: active === s.id ? 'true' : 'false',
@@ -1269,8 +1330,13 @@ class Component extends DCLogic {
           index: String(i + 1).padStart(2, '0'),
           stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
           delay: Math.min(i, 8) * 0.04 + 's',
-          distance: s.mi != null ? formatMiles(s.mi) : '',
-          directions,
+          distance: formatMiles(s.mi),
+          directions: directionsUrl(s, dirOrigin),
+          hasPhone: !!s.phone,
+          phone: s.phone || '',
+          tel: telHref(s.phone),
+          hasUrl: !!s.url,
+          url: s.url || '',
           label: [s.name, s.type, s.address, s.city, s.mi != null ? formatMiles(s.mi) + ' away' : '']
             .filter(Boolean).join(', '),
           onSelect: () => this.select(s.id),
