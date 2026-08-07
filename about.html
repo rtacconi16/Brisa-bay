@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
+     server.py never reaches real users; this meta tag is how it gets there.
+     Keep it in sync with CSP in server.py.
+
+     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
+     clickjacking protection still needs a CDN in front of Pages. Everything else
+     — script, style, img, connect, font sources, object-src, base-uri,
+     form-action — applies here exactly as it does locally. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./age-gate.js?v=2"></script>
@@ -432,7 +441,7 @@
   <meta property="og:site_name" content="Brisa Bay">
   <meta property="og:title" content="About Brisa Bay">
   <meta property="og:description" content="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine.">
-  <meta property="og:image" content="assets/web2/bottle.png">
+  <meta property="og:image" content="assets/web2/bottle.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="About Brisa Bay">
   <meta name="twitter:description" content="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine.">
@@ -443,7 +452,7 @@
 
   <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
   <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden">
-    <img src="assets/web/way-band.png" alt="Sunlit vineyard rows leading toward rolling hills under a clear sky" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+    <img width="1024" height="572" src="assets/web/way-band.webp" alt="Sunlit vineyard rows leading toward rolling hills under a clear sky" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(60,58,52,0.28) 0%, rgba(60,58,52,0) 55%)"></div>
     <div style="position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(24px, 3vw, 50px); box-sizing: border-box">
       <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
@@ -472,12 +481,12 @@
   <div data-bb-way-scroll="" data-screen-label="The Brisa Way">
     <div data-bb-way-pin="">
 
-      <img data-bb-deco="" src="assets/brush/wave-cream.png" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
+      <img loading="lazy" width="1200" height="452" data-bb-deco="" src="assets/brush/wave-cream.webp" alt="" style="position: absolute; left: -14%; top: clamp(-108px, -9vw, -40px); width: 128%; height: clamp(120px, 13vw, 250px); pointer-events: none; z-index: 2">
 
       <!-- rotating stamp -->
       <div data-bb-stamp="" style="position: absolute; right: clamp(-14px, 1.5vw, 46px); top: clamp(8px, 2vh, 28px); width: clamp(170px, 22vw, 400px); aspect-ratio: 1; z-index: 50">
         <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
-          <img src="assets/brush/asterisk-sage-centered.png" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
+          <img loading="lazy" width="461" height="461" src="assets/brush/asterisk-sage-centered.webp" alt="" style="width: 100%; height: 100%; transform: rotate({{ asteriskAngle }}deg)">
         </div>
         <!-- Concentric with the asterisk and the ring. Sizing this box by `top` +
              auto height made the wordmark's centre depend on font-size, which
@@ -497,7 +506,7 @@
 
         <div data-bb-way-panel="" data-label="The Un-Occasion">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/freshness-first.jpg" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky"></div></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img loading="lazy" width="600" height="900" src="assets/web2/freshness-first.webp" alt="Hands holding up chilled bottles of Brisa Bay Sauvignon Blanc and Chardonnay against a blue sky"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">The Un-Occasion</h3>
               <p data-bb-way-body="">Forget the calendar milestones. Great wine is for the spontaneous moments, Opened just because the sun is out, the music is good, or simply because you're together.</p>
@@ -507,7 +516,7 @@
 
         <div data-bb-way-panel="" data-label="Freshness First">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/every-occasion.jpg" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice"></div></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img loading="lazy" width="950" height="1427" src="assets/web2/every-occasion.webp" alt="Bottles of Brisa Bay Sauvignon Blanc and Chardonnay lying chilled in a bed of crushed ice"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">Freshness First</h3>
               <p data-bb-way-body="">Shaped by the cool winds of San Pablo Bay, we show a brighter side of Napa Valley. No heavy flavors here; just crisp, light, and refreshing wine full of life.</p>
@@ -517,7 +526,7 @@
 
         <div data-bb-way-panel="" data-label="Better Together">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/better-together.jpg" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water"></div></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img loading="lazy" width="467" height="700" src="assets/web2/better-together.webp" alt="Friends toasting glasses of Brisa Bay over a table of charcuterie and bruschetta by the water"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">Better Together</h3>
               <p data-bb-way-body="">This wine isn't meant for a dark cellar or silent analysis. It's a bridge between people: the perfect excuse for a long lunch that rolls right into dinner with friends.</p>
@@ -527,7 +536,7 @@
 
         <div data-bb-way-panel="" data-label="Keeping it Simple">
           <div data-bb-way-row="">
-            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img src="assets/web2/keeping-simple.jpg" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines"></div></div>
+            <div data-bb-way-photo=""><div data-bb-way-photo-frame=""><img loading="lazy" width="467" height="700" src="assets/web2/keeping-simple.webp" alt="Bottles of Brisa Bay Chardonnay and Sauvignon Blanc on a shop shelf among other wines"></div></div>
             <div data-bb-way-copy="">
               <h3 data-bb-way-title="">Keeping it Simple</h3>
               <p data-bb-way-body="">We've stripped away the complex terminology and unwritten rules. No pretense, no pressure, just great Napa wine made to let you focus entirely on the moment.</p>
@@ -550,7 +559,7 @@
   <div data-curtain="" data-bb-hello="" style="position: sticky; top: 0; z-index: 5; height: 100svh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
 
   <div data-screen-label="Say Hello" style="position: relative; flex: 1; min-height: 0; display: flex; align-items: center">
-    <img src="assets/web/hello-band.jpg" alt="Oak barrels stacked along a Napa wine cave" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+    <img loading="lazy" width="1400" height="1050" src="assets/web/hello-band.webp" alt="Oak barrels stacked along a Napa wine cave" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     
     <div style="position: relative; z-index: 3; width: 100%; padding: clamp(24px, 3vw, 56px) clamp(20px, 5vw, 190px)">
       <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">

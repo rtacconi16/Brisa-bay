@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
+     server.py never reaches real users; this meta tag is how it gets there.
+     Keep it in sync with CSP in server.py.
+
+     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
+     clickjacking protection still needs a CDN in front of Pages. Everything else
+     — script, style, img, connect, font sources, object-src, base-uri,
+     form-action — applies here exactly as it does locally. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 </head>
