@@ -68,7 +68,7 @@
       text-align: justify;
       text-justify: inter-word;
       text-wrap: pretty;
-      color: #606060;
+      color: var(--bb-grey);
     }
     [data-screen-label="The Brisa Way"] {
       position: relative;
@@ -80,7 +80,7 @@
       position: relative;
       z-index: 4;
       height: 560vh;
-      background: #eeeee4;
+      background: var(--bb-cream);
       box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55);
     }
     [data-bb-way-pin] {
@@ -88,7 +88,7 @@
       top: 0;
       height: 100svh;
       overflow: hidden;
-      background: #eeeee4;
+      background: var(--bb-cream);
       box-sizing: border-box;
     }
     [data-bb-way-pin] > [data-bb-stamp] {
@@ -153,7 +153,7 @@
       line-height: 0;
       overflow: hidden;
       border-radius: 48px;
-      background: #eeeee4;
+      background: var(--bb-cream);
       box-shadow: 0 22px 40px rgba(60, 58, 52, 0.2);
       /* Force a clipped compositing layer so radius is present on first paint */
       -webkit-mask-image: -webkit-radial-gradient(white, black);
@@ -191,7 +191,7 @@
       font-weight: 400;
       font-style: normal;
       letter-spacing: 0.05em;
-      color: #57544a;
+      color: var(--bb-ink);
       opacity: 0;
       transform: translate3d(0, 26px, 0);
       will-change: opacity, transform;
@@ -203,7 +203,7 @@
       font-size: clamp(16px, 1.7vw, 30px);
       line-height: 1.45;
       font-weight: 400;
-      color: #606060;
+      color: var(--bb-grey);
       text-align: justify;
       text-justify: inter-word;
       text-wrap: pretty;
@@ -224,13 +224,13 @@
       display: flex;
       align-items: baseline;
       gap: clamp(10px, 1.2vw, 18px);
-      color: #57544a;
+      color: var(--bb-ink);
       font-family: 'Old Newspaper', serif;
       letter-spacing: 0.05em;
     }
     [data-bb-way-progress-num] {
       font-size: clamp(15px, 1.35vw, 22px);
-      color: #e6393a;
+      color: var(--bb-red);
       min-width: 1.6em;
     }
     [data-bb-way-progress-rule] {
@@ -245,7 +245,7 @@
       font-family: 'Old Newspaper', serif;
       font-size: clamp(14px, 1.25vw, 20px);
       letter-spacing: 0.04em;
-      color: #57544a;
+      color: var(--bb-ink);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -257,7 +257,7 @@
       [data-bb-hello] { height: auto !important; overflow: visible !important; }
       [data-bb-hello] [data-screen-label="Say Hello"] { flex: none !important; min-height: 52svh !important; }
       [data-bb-way-scroll] { height: auto !important; }
-      [data-bb-way-pin] { position: relative !important; height: auto !important; overflow: visible !important; background: #eeeee4 !important; }
+      [data-bb-way-pin] { position: relative !important; height: auto !important; overflow: visible !important; background: var(--bb-cream) !important; }
       [data-bb-way-track] {
         display: grid !important;
         position: relative !important;
@@ -405,7 +405,7 @@
   <meta name="twitter:description" content="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine.">
 </helmet>
 
-<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: clip; font-family: 'Garamond Pro', serif; color: #606060">
+<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: var(--bb-cream); position: relative; overflow: clip; font-family: 'Garamond Pro', serif; color: var(--bb-grey)">
   <main id="bb-content" tabindex="-1">
 
   <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
@@ -417,12 +417,12 @@
         <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
         <div role="navigation" aria-label="Main">
           <span data-bb-nav-active="">About us</span>
-          <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
-          <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
+          <a href="blends.html" style-hover="color: var(--bb-yellow)">Our Wines</a>
+          <a href="where-to-buy.html" style-hover="color: var(--bb-yellow)">Where to buy</a>
         </div>
       </div>
       <div style="flex: 1; display: flex; align-items: center; justify-content: center">
-        <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 6vw, 120px); line-height: 1.05; font-weight: 400; letter-spacing: 0.05em; color: #eeeee4; text-align: center; text-shadow: 0 2px 18px rgba(60,58,52,0.35)">The Brisa Way</h1>
+        <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 6vw, 120px); line-height: 1.05; font-weight: 400; letter-spacing: 0.05em; color: var(--bb-cream); text-align: center; text-shadow: 0 2px 18px rgba(60,58,52,0.35)">The Brisa Way</h1>
       </div>
     </div>
   </div>
@@ -430,8 +430,8 @@
   <!-- ================= OUR ROOTS (slides over The Brisa Way band) ================= -->
   <div data-bb-roots="" style="display: flex; position: sticky; top: 0; z-index: 4; height: 100svh; align-items: center; justify-content: center; padding: clamp(64px, 8vh, 150px) clamp(16px, 4.7vw, 90px) clamp(24px, 3vw, 60px); box-sizing: border-box; pointer-events: none">
     <div data-bb-roots-card="" data-screen-label="Our Roots" style="pointer-events: auto; width: 100%; max-width: 1240px; max-height: calc(100svh - 96px); background: rgba(247, 247, 242, 0.94); border-radius: clamp(22px, 2.8vw, 40px); border: 1px solid rgba(255, 255, 255, 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75) inset, 0 4px 18px rgba(60, 58, 52, 0.08), 0 28px 70px rgba(60, 58, 52, 0.2); padding: clamp(28px, 3.2vw, 64px) clamp(20px, 3vw, 56px); box-sizing: border-box; display: grid; gap: clamp(14px, 1.7vw, 30px); overflow: auto">
-      <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">We've always believed that certain places have a soul of their own: the power to bring back a memory, shift your mood, or simply ground you in the present. For us, that place is right at the edge of the San Pablo Bay.</p>
-      <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: #606060">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive,&nbsp;and&nbsp;moving.</p>
+      <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: var(--bb-grey)">We've always believed that certain places have a soul of their own: the power to bring back a memory, shift your mood, or simply ground you in the present. For us, that place is right at the edge of the San Pablo Bay.</p>
+      <p style="margin: 0; font-size: clamp(16px, 2.05vw, 40px); line-height: 1.4; letter-spacing: -0.012em; text-align: justify; text-justify: inter-word; text-wrap: pretty; color: var(--bb-grey)">This is where our family spent years learning the craft, living among the vineyards in the heart of Napa Valley. Watching the morning mist lift and feeling that cool wind sweep through the valley wasn't just a weather pattern; it was a revelation. We called it <em style="font-style: italic">brisa</em> (the word for breeze in Spanish) because that wind became our blueprint: a quiet reminder that wine doesn't need to be complicated. Just fresh, alive,&nbsp;and&nbsp;moving.</p>
     </div>
   </div>
 
@@ -450,7 +450,7 @@
              auto height made the wordmark's centre depend on font-size, which
              scales on its own clamp — so it drifted upward as the stamp shrank. -->
         <div style="position: absolute; inset: 0; transform: rotate(7deg); display: flex; align-items: center; justify-content: center">
-          <span style="font-size: clamp(26px, 3.3vw, 60px); color: #eeeee4; white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
+          <span style="font-size: clamp(26px, 3.3vw, 60px); color: var(--bb-cream); white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
         </div>
         <div style="position: absolute; inset: 7%; transform: rotate(-50deg)">
           <svg aria-hidden="true" focusable="false" viewBox="0 0 440 440" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
@@ -520,9 +520,9 @@
     <img loading="lazy" width="1400" height="1050" src="assets/web/hello-band.webp" alt="Oak barrels stacked along a Napa wine cave" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     
     <div style="position: relative; z-index: 3; width: 100%; padding: clamp(24px, 3vw, 56px) clamp(20px, 5vw, 190px)">
-      <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
-        <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; color: #606060">Say hello.</h2>
-        <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: #606060">
+      <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: var(--bb-cream); padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
+        <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; color: var(--bb-grey)">Say hello.</h2>
+        <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: var(--bb-grey)">
           <span>{{ contactEmail }}</span>
           <span>Let's Work Together: {{ contactEmail }}</span>
           <span>Follow the Vibe: @brisabaywines</span>
@@ -534,30 +534,30 @@
   <!-- ================= FOOTER (bottom of the same viewport) ================= -->
   </main>
 
-  <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 6; flex: none; background: #60b98f; padding: clamp(24px, 3vw, 54px) clamp(20px, 5vw, 190px) clamp(18px, 2vw, 36px); box-sizing: border-box">
+  <div data-screen-label="Footer" role="contentinfo" style="position: relative; z-index: 6; flex: none; background: var(--bb-sage); padding: clamp(24px, 3vw, 54px) clamp(20px, 5vw, 190px) clamp(18px, 2vw, 36px); box-sizing: border-box">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(20px, 3vw, 50px)">
-      <div style="font-size: clamp(40px, 5.4vw, 100px); line-height: 1; color: #eeeee4">Brisa Bay</div>
+      <div style="font-size: clamp(40px, 5.4vw, 100px); line-height: 1; color: var(--bb-cream)">Brisa Bay</div>
       <div style="display: flex; flex-wrap: wrap; gap: clamp(28px, 4.6vw, 90px)">
-        <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: #eeeee4">
-          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Store Locator</a>
+        <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: var(--bb-cream)">
+          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Our Wines</a>
+          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Store Locator</a>
         </div>
-        <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: #eeeee4">
-          <span style="cursor: pointer" style-hover="color: #f5d732">About Us</span>
-          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
-          <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
+        <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: var(--bb-cream)">
+          <span style="cursor: pointer" style-hover="color: var(--bb-yellow)">About Us</span>
+          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Contact</a>
+          <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: var(--bb-yellow)">FAQs</a>
         </div>
       </div>
     </div>
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: clamp(16px, 2vw, 30px); margin-top: clamp(20px, 2.4vw, 40px)">
-      <div style="display: flex; flex-wrap: wrap; gap: clamp(16px, 3.2vw, 60px); font-size: clamp(14px, 1.4vw, 26px); color: #eeeee4">
-        <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Privacy Policy</a>
-        <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Terms of Service</a>
-        <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">Accessibility</a>
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(16px, 3.2vw, 60px); font-size: clamp(14px, 1.4vw, 26px); color: var(--bb-cream)">
+        <a href="privacy.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: var(--bb-yellow)">Privacy Policy</a>
+        <a href="terms.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: var(--bb-yellow)">Terms of Service</a>
+        <a href="accessibility.html" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: var(--bb-yellow)">Accessibility</a>
         <span>© Brisa Bay 2026</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.3vw, 24px)">
-        <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(34px, 2.2vw, 44px); height: clamp(34px, 2.2vw, 44px); border-radius: 50%; background: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
+        <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(34px, 2.2vw, 44px); height: clamp(34px, 2.2vw, 44px); border-radius: 50%; background: var(--bb-cream); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
       </div>
     </div>
   </div>
@@ -569,17 +569,17 @@
   <!-- ================= FAQ MODAL ================= -->
   <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
     <div data-bb-faq="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', serif">
-      <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
-        <div onClick="{{ closeFaq }}" role="button" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">×</div>
-        <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
+      <div style="background: var(--bb-cream); width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
+        <div onClick="{{ closeFaq }}" role="button" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: var(--bb-red); color: var(--bb-cream); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">×</div>
+        <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: var(--bb-ink-muted); letter-spacing: 0.03em">FAQs</h2>
         <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
         <sc-for list="{{ faqItems }}" as="item" hint-placeholder-count="5">
           <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
-            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: #57544a">{{ item.q }}</h3>
-            <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
+            <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: var(--bb-ink)">{{ item.q }}</h3>
+            <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: var(--bb-ink); text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>
-        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a>.</p>
+        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: var(--bb-ink)">Still curious? Email <a href="mailto:{{ contactEmail }}" style="color: var(--bb-red)">{{ contactEmail }}</a>.</p>
       </div>
     </div>
   </sc-if>
@@ -587,24 +587,24 @@
   <!-- ================= AGE GATE ================= -->
   <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
     <div data-bb-age-gate="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', serif">
-      <div style="background: #eeeee4; width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
-        <div style="font-size: clamp(24px, 2.3vw, 44px); color: #57544a; margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
+      <div style="background: var(--bb-cream); width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
+        <div style="font-size: clamp(24px, 2.3vw, 44px); color: var(--bb-ink); margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
         <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">
           <div>
-            <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Welcome to the brighter side of Napa.</h2>
-            <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Before you come in, please confirm you are of legal drinking age — 21 or older in the United States.</p>
+            <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: var(--bb-ink); text-wrap: balance">Welcome to the brighter side of Napa.</h2>
+            <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: var(--bb-ink); text-wrap: pretty">Before you come in, please confirm you are of legal drinking age — 21 or older in the United States.</p>
             <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 1.2vw, 22px); justify-content: center">
-              <div onClick="{{ acceptAge }}" onKeyDown="{{ acceptAgeKey }}" role="button" tabindex="0" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
-              <div onClick="{{ denyAge }}" onKeyDown="{{ denyAgeKey }}" role="button" tabindex="0" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
+              <div onClick="{{ acceptAge }}" onKeyDown="{{ acceptAgeKey }}" role="button" tabindex="0" style="background: var(--bb-lime); color: var(--bb-cream); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
+              <div onClick="{{ denyAge }}" onKeyDown="{{ denyAgeKey }}" role="button" tabindex="0" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: var(--bb-ink); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: var(--bb-red); color: var(--bb-red)">I'm under 21</div>
             </div>
             <p style="margin: clamp(26px, 2.5vw, 48px) 0 0; font-size: clamp(14px, 1.2vw, 22px); line-height: 1.5; color: rgba(87,84,74,0.7); text-wrap: pretty">We never sell or market alcohol to anyone under the legal drinking age. Please enjoy Brisa Bay responsibly.</p>
           </div>
         </sc-if>
         <sc-if value="{{ gateDenied }}" hint-placeholder-val="{{ false }}">
           <div>
-            <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Come back and see us at 21.</h2>
-            <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
-            <div onClick="{{ retryAge }}" onKeyDown="{{ retryAgeKey }}" role="button" tabindex="0" style="display: inline-flex; background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #9ac21e; color: #9ac21e">I made a mistake</div>
+            <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: var(--bb-ink); text-wrap: balance">Come back and see us at 21.</h2>
+            <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: var(--bb-ink); text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
+            <div onClick="{{ retryAge }}" onKeyDown="{{ retryAgeKey }}" role="button" tabindex="0" style="display: inline-flex; background: transparent; border: 2px solid rgba(87,84,74,0.4); color: var(--bb-ink); font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: var(--bb-lime); color: var(--bb-lime)">I made a mistake</div>
           </div>
         </sc-if>
       </div>

@@ -15,10 +15,52 @@
  * Bump the ?v= on the <link> in all seven pages when this file changes.
  */
 
+/* ---- Palette ----------------------------------------------------------
+ *
+ * These eight colours accounted for ~580 raw hex literals across the pages.
+ * Changing one meant a find-and-replace over seven files with no way to check
+ * you had got them all. Change it here instead.
+ *
+ * Named by hue rather than by role, because a single colour does several jobs:
+ * cream is the page background, the header text and the footer text, so calling
+ * it --bb-bg would be wrong two times in three.
+ *
+ * THREE PLACES DO NOT USE THESE, because var() is not available there:
+ *   1. SVG presentation attributes (fill="…", stroke="…") — 25 occurrences,
+ *      all in inline icon markup.
+ *   2. <meta name="theme-color"> — one per page; the attribute takes a literal.
+ *   3. Leaflet path options in store-map.js (color/fillColor on the radius
+ *      circle) — Leaflet writes them straight onto SVG attributes.
+ * Grep for '#' in those spots if the palette ever changes for real.
+ *
+ * support.js has its own unrelated colours (an error banner, a canvas
+ * background). Those are framework internals, not brand, and are left alone.
+ */
+:root {
+  --bb-yellow: #f5d732;     /* hover/active accent, "last updated" text */
+  --bb-cream: #eeeee4;      /* page background, and text on dark panels */
+  --bb-red: #e6393a;        /* links, primary accent, map pins */
+  --bb-ink: #57544a;        /* body copy */
+  --bb-dark: #3c3a34;       /* dark panels, header background */
+  --bb-lime: #9ac21e;       /* secondary accent */
+  --bb-sage: #60b98f;       /* footer background, brand green */
+  --bb-ink-muted: #5b584e;  /* section headings */
+
+  /* Secondary — fewer than ten uses each, kept here so the palette is complete. */
+  --bb-grey: #606060;
+  --bb-near-black: #2d2d2a;
+  --bb-cream-dim: #dfdfd6;
+  --bb-cream-dim-2: #e4e4da;
+  --bb-ink-faint: #7a766a;
+  --bb-ink-faint-2: #8a8578;
+  --bb-map-tone: #e9d9a8;
+  --bb-map-bg: #cfcfc7;
+}
+
 @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
 @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
 
-body { margin: 0; background: #eeeee4; }
+body { margin: 0; background: var(--bb-cream); }
 
 /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
    The UA stylesheet bolds headings and strong/b by default — neutralise it and let
@@ -29,7 +71,7 @@ h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
 [data-bb-wordmark] {
   font-size: clamp(26px, 2.8vw, 52px);
   letter-spacing: 0.01em;
-  color: #eeeee4;
+  color: var(--bb-cream);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -39,14 +81,14 @@ h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
   align-items: center;
   gap: clamp(16px, 2.7vw, 52px);
   font-size: clamp(15px, 1.6vw, 30px);
-  color: #eeeee4;
+  color: var(--bb-cream);
 }
 [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
-[data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
-[data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
+[data-bb-nav] [role="navigation"] a:hover { color: var(--bb-yellow); }
+[data-bb-nav] [data-bb-nav-active] { color: var(--bb-yellow); cursor: default; }
 
-a { color: #e6393a; }
-a:hover { color: #f5d732; }
+a { color: var(--bb-red); }
+a:hover { color: var(--bb-yellow); }
 
 /* Keyboard users land here first; visible only when focused. */
 [data-bb-skiplink] {
@@ -54,8 +96,8 @@ a:hover { color: #f5d732; }
   left: 8px;
   top: -60px;
   z-index: 2000;
-  background: #3c3a34;
-  color: #eeeee4;
+  background: var(--bb-dark);
+  color: var(--bb-cream);
   font-family: 'Garamond Pro', Garamond, serif;
   font-size: 16px;
   padding: 10px 16px;
