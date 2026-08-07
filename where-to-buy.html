@@ -12,8 +12,10 @@
      — script, style, img, connect, font sources, object-src, base-uri,
      form-action — applies here exactly as it does locally. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<link rel="stylesheet" href="./site.css?v=1">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
+<script src="./site-data.js?v=1"></script>
 <script src="./age-gate.js?v=2"></script>
 <script src="./locator-config.js?v=2"></script>
 <script src="./locator-util.js?v=1"></script>
@@ -25,34 +27,6 @@
 <a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
-    @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
-    @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
-    body { margin: 0; background: #eeeee4; }
-    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
-       The UA stylesheet bolds headings and strong/b by default — neutralise it and let
-       size, italic and colour carry the hierarchy instead. */
-    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
-    /* ---- Site header: one definition, used on every page ---- */
-    [data-bb-wordmark] {
-      font-size: clamp(26px, 2.8vw, 52px);
-      letter-spacing: 0.01em;
-      color: #eeeee4;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    [data-bb-nav] [role="navigation"] {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: clamp(16px, 2.7vw, 52px);
-      font-size: clamp(15px, 1.6vw, 30px);
-      color: #eeeee4;
-    }
-    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
-    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
-    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
-    a { color: #e6393a; }
-    a:hover { color: #f5d732; }
     /* Every control in the locator is a div[role=button]; without this there is
        no visible focus at all against the cream palette. */
     [data-bb-locator] :focus-visible,
@@ -501,22 +475,6 @@
         right: 12px !important;
       }
     }
-      /* Keyboard users land here first; visible only when focused. */
-    [data-bb-skiplink] {
-      position: absolute;
-      left: 8px;
-      top: -60px;
-      z-index: 2000;
-      background: #3c3a34;
-      color: #eeeee4;
-      font-family: 'Garamond Pro', Garamond, serif;
-      font-size: 16px;
-      padding: 10px 16px;
-      border-radius: 3px;
-      text-decoration: none;
-      transition: top 0.15s;
-    }
-    [data-bb-skiplink]:focus { top: 8px; }
 </style>
   <title>Store Locator | Brisa Bay</title>
   <meta name="description" content="A map of every shop, bar and restaurant pouring Brisa Bay Napa Valley wine.">
@@ -619,11 +577,11 @@
               </div>
             </sc-for>
             <sc-if value="{{ storesFailed }}" hint-placeholder-val="{{ false }}">
-              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">The stockist list could not be loaded. Please refresh, or email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a> and we will point you to a shop.</div>
+              <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">The stockist list could not be loaded. Please refresh, or email <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a> and we will point you to a shop.</div>
             </sc-if>
             <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
               <div style="padding: clamp(20px, 1.9vw, 38px); font-size: clamp(15px, 1.05vw, 21px); color: rgba(87,84,74,0.75); text-wrap: pretty">
-                <div>Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</div>
+                <div>Nothing nearby just yet. Ask your local shop to order Brisa Bay, or write <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a>.</div>
                 <sc-if value="{{ showClearFilters }}" hint-placeholder-val="{{ false }}">
                   <div data-bb-empty-action="" role="button" tabindex="0" onClick="{{ clearFilters }}" onKeyDown="{{ clearFiltersKey }}">Clear filters</div>
                 </sc-if>
@@ -671,7 +629,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(16px, 2vw, 38px); color: #eeeee4">
           <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
-          <a href="mailto:info@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
           <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
         </div>
       </div>
@@ -704,7 +662,7 @@
           <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
         </div>
       </sc-for>
-      <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</p>
+      <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a>.</p>
     </div>
   </div>
 </sc-if>
@@ -1472,6 +1430,8 @@ class Component extends DCLogic {
     const radiusHint = loc ? '' : 'Set your location to filter by distance';
 
     return {
+
+      contactEmail: BBSite.contactEmail,
       showList: this.props.storeList ?? true,
       showSearch: this.props.search ?? true,
       query: this.state.query,
@@ -1571,7 +1531,7 @@ class Component extends DCLogic {
         place: searchPlace,
         nearest_mi: nearest && nearest.mi != null ? Math.round(nearest.mi) : null
       }),
-      askMailto: 'mailto:info@brisabay.com'
+      askMailto: 'mailto:' + BBSite.contactEmail
         + '?subject=' + encodeURIComponent('Stockist request: ' + searchPlace)
         + '&body=' + encodeURIComponent(
             'I\'d like to buy Brisa Bay near ' + searchPlace + '.\n\n'
@@ -1635,13 +1595,9 @@ class Component extends DCLogic {
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
       closeFaq: doCloseFaq,
       closeFaqKey: this._activate(doCloseFaq),
-      faqItems: [
-        { q: 'Where can I buy Brisa Bay?', a: 'Search a store, city, ZIP or address, or tap the crosshair to use your location. You can also filter by type and by distance. If your favourite spot does not carry us yet, ask them to order it.' },
-        { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
-        { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
-        { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
-        { q: 'How do I get in touch?', a: 'Email info@brisabay.com for trade, press or anything else. We read everything.' }
-      ]
+      // The locator is on screen here, so this answer describes the controls in
+      // front of the reader instead of pointing at the page they are already on.
+      faqItems: BBSite.faq({ 'where-to-buy': 'Search a store, city, ZIP or address, or tap the crosshair to use your location. You can also filter by type and by distance. If your favourite spot does not carry us yet, ask them to order it.' })
     };
   }
 }

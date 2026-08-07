@@ -12,8 +12,10 @@
      — script, style, img, connect, font sources, object-src, base-uri,
      form-action — applies here exactly as it does locally. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<link rel="stylesheet" href="./site.css?v=1">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
+<script src="./site-data.js?v=1"></script>
 <script src="./age-gate.js?v=2"></script>
 </head>
 <body>
@@ -21,34 +23,6 @@
 <a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
 <helmet>
   <style>
-    @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
-    @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
-    body { margin: 0; background: #eeeee4; }
-    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
-       The UA stylesheet bolds headings and strong/b by default — neutralise it and let
-       size, italic and colour carry the hierarchy instead. */
-    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
-    /* ---- Site header: one definition, used on every page ---- */
-    [data-bb-wordmark] {
-      font-size: clamp(26px, 2.8vw, 52px);
-      letter-spacing: 0.01em;
-      color: #eeeee4;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    [data-bb-nav] [role="navigation"] {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: clamp(16px, 2.7vw, 52px);
-      font-size: clamp(15px, 1.6vw, 30px);
-      color: #eeeee4;
-    }
-    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
-    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
-    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
-    a { color: #e6393a; }
-    a:hover { color: #f5d732; }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
     @keyframes bb-rise { from { opacity: 0; transform: translateY(70px) scale(0.975) } to { opacity: 1; transform: none } }
 
@@ -417,22 +391,6 @@
       [data-bb-way-panel] { padding: 0 !important; }
       [data-bb-way-photo], [data-bb-way-photo-frame] { max-height: none !important; }
     }
-      /* Keyboard users land here first; visible only when focused. */
-    [data-bb-skiplink] {
-      position: absolute;
-      left: 8px;
-      top: -60px;
-      z-index: 2000;
-      background: #3c3a34;
-      color: #eeeee4;
-      font-family: 'Garamond Pro', Garamond, serif;
-      font-size: 16px;
-      padding: 10px 16px;
-      border-radius: 3px;
-      text-decoration: none;
-      transition: top 0.15s;
-    }
-    [data-bb-skiplink]:focus { top: 8px; }
 </style>
   <title>About Brisa Bay</title>
   <meta name="description" content="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine.">
@@ -565,8 +523,8 @@
       <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: #eeeee4; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
         <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; color: #606060">Say hello.</h2>
         <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: #606060">
-          <span>info@brisabay.com</span>
-          <span>Let's Work Together: info@brisabay.com</span>
+          <span>{{ contactEmail }}</span>
+          <span>Let's Work Together: {{ contactEmail }}</span>
           <span>Follow the Vibe: @brisabaywines</span>
         </div>
       </div>
@@ -586,7 +544,7 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: #eeeee4">
           <span style="cursor: pointer" style-hover="color: #f5d732">About Us</span>
-          <a href="mailto:info@brisabay.com" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
           <a href="#faqs" onClick="{{ openFaq }}" style="color: inherit; text-decoration: none; cursor: pointer" style-hover="color: #f5d732">FAQs</a>
         </div>
       </div>
@@ -621,7 +579,7 @@
             <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: #57544a; text-wrap: pretty">{{ item.a }}</p>
           </div>
         </sc-for>
-        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:info@brisabay.com" style="color: #e6393a">info@brisabay.com</a>.</p>
+        <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: #57544a">Still curious? Email <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a>.</p>
       </div>
     </div>
   </sc-if>
@@ -955,6 +913,7 @@ class Component extends DCLogic {
     const doDenyAge = () => this.setState({ gateDenied: true });
     const doRetryAge = () => this.setState({ gateDenied: false });
     return {
+      contactEmail: BBSite.contactEmail,
       play: (this.props.motion ?? true) ? 'running' : 'paused',
       asteriskAngle: this.props.asteriskAngle ?? 8,
       slotStyle: { style: { width: '100%', height: '100%', display: 'block' } },
@@ -970,13 +929,7 @@ class Component extends DCLogic {
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
       closeFaq: () => this.setState({ faqOpen: false }),
-      faqItems: [
-        { q: 'Where can I buy Brisa Bay?', a: 'Use the store locator on our Where to Buy page to find the shops, bars and restaurants closest to you. If your favourite spot does not carry us yet, ask them to order it.' },
-        { q: 'What do you make?', a: 'Two Napa Valley whites: a Chardonnay and a Sauvignon Blanc. Both are bright, low-oak and built for warm afternoons rather than the cellar.' },
-                { q: 'Do you ship directly?', a: 'Not yet. We are focused on getting bottles onto local shelves first, so the fastest way to a glass is your nearest stockist.' },
-        { q: 'Can I visit the winery?', a: 'We do not have a tasting room open to the public yet. Follow along on Instagram for pop-ups, tastings and events where you can meet us.' },
-        { q: 'How do I get in touch?', a: 'Email info@brisabay.com for trade, press or anything else. We read everything.' }
-      ]
+      faqItems: BBSite.faq()
     };
   }
 }

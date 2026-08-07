@@ -1,0 +1,66 @@
+/* Styles shared by all seven pages.
+ *
+ * Until now this block was copy-pasted into every page's <style> and kept in
+ * sync by hand — commits touching six or seven HTML files at once are all over
+ * this repo's history, and each one was a chance to miss a file.
+ *
+ * Loaded from each page's static <head>, before support.js, so it blocks render
+ * the way a stylesheet normally does. The per-page <style> inside <helmet> is
+ * appended to <head> later by the runtime, so page rules still win the cascade
+ * and can override anything here.
+ *
+ * Paths are relative to this file, which sits at the repo root alongside the
+ * pages — so assets/… resolves the same way it did inline.
+ *
+ * Bump the ?v= on the <link> in all seven pages when this file changes.
+ */
+
+@font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
+@font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
+
+body { margin: 0; background: #eeeee4; }
+
+/* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
+   The UA stylesheet bolds headings and strong/b by default — neutralise it and let
+   size, italic and colour carry the hierarchy instead. */
+h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
+
+/* ---- Site header: one definition, used on every page ---- */
+[data-bb-wordmark] {
+  font-size: clamp(26px, 2.8vw, 52px);
+  letter-spacing: 0.01em;
+  color: #eeeee4;
+  text-decoration: none;
+  white-space: nowrap;
+}
+[data-bb-nav] [role="navigation"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(16px, 2.7vw, 52px);
+  font-size: clamp(15px, 1.6vw, 30px);
+  color: #eeeee4;
+}
+[data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
+[data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
+[data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
+
+a { color: #e6393a; }
+a:hover { color: #f5d732; }
+
+/* Keyboard users land here first; visible only when focused. */
+[data-bb-skiplink] {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 2000;
+  background: #3c3a34;
+  color: #eeeee4;
+  font-family: 'Garamond Pro', Garamond, serif;
+  font-size: 16px;
+  padding: 10px 16px;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: top 0.15s;
+}
+[data-bb-skiplink]:focus { top: 8px; }
