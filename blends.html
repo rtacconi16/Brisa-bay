@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
+     server.py never reaches real users; this meta tag is how it gets there.
+     Keep it in sync with CSP in server.py.
+
+     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
+     clickjacking protection still needs a CDN in front of Pages. Everything else
+     — script, style, img, connect, font sources, object-src, base-uri,
+     form-action — applies here exactly as it does locally. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./age-gate.js?v=2"></script>
@@ -721,7 +730,7 @@
   <meta property="og:site_name" content="Brisa Bay">
   <meta property="og:title" content="Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc">
   <meta property="og:description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
-  <meta property="og:image" content="assets/web2/bottle.png">
+  <meta property="og:image" content="assets/web2/bottle.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc">
   <meta name="twitter:description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
@@ -733,7 +742,7 @@
   <!-- ================= HERO → BOTTLE STAGE (pinned scrub) ================= -->
   <div data-bb-blend-scroll="" data-screen-label="Hero to Wines">
     <div data-bb-blend-pin="" data-blend="{{ blendAttr }}">
-      <img data-bb-blend-photo="" src="assets/web/blends-hero.jpg" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit">
+      <img width="1400" height="935" data-bb-blend-photo="" src="assets/web/blends-hero.webp" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit">
       <div style="position: absolute; left: 0; right: 0; top: 0; height: 42%; background: linear-gradient(to bottom, rgba(45,45,42,0.62), rgba(45,45,42,0)); pointer-events: none; z-index: 3"></div>
       <div data-bb-blend-bottom-veil="" style="position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: linear-gradient(to top, rgba(45,45,42,0.58), rgba(45,45,42,0)); pointer-events: none; z-index: 3; will-change: opacity"></div>
 
@@ -782,12 +791,12 @@
           <div data-bb-bottle-slot="">
             <div data-bottle="" style="position: absolute; inset: 0; pointer-events: none; opacity: {{ fade0 }}; transform: {{ bottleShift0 }}; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
               <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
-                <img src="assets/web2/bottle.png" alt="Brisa Bay Chardonnay bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
+                <img loading="lazy" width="182" height="700" src="assets/web2/bottle.webp" alt="Brisa Bay Chardonnay bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
               </div>
             </div>
             <div data-bottle="" style="position: absolute; inset: 0; pointer-events: none; opacity: {{ fade1 }}; transform: {{ bottleShift1 }}; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
               <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
-                <img src="assets/web2/bottle-sauvblanc-trim.png" alt="Brisa Bay Sauvignon Blanc bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
+                <img loading="lazy" width="152" height="599" src="assets/web2/bottle-sauvblanc-trim.webp" alt="Brisa Bay Sauvignon Blanc bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
               </div>
             </div>
           </div>
@@ -938,22 +947,22 @@ class Component extends DCLogic {
     const ig = 'https://www.instagram.com/brisabaywines';
     // Order: lifestyle → breather → graphic, alternating cool/warm so the loop never clumps.
     return [
-      { src: 'assets/web2/pour/15-posts-july-artboard-3.png', alt: 'Friends toasting with Brisa Bay at a picnic', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/01-3cd17d63-fdfd-431d-9ae8-edb566f92859.jpg', alt: 'Bird over a Brisa Bay vineyard', href: ig, size: 'wide', w: 2304, h: 1536 },
-      { src: 'assets/web2/pour/06-julio-artboard-4.png', alt: 'Pouring Brisa Bay by the pool', href: ig, size: 'md', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/08-julio-artboard-8.png', alt: 'Brisa Bay week of bottles graphic', href: ig, size: 'sm', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/12-post-10.png', alt: 'Brisa Bay bottle balanced on a cap', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/02-7e7103b6-0a1e-4d89-b2e9-365755455338.jpg', alt: 'Sunset over the vineyard', href: ig, size: 'wide', w: 2306, h: 1536 },
-      { src: 'assets/web2/pour/04-julio-artboard-12.jpg', alt: 'Made for the moments you do not plan', href: ig, size: 'md', w: 1080, h: 1350 },
-      { src: 'assets/web2/pour/10-julio-jumping-wine.jpg', alt: 'Surreal Brisa Bay collage', href: ig, size: 'sm', w: 1080, h: 1350 },
-      { src: 'assets/web2/pour/09-julio-dia-del-queso-2.png', alt: 'Brisa Bay with cheese outdoors', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/07-julio-artboard-7.png', alt: 'The Brisa Times newspaper graphic', href: ig, size: 'md', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/16-img-6287.jpg', alt: 'Pouring Brisa Bay at the table', href: ig, size: 'sm', w: 854, h: 1280 },
-      { src: 'assets/web2/pour/11-julio-polaroid.png', alt: 'Sauvignon Blanc polaroid vineyard', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/14-posts-july-artboard-1.png', alt: 'Opening a bottle of Brisa Bay', href: ig, size: 'md', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/05-julio-artboard-17.png', alt: 'Brisa Bay Chardonnay on corks', href: ig, size: 'sm', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/03-julio-artboard-11.png', alt: 'Beach-day emoji sticker graphic', href: ig, size: 'lg', w: 1081, h: 1351 },
-      { src: 'assets/web2/pour/13-post-8.png', alt: 'Wine pouring from a polaroid into a glass', href: ig, size: 'md', w: 1081, h: 1351 }
+      { src: 'assets/web2/pour/15-posts-july-artboard-3.webp', alt: 'Friends toasting with Brisa Bay at a picnic', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/01-3cd17d63-fdfd-431d-9ae8-edb566f92859.webp', alt: 'Bird over a Brisa Bay vineyard', href: ig, size: 'wide', w: 2304, h: 1536 },
+      { src: 'assets/web2/pour/06-julio-artboard-4.webp', alt: 'Pouring Brisa Bay by the pool', href: ig, size: 'md', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/08-julio-artboard-8.webp', alt: 'Brisa Bay week of bottles graphic', href: ig, size: 'sm', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/12-post-10.webp', alt: 'Brisa Bay bottle balanced on a cap', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/02-7e7103b6-0a1e-4d89-b2e9-365755455338.webp', alt: 'Sunset over the vineyard', href: ig, size: 'wide', w: 2306, h: 1536 },
+      { src: 'assets/web2/pour/04-julio-artboard-12.webp', alt: 'Made for the moments you do not plan', href: ig, size: 'md', w: 1080, h: 1350 },
+      { src: 'assets/web2/pour/10-julio-jumping-wine.webp', alt: 'Surreal Brisa Bay collage', href: ig, size: 'sm', w: 1080, h: 1350 },
+      { src: 'assets/web2/pour/09-julio-dia-del-queso-2.webp', alt: 'Brisa Bay with cheese outdoors', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/07-julio-artboard-7.webp', alt: 'The Brisa Times newspaper graphic', href: ig, size: 'md', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/16-img-6287.webp', alt: 'Pouring Brisa Bay at the table', href: ig, size: 'sm', w: 854, h: 1280 },
+      { src: 'assets/web2/pour/11-julio-polaroid.webp', alt: 'Sauvignon Blanc polaroid vineyard', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/14-posts-july-artboard-1.webp', alt: 'Opening a bottle of Brisa Bay', href: ig, size: 'md', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/05-julio-artboard-17.webp', alt: 'Brisa Bay Chardonnay on corks', href: ig, size: 'sm', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/03-julio-artboard-11.webp', alt: 'Beach-day emoji sticker graphic', href: ig, size: 'lg', w: 1081, h: 1351 },
+      { src: 'assets/web2/pour/13-post-8.webp', alt: 'Wine pouring from a polaroid into a glass', href: ig, size: 'md', w: 1081, h: 1351 }
     ];
   }
   index() {

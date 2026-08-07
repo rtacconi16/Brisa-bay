@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
+     server.py never reaches real users; this meta tag is how it gets there.
+     Keep it in sync with CSP in server.py.
+
+     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
+     clickjacking protection still needs a CDN in front of Pages. Everything else
+     — script, style, img, connect, font sources, object-src, base-uri,
+     form-action — applies here exactly as it does locally. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./age-gate.js?v=2"></script>
@@ -681,7 +690,7 @@
   <meta property="og:site_name" content="Brisa Bay">
   <meta property="og:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
   <meta property="og:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
-  <meta property="og:image" content="assets/web2/bottle.png">
+  <meta property="og:image" content="assets/web2/bottle.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
   <meta name="twitter:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
@@ -698,7 +707,10 @@
     <div data-bb-hero-pin="">
       <div data-bb-opening="">
         <div data-bb-hero="" style="position: relative; width: 100%; aspect-ratio: 2 / 1; background: #3c3a34; overflow: hidden">
-          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+          <!-- poster paints on the first frame so the hero is never a black box while
+               the file streams in; the encode is faststart, so playback begins long
+               before the download finishes. -->
+          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="assets/web2/hero-poster.jpg" width="1920" height="960" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
             <source src="assets/web2/hero-video.mp4" type="video/mp4">
           </video>
           <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
@@ -742,7 +754,7 @@
   <!-- ================= OUR STORY VIEWPORT ================= -->
   <div data-bb-story-scroll="" data-screen-label="Our Story">
     <div data-bb-story="">
-      <img data-bb-story-media="" src="assets/web2/story-photo.jpg" alt="Friends sitting on a beach blanket pouring Brisa Bay Chardonnay, glasses of wine and a tray of fruit in the sun" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+      <img loading="lazy" width="1500" height="1000" data-bb-story-media="" src="assets/web2/story-photo.webp" alt="Friends sitting on a beach blanket pouring Brisa Bay Chardonnay, glasses of wine and a tray of fruit in the sun" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
       <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,45,42,0.72) 0%, rgba(45,45,42,0.35) 48%, rgba(45,45,42,0.12) 100%); pointer-events: none; z-index: 2"></div>
       <div data-bb-story-copy="" style="position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 5vw, 110px); box-sizing: border-box; max-width: min(720px, 52%); margin-right: auto">
         <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.9vw, 36px); line-height: 1.42; color: #eeeee4; text-align: justify; text-wrap: pretty">Where the water meets the vines, the San Pablo Bay breeze inspired our family to take our deep Napa roots in a fresh direction. Working with growers who put their hearts into the soil, we craft vibrant wines with no barriers or exclusivity.</p>
@@ -757,7 +769,7 @@
   <!-- ================= OUR WINES VIEWPORT ================= -->
   <div data-bb-wines-scroll="" data-screen-label="Our Wines">
     <div data-bb-wines-pin="">
-      <img data-bb-deco="" data-bb-wines-deco="" src="assets/brush/leaves-yellow.png" alt="" style="position: absolute; right: -8%; bottom: -12%; top: auto; width: clamp(420px, 58vw, 1100px); z-index: 1; pointer-events: none">
+      <img loading="lazy" width="809" height="796" data-bb-deco="" data-bb-wines-deco="" src="assets/brush/leaves-yellow.webp" alt="" style="position: absolute; right: -8%; bottom: -12%; top: auto; width: clamp(420px, 58vw, 1100px); z-index: 1; pointer-events: none">
 
       <div data-bb-wines="" style="position: relative; z-index: 4; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; gap: clamp(30px, 4vw, 80px); margin-top: 0">
         <div data-bb-wines-copy="">
@@ -782,12 +794,12 @@
           <div data-bb-bottle-stage="">
             <div data-bb-bottle-layer="" style="{{ wine0Bottle }}" aria-hidden="{{ wine0Hidden }}">
               <div data-bb-bottle-hover="">
-                <img data-bb-bottle-img="" src="assets/web2/bottle.png" alt="Brisa Bay Napa Valley Chardonnay bottle" style="animation-play-state: {{ wine0Play }}">
+                <img loading="lazy" width="182" height="700" data-bb-bottle-img="" src="assets/web2/bottle.webp" alt="Brisa Bay Napa Valley Chardonnay bottle" style="animation-play-state: {{ wine0Play }}">
               </div>
             </div>
             <div data-bb-bottle-layer="" style="{{ wine1Bottle }}" aria-hidden="{{ wine1Hidden }}">
               <div data-bb-bottle-hover="">
-                <img data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc.png" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="animation-play-state: {{ wine1Play }}">
+                <img loading="lazy" width="561" height="700" data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc.webp" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="animation-play-state: {{ wine1Play }}">
               </div>
             </div>
           </div>
@@ -808,13 +820,13 @@
   <!-- ================= SKIP THE CELLAR ================= -->
   <div data-bb-skip-scroll="" data-screen-label="Skip the Cellar">
     <div data-bb-skip-pin="">
-      <img data-bb-deco="" data-bb-skip-brush="" src="assets/brush/swoosh-lime.png" alt="" aria-hidden="true">
+      <img loading="lazy" width="1200" height="452" data-bb-deco="" data-bb-skip-brush="" src="assets/brush/swoosh-lime.webp" alt="" aria-hidden="true">
       <div data-bb-skip-inner="">
         <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: #5b584e; letter-spacing: 0.03em">Skip&nbsp;the&nbsp;Cellar<br>Find&nbsp;a&nbsp;Bottle</h2>
         <div data-bb-stamp="" data-bb-skip-stamp="" aria-hidden="true">
-          <img src="assets/brush/asterisk-red.png" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
+          <img loading="lazy" width="810" height="796" src="assets/brush/asterisk-red.webp" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
           <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
-            <img src="assets/brush/bar-red.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
+            <img loading="lazy" width="1201" height="452" src="assets/brush/bar-red.webp" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
             <span style="position: relative; font-size: clamp(22px, 2.6vw, 44px); color: #eeeee4">Brisa Bay</span>
           </div>
           <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
@@ -834,7 +846,7 @@
 
   <!-- ================= BOTTLED MOMENTS ================= -->
   <div data-bb-moments="" data-screen-label="Bottled Moments">
-    <img data-bb-deco="" data-bb-moments-bar="" src="assets/brush/bar-sage.png" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
+    <img loading="lazy" width="1201" height="452" data-bb-deco="" data-bb-moments-bar="" src="assets/brush/bar-sage.webp" alt="" style="position: absolute; top: clamp(-105px, -5.5vw, -40px); left: -2%; width: 104%; height: clamp(90px, 11vw, 210px); pointer-events: none">
     <div data-bb-moments-intro="" style="background: #60b98f; position: relative; display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; padding: clamp(48px, 6vh, 110px) clamp(20px, 5vw, 160px); box-sizing: border-box">
       <div data-bb-moments-copy="" style="text-align: left; min-width: 0; display: flex; flex-direction: column; gap: clamp(16px, 1.6vw, 28px); max-width: 72ch">
         <div data-bb-moments-headline="" style="display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(12px, 1.4vw, 28px) clamp(16px, 2vw, 36px)">
@@ -1513,16 +1525,16 @@ class Component extends DCLogic {
       ? 'opacity:1;transform:none;z-index:2'
       : `opacity:0;transform:translate3d(${fromX}px,16px,0) rotate(${fromRot}deg) scale(0.96);z-index:1;pointer-events:none`;
     const fallbackMoments = [
-      { src: 'assets/web2/story-photo.jpg', alt: 'Friends on a beach blanket pouring Brisa Bay Chardonnay', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/collage-a.jpg', alt: 'Friends clinking glasses of Brisa Bay over a picnic blanket', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/collage-b.jpg', alt: 'A table set with Brisa Bay bottles, white wine and small plates', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/collage-c.jpg', alt: 'A pool float afternoon with a bottle of Brisa Bay Sauvignon Blanc', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/better-together.jpg', alt: 'Sharing Brisa Bay together outdoors', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/every-occasion.jpg', alt: 'Brisa Bay for an easy, unplanned occasion', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/freshness-first.jpg', alt: 'Chilled bottles of Brisa Bay held up against a blue sky', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/intro-photo.jpg', alt: 'An afternoon pour of Brisa Bay in the sun', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/keeping-simple.jpg', alt: 'Keeping it simple with Brisa Bay', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/vibe-chardonnay.jpg', alt: 'Brisa Bay Chardonnay chilling by the pool', permalink: 'https://www.instagram.com/brisabaywines' }
+      { src: 'assets/web2/story-photo.webp', alt: 'Friends on a beach blanket pouring Brisa Bay Chardonnay', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/collage-a.webp', alt: 'Friends clinking glasses of Brisa Bay over a picnic blanket', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/collage-b.webp', alt: 'A table set with Brisa Bay bottles, white wine and small plates', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/collage-c.webp', alt: 'A pool float afternoon with a bottle of Brisa Bay Sauvignon Blanc', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/better-together.webp', alt: 'Sharing Brisa Bay together outdoors', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/every-occasion.webp', alt: 'Brisa Bay for an easy, unplanned occasion', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/freshness-first.webp', alt: 'Chilled bottles of Brisa Bay held up against a blue sky', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/intro-photo.webp', alt: 'An afternoon pour of Brisa Bay in the sun', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/keeping-simple.webp', alt: 'Keeping it simple with Brisa Bay', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/vibe-chardonnay.webp', alt: 'Brisa Bay Chardonnay chilling by the pool', permalink: 'https://www.instagram.com/brisabaywines' }
     ];
     const moments = (this.state.moments && this.state.moments.length) ? this.state.moments : fallbackMoments;
     const momentCount = moments.length;

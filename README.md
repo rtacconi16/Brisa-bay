@@ -132,6 +132,39 @@ Re-downloads and verifies every file against a pinned SHA-384. To upgrade: bump 
 the script, run it, expect a FAIL, verify the new bytes deliberately, then paste in the
 reported hash. Current: React 18.3.1, Leaflet 1.9.4, markercluster 1.5.3.
 
+### Images and video
+
+**Images are WebP at quality 82.** Adding a new one means converting it first — a photograph
+dropped in as PNG can be 10× the size of the same image as WebP. Alpha is preserved where the
+image actually uses it.
+
+```bash
+python3 -c "from PIL import Image; im=Image.open('in.png'); im.save('out.webp','WEBP',quality=82,method=6)"
+```
+
+Every `<img>` needs `width` and `height` set to the file's real pixel dimensions — that is what
+reserves layout space and stops the page jumping as images arrive. Add `loading="lazy"` too,
+**except** for the image that fills the top of the page: deferring that one delays the largest
+paint, which is the opposite of what lazy loading is for. Today that exception is the band image
+on `about.html` and the hero on `blends.html`. Images that fill a fixed-size CSS box with
+`object-fit: cover` (the Bottled Moments tiles) don't need dimensions — the box already
+reserves the space.
+
+**The hero video** is H.264, 24fps, no audio track, `+faststart` so playback begins before the
+download finishes:
+
+```bash
+ffmpeg -i master.mp4 -an -r 24 -c:v libx264 -crf 32 -preset slow \
+       -profile:v high -pix_fmt yuv420p -movflags +faststart -g 48 assets/web2/hero-video.mp4
+```
+
+Regenerate `hero-poster.jpg` alongside it (`-frames:v 1` at `-ss 0`) — it is what paints while
+the video streams in. VP9/WebM was measured on this footage and came out *larger* than H.264,
+so there is deliberately no WebM source; re-measure before assuming otherwise for new footage.
+
+The 29MB master is not in the working tree. It is in git history — `git show d78d287:assets/web2/hero-video.mp4`
+— so re-encode from there rather than from the shipped file, which would compound generation loss.
+
 ---
 
 ## Security headers
@@ -139,10 +172,14 @@ reported hash. Current: React 18.3.1, Leaflet 1.9.4, markercluster 1.5.3.
 `server.py` sends a CSP plus `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`
 and `Permissions-Policy`.
 
-**GitHub Pages sends none of them.** Pages cannot set response headers, so in production the
-site currently runs with no CSP and no clickjacking protection. The policy in `server.py` is
-correct and worth keeping — it just doesn't reach users yet. Fixing this means putting a CDN
-that can set headers (Cloudflare's free tier, Netlify) in front of Pages.
+**GitHub Pages sends no response headers**, so every page also carries the same policy as a
+`<meta http-equiv="Content-Security-Policy">` tag. That is what actually protects production —
+keep the two in sync when either changes.
+
+What meta *cannot* express is `frame-ancestors`, and `X-Frame-Options` is header-only, so
+**clickjacking protection is still missing in production.** Closing that needs a CDN that can
+set headers (Cloudflare's free tier, Netlify) in front of Pages; the same move would let the
+other three headers through and unblock a serverless Instagram endpoint.
 
 The CSP needs `'unsafe-eval'` because the DC runtime compiles component logic with
 `new Function`, and `'unsafe-inline'` for styles because the pages use inline `style`
@@ -181,14 +218,11 @@ the config is structured so it's a two-value change.
 which only `server.py` serves. On Pages that 404s, is caught, and the curated fallback gallery
 shows instead — permanently. Either serve it at build time or drop the endpoint deliberately.
 
-**Page weight.** The homepage pulls ~32MB, mostly a 30MB `preload="auto"` hero video;
-`blends.html` ships ~24MB of photographs encoded as PNG. No `srcset`, no WebP, and lazy loading
-on 2 of 21 images.
-
-**`assets/web/` vs `assets/web2/`.** `web2/` is the current set, but `blends.html` and
-`about.html` still reference three files from `web/`. Smaller `web2/` versions of
-`blends-hero.jpg` and `hello-band.jpg` exist and are unused — they're kept deliberately as
-drop-in candidates, but swapping them needs a visual check first.
+**No responsive images.** Every image ships one size to every device — there is no `srcset` and
+no per-breakpoint variant, so a phone downloads the same file a desktop does. Same for the hero
+video: `<source media="…">` is not reliably honoured inside `<video>`, so a smaller mobile cut
+would need a JS source swap. Page weight is now low enough that this is an optimisation rather
+than a problem, but it is the next thing worth doing.
 
 **`stores.json` has no phone or website data.** Both fields are threaded through the list rows,
 map popups and `tel:` links, and are populated on 0 of 102 records. The code is ready; the data
