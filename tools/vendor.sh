@@ -56,5 +56,20 @@ for img in layers.png layers-2x.png marker-icon.png marker-icon-2x.png marker-sh
   printf '  OK    %s\n' "$DEST/images/${img}"
 done
 
+# --- framework runtime (React), redirected via window.__resources in resources.js ---
+# support.js renders every page on the site. Vendoring these means a blocked or
+# unreachable unpkg degrades nothing rather than blanking all seven pages.
+REACT="18.3.1"
+mkdir -p assets/vendor/react
+
+# Hashes are support.js's own REACT_SRI / REACT_DOM_SRI constants.
+fetch "https://unpkg.com/react@${REACT}/umd/react.production.min.js" \
+      "assets/vendor/react/react.production.min.js" \
+      "sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
+
+fetch "https://unpkg.com/react-dom@${REACT}/umd/react-dom.production.min.js" \
+      "assets/vendor/react/react-dom.production.min.js" \
+      "sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"
+
 echo
-echo "Done. Bump the ?v= on store-map.js in where-to-buy.html if the libraries changed."
+echo "Done. Bump the ?v= on store-map.js / resources.js in the HTML if anything changed."
