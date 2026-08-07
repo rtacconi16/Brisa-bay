@@ -224,6 +224,12 @@ def get_moments(limit: int = DEFAULT_LIMIT) -> dict:
 # framework, so this is the strictest policy the site can actually run under
 # rather than the strictest policy that exists.
 #
+# Classic inline <script> blocks are intentionally NOT allowed (no 'unsafe-inline'
+# in script-src). Page motion helpers must live in external .js files
+# (e.g. blends-motion.js) so the local CSP does not strip them — GitHub Pages
+# does not send this header, which is why a missing externalization only
+# breaks locally.
+#
 # What it still buys: script, connect, image and font sources are restricted to
 # our own origin plus the two map services, so an injected <script src> or an
 # exfiltration fetch to an arbitrary host is blocked. Framing, plugins, base-tag

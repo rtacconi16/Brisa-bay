@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
+<script src="./age-gate.js?v=2"></script>
 <script src="./locator-config.js?v=2"></script>
 <script src="./locator-util.js?v=1"></script>
 <script src="./locator-analytics.js?v=1"></script>
@@ -683,7 +684,7 @@
 
 <!-- ================= FAQ MODAL ================= -->
 <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
+  <div data-bb-faq="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
       <div onClick="{{ closeFaq }}" onKeyDown="{{ closeFaqKey }}" role="button" tabindex="0" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
       <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
@@ -701,7 +702,7 @@
 
 <!-- ================= AGE GATE ================= -->
 <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
-  <div role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
+  <div data-bb-age-gate="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
     <div style="background: #eeeee4; width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
       <div style="font-size: clamp(24px, 2.3vw, 44px); color: #57544a; margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
       <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">
@@ -718,7 +719,8 @@
       <sc-if value="{{ gateDenied }}" hint-placeholder-val="{{ false }}">
         <div>
           <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Come back and see us at 21.</h2>
-          <p style="margin: 0; font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
+          <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
+          <div onClick="{{ retryAge }}" onKeyDown="{{ retryAgeKey }}" role="button" tabindex="0" style="display: inline-flex; background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #9ac21e; color: #9ac21e">I made a mistake</div>
         </div>
       </sc-if>
     </div>
@@ -916,7 +918,8 @@ async function geocodePlace(q, { near = null, signal = null } = {}) {
 
 class Component extends DCLogic {
   state = {
-    ageOk: false, faqOpen: false, gateDenied: false,
+    ageOk: !!(typeof BBAgeGate !== 'undefined' && BBAgeGate.readOk()),
+    faqOpen: false, gateDenied: false,
     query: '', typeFilter: null, active: null,
     userLoc: null, locStatus: 'idle',
     searchLoc: null, geoStatus: 'idle', geoQuery: '',
@@ -930,9 +933,6 @@ class Component extends DCLogic {
   _geoSeq = 0;
 
   componentDidMount() {
-    let ageOk = false;
-    try { if (localStorage.getItem('bb-age-ok') === '1') ageOk = true; } catch (e) {}
-    if (ageOk) this.setState({ ageOk: true });
     this._onPick = (e) => {
       const id = e.detail;
       this.setState({ active: id, sheetOpen: true, hoverId: null }, () => this._scrollStoreIntoView(id));
@@ -1060,78 +1060,13 @@ class Component extends DCLogic {
     this._syncModal();
   }
 
-  /** Both overlays carried aria-modal="true" while the whole page stayed
-     tabbable behind them — 234 focusable elements, focus never entering the
-     dialog. For the age gate that is not just an accessibility defect: a
-     keyboard user could tab straight past the check into the site.
-
-     `inert` on the page container is what actually fixes it. It removes
-     everything behind from the tab order, from hit testing and from the
-     accessibility tree in one go, so no hand-rolled focus trap is needed. */
-  /** `inert` needs Safari 15.5+. On anything older, assigning it is a silent
-     no-op — which would quietly make the age gate bypassable again on exactly
-     the devices least likely to be noticed. Fall back to neutralising the
-     subtree by hand, restoring each element's original tabindex afterwards.
-
-     Not equivalent to real inert: tabindex="-1" takes an element out of the
-     tab order and aria-hidden takes it out of the accessibility tree, but
-     programmatic .focus() still reaches it. That closes the realistic hole —
-     someone pressing Tab — and not the theoretical one, which needs devtools
-     that would defeat any client-side gate anyway. */
-  _setInert(el, on) {
-    if (!el) return;
-    if ('inert' in HTMLElement.prototype) { el.inert = on; return; }
-    const SEL = 'a[href],button,input,select,textarea,iframe,[tabindex]';
-    if (on) {
-      el.setAttribute('aria-hidden', 'true');
-      el.querySelectorAll(SEL).forEach((n) => {
-        if (!n.hasAttribute('data-bb-prev-tabindex')) {
-          n.setAttribute('data-bb-prev-tabindex', n.getAttribute('tabindex') ?? '');
-        }
-        n.setAttribute('tabindex', '-1');
-      });
-    } else {
-      el.removeAttribute('aria-hidden');
-      el.querySelectorAll('[data-bb-prev-tabindex]').forEach((n) => {
-        const prev = n.getAttribute('data-bb-prev-tabindex');
-        if (prev === '') n.removeAttribute('tabindex');
-        else n.setAttribute('tabindex', prev);
-        n.removeAttribute('data-bb-prev-tabindex');
-      });
-    }
-  }
-
   _syncModal() {
-    const gateOpen = (this.props.ageGate ?? true) && !this.state.ageOk;
-    const faqOpen = !!this.state.faqOpen;
-    const open = gateOpen || faqOpen;
-    const key = gateOpen ? 'gate' : (faqOpen ? 'faq' : null);
-    if (key === this._modalKey) return;
-
-    const page = document.getElementById('bb-content');
-    const foot = document.querySelector('[role="contentinfo"]');
-    const skip = document.querySelector('[data-bb-skiplink]');
-
-    if (open) {
-      if (!this._modalKey) this._returnFocusTo = document.activeElement;
-      [page, foot, skip].forEach((el) => this._setInert(el, true));
-      document.body.style.overflow = 'hidden';
-      // Focus the dialog itself rather than its first control: a screen reader
-      // then reads the dialog's label and purpose before its options.
-      setTimeout(() => {
-        const dlg = document.querySelector('[role="dialog"]');
-        if (!dlg) return;
-        if (!dlg.hasAttribute('tabindex')) dlg.setAttribute('tabindex', '-1');
-        dlg.focus();
-      }, 0);
-    } else {
-      [page, foot, skip].forEach((el) => this._setInert(el, false));
-      document.body.style.overflow = '';
-      const back = this._returnFocusTo;
-      this._returnFocusTo = null;
-      if (back && back.focus) setTimeout(() => back.focus(), 0);
-    }
-    this._modalKey = key;
+    if (!window.BBAgeGate) return;
+    BBAgeGate.syncModal(this, {
+      gateOpen: (this.props.ageGate ?? true) && !this.state.ageOk,
+      gateDenied: !!this.state.gateDenied,
+      faqOpen: !!this.state.faqOpen
+    });
   }
   componentWillUnmount() {
     document.removeEventListener('store-select', this._onPick);
@@ -1142,12 +1077,7 @@ class Component extends DCLogic {
     document.removeEventListener('keydown', this._onKeyDown);
     clearTimeout(this._geoTimer);
     clearTimeout(this._urlTimer);
-    // Never leave the page inert behind an unmounted dialog.
-    ['bb-content'].forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) el.inert = false;
-    });
-    document.body.style.overflow = '';
+    if (window.BBAgeGate) BBAgeGate.cleanupModal(this);
   }
 
   _map() { return document.querySelector('store-map'); }
@@ -1187,11 +1117,7 @@ class Component extends DCLogic {
   /** Every control here is a div[role=button], so Enter/Space have to be wired
      by hand to match what a real <button> would do. */
   _activate(fn) {
-    return (e) => {
-      if (!e || (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar')) return;
-      if (e.preventDefault) e.preventDefault();
-      fn();
-    };
+    return BBAgeGate.activate(fn);
   }
 
   _scrollStoreIntoView(id) {
@@ -1497,11 +1423,9 @@ class Component extends DCLogic {
       if (m && m.setRadius) m.setRadius(0);
       if (m && m.resetView) setTimeout(() => { const map = this._map(); if (map && map.resetView) map.resetView(); }, 50);
     };
-    const doAcceptAge = () => {
-      try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {}
-      this.setState({ ageOk: true });
-    };
+    const doAcceptAge = () => { BBAgeGate.writeOk(); this.setState({ ageOk: true }); };
     const doDenyAge = () => this.setState({ gateDenied: true });
+    const doRetryAge = () => this.setState({ gateDenied: false });
     const doCloseFaq = () => this.setState({ faqOpen: false });
     const doClearFilters = () => {
       this.setState({ typeFilter: null, radius: 0, areaBounds: null, areaOffer: null });
@@ -1696,6 +1620,8 @@ class Component extends DCLogic {
       acceptAgeKey: this._activate(doAcceptAge),
       denyAge: doDenyAge,
       denyAgeKey: this._activate(doDenyAge),
+      retryAge: doRetryAge,
+      retryAgeKey: this._activate(doRetryAge),
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
       closeFaq: doCloseFaq,

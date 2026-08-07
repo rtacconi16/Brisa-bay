@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js"></script>
+<script src="./age-gate.js?v=2"></script>
 </head>
 <body>
 <x-dc>
@@ -226,51 +227,150 @@
       text-wrap: pretty;
     }
 
-    /* Bottle column — sits on a hairline so it is standing, not floating. */
+    /* Bottle column — sits on a hairline so it is standing, not floating.
+       Side arrows flank the bottle so switching wines is obvious at a glance. */
     [data-bb-blend-stage] [data-bb-stage-row] {
       grid-column: 8 / span 5;
       grid-row: 1;
       min-width: 0;
       display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       grid-template-rows: minmax(0, 1fr) auto;
+      align-items: center;
       justify-items: center;
-      align-content: center;
-      gap: 0;
+      column-gap: clamp(6px, 1vw, 18px);
       will-change: opacity, transform;
       transform: translate3d(0, 56vh, 0) scale(0.92);
       opacity: 0;
       transform-origin: 50% 80%;
     }
+    [data-bb-bottle-slot] {
+      grid-column: 2;
+      grid-row: 1;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      min-width: 0;
+    }
     [data-bb-bottle-plinth] {
+      grid-column: 2;
+      grid-row: 2;
       width: min(100%, 30vw);
       height: 1px;
       background: rgba(238, 238, 228, 0.45);
       box-shadow: 0 1px 3px rgba(45, 45, 42, 0.55);
     }
+    [data-bb-bottle-arrow] {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      margin: 0;
+      /* Wide hit target; the glyph itself reads large next to the bottle. */
+      padding: clamp(14px, 2.2vh, 28px) clamp(8px, 1vw, 16px);
+      font: inherit;
+      font-size: clamp(28px, 3.2vw, 52px);
+      line-height: 1;
+      color: #eeeee4;
+      text-shadow: 0 1px 8px rgba(45, 45, 42, 0.75);
+      cursor: pointer;
+      transition: color 0.25s ease, transform 0.25s ease;
+      z-index: 2;
+    }
+    [data-bb-bottle-arrow][data-dir="prev"] { grid-column: 1; grid-row: 1; }
+    [data-bb-bottle-arrow][data-dir="next"] { grid-column: 3; grid-row: 1; }
+    [data-bb-bottle-arrow]:hover {
+      color: #f5d732;
+      transform: scale(1.14);
+    }
+    [data-bb-bottle-arrow]:focus-visible {
+      outline: 2px solid #9ac21e;
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
 
-    /* Typographic prev/next — no circles. */
+    /* Wine switcher + buy path — named options, not cryptic prev/next. */
     [data-bb-stage-nav] {
       grid-column: 1 / -1;
       grid-row: 2;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: clamp(14px, 1.6vw, 28px);
       padding-top: clamp(10px, 1.2vh, 18px);
       border-top: 1px solid rgba(238, 238, 228, 0.24);
     }
-    [data-bb-stage-arrow] {
-      display: inline-flex;
+    [data-bb-wine-switch] {
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 0.7em;
-      cursor: pointer;
-      color: rgba(238, 238, 228, 0.75);
-      transition: color 0.25s ease, letter-spacing 0.25s ease;
+      gap: clamp(10px, 1.2vw, 22px);
       will-change: opacity, transform;
       opacity: 0;
       transform: translateY(6px);
     }
-    [data-bb-stage-arrow]:hover { color: #f5d732; }
+    [data-bb-wine-tab] {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      margin: 0;
+      padding: 0 0 0.2em;
+      font: inherit;
+      font-size: clamp(13px, 0.95vw, 18px);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(238, 238, 228, 0.55);
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      transition: color 0.25s ease, border-color 0.25s ease;
+    }
+    [data-bb-wine-tab]:hover { color: #f5d732; }
+    [data-bb-wine-tab][aria-selected="true"] {
+      color: #eeeee4;
+      border-bottom-color: #f5d732;
+      cursor: default;
+    }
+    [data-bb-wine-tab]:focus-visible {
+      outline: 2px solid #9ac21e;
+      outline-offset: 6px;
+    }
+    [data-bb-wine-sep] {
+      width: 1px;
+      height: 0.9em;
+      background: rgba(238, 238, 228, 0.28);
+      flex: 0 0 auto;
+    }
+    [data-bb-stage-cta] {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55em;
+      font-size: clamp(13px, 0.95vw, 18px);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #eeeee4;
+      text-decoration: none;
+      will-change: opacity, transform;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: color 0.25s ease;
+    }
+    [data-bb-stage-cta]:hover { color: #f5d732; }
+    [data-bb-stage-cta]:focus-visible {
+      outline: 2px solid #9ac21e;
+      outline-offset: 6px;
+    }
+    [data-bb-stage-live] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     /* Nav stays cream throughout — the ground behind it is the photo, start to finish. */
     [data-bb-nav] [data-bb-nav-active] { color: #f5d732; }
@@ -283,7 +383,8 @@
       [data-bb-blend-stage],
       [data-bb-stage-copy],
       [data-bb-blend-stage] [data-bb-stage-row],
-      [data-bb-stage-arrow] {
+      [data-bb-wine-switch],
+      [data-bb-stage-cta] {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
@@ -351,12 +452,57 @@
         grid-row: 1 !important;
       }
       [data-bb-bottle-plinth] { width: min(100%, 42vw) !important; }
+      [data-bb-bottle-arrow] { font-size: clamp(20px, 5vw, 28px) !important; }
       [data-bb-stage-nav] {
         padding-top: 8px !important;
+        gap: 12px !important;
+      }
+      [data-bb-wine-tab],
+      [data-bb-stage-cta] {
+        font-size: 11px !important;
+        letter-spacing: 0.12em !important;
       }
       [data-bb-label] {
         font-size: 10px !important;
         letter-spacing: 0.14em !important;
+      }
+    }
+    /* Phone: stack copy above bottle so tasting notes stay readable. */
+    @media (max-width: 640px) {
+      [data-bb-blend-stage] {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: auto minmax(0, 1fr) auto !important;
+        padding: clamp(68px, 11vh, 92px) 16px clamp(14px, 2vh, 22px) !important;
+      }
+      [data-bb-stage-copy] {
+        grid-column: 1 !important;
+        grid-row: 1 !important;
+        align-content: start !important;
+      }
+      [data-bb-stage-copy] h2 {
+        min-height: 0 !important;
+        font-size: clamp(30px, 9vw, 42px) !important;
+      }
+      [data-bb-stage-copy] p {
+        max-width: none !important;
+      }
+      [data-bb-spec] dd { min-height: 0 !important; }
+      [data-bb-blend-stage] [data-bb-stage-row] {
+        grid-column: 1 !important;
+        grid-row: 2 !important;
+        max-height: 38svh;
+        column-gap: 4px !important;
+      }
+      [data-bb-bottle-plinth] { width: min(56%, 180px) !important; }
+      [data-bb-bottle-arrow] {
+        font-size: 22px !important;
+        padding: 10px 2px !important;
+      }
+      [data-bb-stage-nav] {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+        flex-direction: column;
+        align-items: flex-start !important;
       }
     }
     /* Un-pinned reduced-motion flow on phones: give the photo real height and a
@@ -603,15 +749,16 @@
       <div data-bb-blend-hero-copy="">
         <h1 style="margin: 0; max-width: 20ch; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5.6vw, 108px); line-height: 1.08; font-weight: 400; color: #eeeee4; text-wrap: balance"><span style="display: block; animation: bb-wipe 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both">Two bottles, one breeze.</span></h1>
         <div data-bb-blend-scroll-cue="" style="display: flex; align-items: center; gap: 0.6em; font-size: clamp(14px, 1.35vw, 26px); color: rgba(238,238,228,0.85); animation: bb-fade 1.4s ease 0.4s both">
-          <span>Scroll</span>
-          <svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="#eeeee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: bb-floaty 2.6s ease-in-out infinite; animation-play-state: {{ play }}"><line x1="12" y1="4" x2="12" y2="19"></line><polyline points="5 12 12 19 19 12"></polyline></svg>
+          <span>Scroll to meet the wines</span>
+          <svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="#eeeee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: bb-floaty 2.6s ease-in-out infinite; animation-play-state: {{ play }}" aria-hidden="true"><line x1="12" y1="4" x2="12" y2="19"></line><polyline points="5 12 12 19 19 12"></polyline></svg>
         </div>
       </div>
 
-      <div data-bb-blend-stage="" data-blend="{{ blendAttr }}">
+      <div data-bb-blend-stage="" data-blend="{{ blendAttr }}" aria-labelledby="bb-active-wine">
+        <p id="bb-active-wine" data-bb-stage-live="" aria-live="polite" aria-atomic="true">{{ liveLabel }}</p>
         <div data-bb-stage-copy="">
           <div data-bb-copy-panel="" style="opacity: {{ fade0 }}; transform: {{ shift0 }}; pointer-events: {{ pointer0 }}" aria-hidden="{{ hidden0 }}">
-            <h2>Chardonnay</h2>
+            <h2 id="bb-wine-chardonnay">Chardonnay</h2>
             <p>A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
             <dl data-bb-spec="">
               <div><dt>Profile</dt><dd>Ripe peach, bright citrus, and a smooth, tender finish.</dd></div>
@@ -619,7 +766,7 @@
             </dl>
           </div>
           <div data-bb-copy-panel="" style="opacity: {{ fade1 }}; transform: {{ shift1 }}; pointer-events: {{ pointer1 }}" aria-hidden="{{ hidden1 }}">
-            <h2>Sauvignon Blanc</h2>
+            <h2 id="bb-wine-sauvignon">Sauvignon Blanc</h2>
             <p>Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
             <dl data-bb-spec="">
               <div><dt>Profile</dt><dd>Tropical fruit, juicy lime, and a crisp vein of stony minerality.</dd></div>
@@ -629,7 +776,10 @@
         </div>
 
         <div data-bb-stage-row="">
-          <div data-bb-bottle-slot="" style="position: relative; width: 100%; height: 100%; min-height: 0">
+          <button type="button" data-bb-bottle-arrow="" data-dir="prev" aria-label="{{ prevLabel }}" title="{{ prevLabel }}" onClick="{{ flipBlend }}">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <div data-bb-bottle-slot="">
             <div data-bottle="" style="position: absolute; inset: 0; pointer-events: none; opacity: {{ fade0 }}; transform: {{ bottleShift0 }}; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
               <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: {{ play }}">
                 <img src="assets/web2/bottle.png" alt="Brisa Bay Chardonnay bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
@@ -641,17 +791,19 @@
               </div>
             </div>
           </div>
+          <button type="button" data-bb-bottle-arrow="" data-dir="next" aria-label="{{ nextLabel }}" title="{{ nextLabel }}" onClick="{{ flipBlend }}">
+            <span aria-hidden="true">&rarr;</span>
+          </button>
           <div data-bb-bottle-plinth=""></div>
         </div>
 
         <div data-bb-stage-nav="">
-          <div onClick="{{ prevBlend }}" role="button" data-bb-stage-arrow="" aria-label="Previous wine" data-bb-label="">
-            <span aria-hidden="true">&larr;</span><span>Previous</span>
+          <div data-bb-wine-switch="" role="tablist" aria-label="Choose a wine">
+            <button type="button" role="tab" data-bb-wine-tab="" aria-selected="{{ sel0 }}" aria-controls="bb-wine-chardonnay" id="bb-tab-chardonnay" onClick="{{ showChardonnay }}">Chardonnay</button>
+            <span data-bb-wine-sep="" aria-hidden="true"></span>
+            <button type="button" role="tab" data-bb-wine-tab="" aria-selected="{{ sel1 }}" aria-controls="bb-wine-sauvignon" id="bb-tab-sauvignon" onClick="{{ showSauvignon }}">Sauvignon Blanc</button>
           </div>
-          <span data-bb-label="">{{ indexLabel }}</span>
-          <div onClick="{{ nextBlend }}" role="button" data-bb-stage-arrow="" aria-label="Next wine" data-bb-label="">
-            <span>Next</span><span aria-hidden="true">&rarr;</span>
-          </div>
+          <a data-bb-stage-cta="" href="where-to-buy.html">Find a bottle <span aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
     </div>
@@ -719,7 +871,7 @@
 
   <!-- ================= FAQ MODAL ================= -->
   <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
-    <div role="dialog" aria-modal="true" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 190; overflow: auto; font-family: 'Garamond Pro', serif">
+    <div data-bb-faq="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions" style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', serif">
       <div style="background: #eeeee4; width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
         <div onClick="{{ closeFaq }}" role="button" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: #e6393a; color: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
         <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: #5b584e; letter-spacing: 0.03em">FAQs</h2>
@@ -737,7 +889,7 @@
 
   <!-- ================= AGE GATE ================= -->
   <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
-    <div role="dialog" aria-modal="true" aria-label="Age verification" style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 200; font-family: 'Garamond Pro', serif">
+    <div data-bb-age-gate="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', serif">
       <div style="background: #eeeee4; width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
         <div style="font-size: clamp(24px, 2.3vw, 44px); color: #57544a; margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
         <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">
@@ -745,8 +897,8 @@
             <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Welcome to the brighter side of Napa.</h2>
             <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Before you come in, please confirm you are of legal drinking age &mdash; 21 or older in the United States.</p>
             <div style="display: flex; flex-wrap: wrap; gap: clamp(12px, 1.2vw, 22px); justify-content: center">
-              <div onClick="{{ acceptAge }}" role="button" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
-              <div onClick="{{ denyAge }}" role="button" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
+              <div onClick="{{ acceptAge }}" onKeyDown="{{ acceptAgeKey }}" role="button" tabindex="0" style="background: #9ac21e; color: #eeeee4; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(12px, 0.95vw, 18px) clamp(30px, 2.7vw, 52px) clamp(15px, 1.15vw, 22px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06)">I'm 21 or older</div>
+              <div onClick="{{ denyAge }}" onKeyDown="{{ denyAgeKey }}" role="button" tabindex="0" style="background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #e6393a; color: #e6393a">I'm under 21</div>
             </div>
             <p style="margin: clamp(26px, 2.5vw, 48px) 0 0; font-size: clamp(14px, 1.2vw, 22px); line-height: 1.5; color: rgba(87,84,74,0.7); text-wrap: pretty">We never sell or market alcohol to anyone under the legal drinking age. Please enjoy Brisa Bay responsibly.</p>
           </div>
@@ -754,7 +906,8 @@
         <sc-if value="{{ gateDenied }}" hint-placeholder-val="{{ false }}">
           <div>
             <h2 style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(28px, 3.1vw, 58px); font-weight: 400; color: #57544a; text-wrap: balance">Come back and see us at 21.</h2>
-            <p style="margin: 0; font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
+            <p style="margin: 0 0 clamp(26px, 2.5vw, 48px); font-size: clamp(16px, 1.6vw, 30px); color: #57544a; text-wrap: pretty">Thanks for stopping by. There's a bottle waiting for you when the time is right.</p>
+            <div onClick="{{ retryAge }}" onKeyDown="{{ retryAgeKey }}" role="button" tabindex="0" style="display: inline-flex; background: transparent; border: 2px solid rgba(87,84,74,0.4); color: #57544a; font-family: 'Old Newspaper', serif; font-size: clamp(17px, 1.6vw, 30px); padding: clamp(10px, 0.8vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1vw, 20px); border-radius: 999px; cursor: pointer; transition: transform 0.25s" style-hover="transform: scale(1.06); border-color: #9ac21e; color: #9ac21e">I made a mistake</div>
           </div>
         </sc-if>
       </div>
@@ -764,9 +917,22 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;startBlend&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Chardonnay&quot;,&quot;Sauvignon Blanc&quot;],&quot;default&quot;:&quot;Chardonnay&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behavior&quot;},&quot;ageGate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behavior&quot;}}">
 class Component extends DCLogic {
-  state = { blendIndex: null, ageOk: false, faqOpen: false, gateDenied: false };
-  componentDidMount() {
-    try { if (localStorage.getItem('bb-age-ok') === '1') this.setState({ ageOk: true }); } catch (e) {}
+  state = {
+    blendIndex: null,
+    ageOk: !!(typeof BBAgeGate !== 'undefined' && BBAgeGate.readOk()),
+    faqOpen: false,
+    gateDenied: false
+  };
+  componentDidMount() { this._syncAgeModal(); }
+  componentDidUpdate() { this._syncAgeModal(); }
+  componentWillUnmount() { if (window.BBAgeGate) BBAgeGate.cleanupModal(this); }
+  _syncAgeModal() {
+    if (!window.BBAgeGate) return;
+    BBAgeGate.syncModal(this, {
+      gateOpen: (this.props.ageGate ?? true) && !this.state.ageOk,
+      gateDenied: !!this.state.gateDenied,
+      faqOpen: !!this.state.faqOpen
+    });
   }
   _pourShots() {
     const ig = 'https://www.instagram.com/brisabaywines';
@@ -796,14 +962,23 @@ class Component extends DCLogic {
   }
   renderVals() {
     const i = this.index();
-    const flip = () => this.setState({ blendIndex: (i + 1) % 2 });
+    const names = ['Chardonnay', 'Sauvignon Blanc'];
     const base = this._pourShots();
     // Duplicate the strip so the CSS marquee can loop seamlessly at -50%.
     const pourShots = base.concat(base);
+    const other = (i + 1) % 2;
+    const flipBlend = () => this.setState({ blendIndex: other });
+    const doAcceptAge = () => { BBAgeGate.writeOk(); this.setState({ ageOk: true }); };
+    const doDenyAge = () => this.setState({ gateDenied: true });
+    const doRetryAge = () => this.setState({ gateDenied: false });
     return {
       play: (this.props.motion ?? true) ? 'running' : 'paused',
       blendAttr: String(i),
-      indexLabel: '0' + (i + 1) + ' / 02',
+      liveLabel: 'Showing ' + names[i],
+      prevLabel: 'Show ' + names[other],
+      nextLabel: 'Show ' + names[other],
+      sel0: i === 0 ? 'true' : 'false',
+      sel1: i === 1 ? 'true' : 'false',
       fade0: i === 0 ? 1 : 0,
       fade1: i === 1 ? 1 : 0,
       hidden0: i !== 0,
@@ -814,14 +989,19 @@ class Component extends DCLogic {
       shift1: i === 1 ? 'none' : 'translateY(0.16em)',
       bottleShift0: i === 0 ? 'none' : 'translateY(-5%) scale(0.95)',
       bottleShift1: i === 1 ? 'none' : 'translateY(-5%) scale(0.95)',
-      prevBlend: flip,
-      nextBlend: flip,
+      showChardonnay: () => this.setState({ blendIndex: 0 }),
+      showSauvignon: () => this.setState({ blendIndex: 1 }),
+      flipBlend,
       pourShots,
       showGate: (this.props.ageGate ?? true) && !this.state.ageOk,
       gateAsking: !this.state.gateDenied,
       gateDenied: !!this.state.gateDenied,
-      acceptAge: () => { try { localStorage.setItem('bb-age-ok', '1'); } catch (e) {} this.setState({ ageOk: true }); },
-      denyAge: () => this.setState({ gateDenied: true }),
+      acceptAge: doAcceptAge,
+      acceptAgeKey: BBAgeGate.activate(doAcceptAge),
+      denyAge: doDenyAge,
+      denyAgeKey: BBAgeGate.activate(doDenyAge),
+      retryAge: doRetryAge,
+      retryAgeKey: BBAgeGate.activate(doRetryAge),
       faqOpen: !!this.state.faqOpen,
       openFaq: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ faqOpen: true }); },
       closeFaq: () => this.setState({ faqOpen: false }),
@@ -837,399 +1017,6 @@ class Component extends DCLogic {
 }
 
 </script>
-<script>
-(function () {
-  const motionOn = () => {
-    // Same path as About: keep pin-scrub on mobile; only reduced-motion opts out.
-    return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  };
-  const narrowMq = window.matchMedia('(max-width: 900px)');
-
-  let raf = 0;
-  let cleanup = null;
-
-  const els = () => ({
-    scrollEl: document.querySelector('[data-bb-blend-scroll]'),
-    pinEl: document.querySelector('[data-bb-blend-pin]'),
-    photo: document.querySelector('[data-bb-blend-photo]'),
-    heroCopy: document.querySelector('[data-bb-blend-hero-copy]'),
-    heroTitle: document.querySelector('[data-bb-blend-hero-copy] h1'),
-    scrollCue: document.querySelector('[data-bb-blend-scroll-cue]'),
-    stage: document.querySelector('[data-bb-blend-stage]'),
-    copy: document.querySelector('[data-bb-stage-copy]'),
-    row: document.querySelector('[data-bb-stage-row]'),
-    arrows: Array.from(document.querySelectorAll('[data-bb-stage-arrow]')),
-    veil: document.querySelector('[data-bb-blend-bottom-veil]')
-  });
-
-  const bind = () => {
-    if (cleanup) cleanup();
-    const first = els();
-    if (!first.scrollEl || !first.pinEl || !first.heroCopy || !first.stage) return false;
-
-    // Where scroll-driven CSS animations exist, `bb-headline-exit` owns the headline outright.
-    // Skip it here so we are not writing inline styles every frame that CSS would override anyway.
-    const cssHeadline = typeof CSS !== 'undefined' && !!CSS.supports
-      && CSS.supports('animation-timeline: view()');
-
-    const clamp01 = (n) => Math.min(1, Math.max(0, n));
-    const range = (p, a, b) => clamp01((p - a) / Math.max(0.0001, b - a));
-    const ease = (t) => t * t * (3 - 2 * t); // smoothstep
-    const easeOut = (t) => 1 - Math.pow(1 - t, 2.6);
-    const easeInOut = (t) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2.4) / 2;
-
-    const resetMotion = (node) => {
-      if (!node) return;
-      node.style.opacity = '';
-      node.style.transform = '';
-      node.style.filter = '';
-      node.style.pointerEvents = '';
-      node.style.visibility = '';
-    };
-
-    if (!motionOn()) {
-      const { photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil } = els();
-      [photo, heroCopy, heroTitle, scrollCue, stage, copy, row, veil].forEach(resetMotion);
-      arrows.forEach(resetMotion);
-      if (stage) stage.classList.add('is-live');
-      const onResize = () => { if (motionOn()) bind(); };
-      window.addEventListener('resize', onResize);
-      cleanup = () => window.removeEventListener('resize', onResize);
-      return true;
-    }
-
-    let current = 0;
-    let running = false;
-
-    const progress = () => {
-      const { scrollEl, pinEl } = els();
-      if (!scrollEl || !pinEl) return current;
-      const total = Math.max(1, scrollEl.offsetHeight - pinEl.offsetHeight);
-      return clamp01(-scrollEl.getBoundingClientRect().top / total);
-    };
-
-    const apply = (p) => {
-      const {
-        photo, heroCopy, heroTitle, scrollCue, stage, copy, row, arrows, veil
-      } = els();
-      if (!heroCopy || !stage) return;
-
-      // Headline rides straight up and off the top edge — fully gone before the wine stage starts.
-      // No fade: it disappears purely by travelling out, clipped by the pin's overflow.
-      const exit = easeInOut(range(p, 0.05, 0.34));
-      const cueExit = easeOut(range(p, 0.0, 0.2));
-      if (heroTitle && !cssHeadline) {
-        const titleGone = exit >= 0.995;
-        heroTitle.style.opacity = titleGone ? '0' : '1';
-        heroTitle.style.transform = exit < 0.001
-          ? 'none'
-          : `translate3d(0, ${exit * -112}vh, 0)`;
-        heroTitle.style.filter = 'none';
-        heroTitle.style.visibility = titleGone ? 'hidden' : 'visible';
-      }
-      if (scrollCue) {
-        const cueGone = cueExit >= 0.995;
-        scrollCue.style.opacity = cueGone ? '0' : String(1 - cueExit);
-        scrollCue.style.transform = cueExit < 0.001
-          ? 'none'
-          : `translate3d(0, ${cueExit * 40}px, 0)`;
-        scrollCue.style.visibility = cueGone ? 'hidden' : 'visible';
-      }
-      heroCopy.style.pointerEvents = exit > 0.45 ? 'none' : 'auto';
-
-      // Photo breathes: slow zoom + gentle ken-burns drift
-      const photoP = easeInOut(range(p, 0, 0.92));
-      if (photo) {
-        const zoom = 1.02 + photoP * 0.12;
-        const drift = photoP * -18;
-        photo.style.transform = `translate3d(0, ${drift}px, 0) scale(${zoom})`;
-        photo.style.filter = photoP > 0.01 ? `saturate(${1 - photoP * 0.12})` : 'none';
-      }
-
-      const deepen = ease(range(p, 0.2, 0.58));
-      if (veil) veil.style.opacity = String(0.8 + deepen * 0.2);
-
-      // Stage only begins once the headline has fully left the screen (exit completes at p = 0.34).
-      // It is an opaque plate, so this reads as a cut from photograph to product.
-      const stageFade = ease(range(p, 0.36, 0.58));
-      stage.style.opacity = String(stageFade);
-      if (stageFade > 0.58) stage.classList.add('is-live');
-      else stage.classList.remove('is-live');
-
-      // Wine title/copy arrives from the left, after the hero headline is gone
-      const copyIn = easeOut(range(p, 0.4, 0.7));
-      if (copy) {
-        copy.style.opacity = String(copyIn);
-        copy.style.transform = copyIn >= 0.999
-          ? 'none'
-          : `translate3d(${(1 - copyIn) * -56}px, ${(1 - copyIn) * 24}px, 0)`;
-      }
-
-      // Bottle rises just behind the wine copy (shorter travel on phones so it
-      // does not overshoot the tighter plate).
-      const bottleIn = easeOut(range(p, 0.44, 0.8));
-      if (row) {
-        const rise = narrowMq.matches ? 32 : 48;
-        const y = (1 - bottleIn) * rise;
-        const scale = 0.9 + bottleIn * 0.1;
-        row.style.opacity = String(bottleIn);
-        row.style.transform = bottleIn >= 0.999
-          ? 'none'
-          : `translate3d(0, ${y}vh, 0) scale(${scale})`;
-      }
-
-      // Prev/next settle last, rising onto the baseline rather than scaling up
-      const arrowsIn = easeOut(range(p, 0.66, 0.88));
-      arrows.forEach((btn, i) => {
-        const t = clamp01(arrowsIn - i * 0.05);
-        btn.style.opacity = String(t);
-        btn.style.transform = t >= 0.999 ? 'none' : `translateY(${(1 - t) * 6}px)`;
-      });
-    };
-
-    const tick = () => {
-      const target = progress();
-      const delta = target - current;
-      // Silkier tracking — ease toward the scrub position
-      current += Math.abs(delta) > 0.25 ? delta * 0.55 : delta * 0.14;
-      if (Math.abs(target - current) < 0.0008) current = target;
-      apply(current);
-      if (Math.abs(target - current) >= 0.0008) raf = requestAnimationFrame(tick);
-      else { running = false; raf = 0; }
-    };
-
-    const onScroll = () => {
-      if (running) return;
-      running = true;
-      raf = requestAnimationFrame(tick);
-    };
-
-    const onResize = () => {
-      if (!motionOn()) { bind(); return; }
-      onScroll();
-    };
-
-    current = progress();
-    apply(current);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-    cleanup = () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
-      running = false;
-    };
-    return true;
-  };
-
-  let tries = 0;
-  let boundRoot = null;
-  const start = () => {
-    const root = document.querySelector('[data-bb-blend-scroll]');
-    if (root && root !== boundRoot) {
-      if (bind()) boundRoot = root;
-      return;
-    }
-    if (root && boundRoot === root) return;
-    if (++tries < 120) requestAnimationFrame(start);
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-  else start();
-  const mo = new MutationObserver(() => start());
-  mo.observe(document.body, { childList: true, subtree: true });
-  setTimeout(() => mo.disconnect(), 8000);
-})();
-
-/* Scroll entrance when the photo carousel arrives */
-(function () {
-  const motionOn = () => !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  let raf = 0;
-  let cleanup = null;
-  let bound = false;
-
-  const clamp01 = (n) => Math.min(1, Math.max(0, n));
-  const range = (p, a, b) => clamp01((p - a) / Math.max(0.0001, b - a));
-  const ease = (t) => t * t * (3 - 2 * t);
-  const easeOut = (t) => 1 - Math.pow(1 - t, 2.4);
-
-  const reset = (node) => {
-    if (!node) return;
-    node.style.opacity = '';
-    node.style.transform = '';
-  };
-
-  const arrival = (el, startFrac, endFrac) => {
-    if (!el) return 1;
-    const h = window.innerHeight || 0;
-    // No usable viewport (hidden tab, zero-height frame): reveal rather than hide.
-    if (h < 2) return 1;
-    const top = el.getBoundingClientRect().top;
-    const start = h * startFrac;
-    const end = h * endFrac;
-    return clamp01((start - top) / Math.max(1, start - end));
-  };
-
-  const bind = () => {
-    if (cleanup) cleanup();
-    const section = document.querySelector('[data-bb-pour]');
-    const rail = document.querySelector('[data-bb-pour-rail]');
-    const foot = document.querySelector('[data-bb-pour-foot]');
-    const lines = Array.from(document.querySelectorAll('[data-bb-pour-line]'));
-    const cards = Array.from(document.querySelectorAll('[data-bb-pour-card]'));
-    if (!section) return false;
-
-    const showAll = () => {
-      lines.forEach(reset);
-      cards.forEach(reset);
-      reset(rail);
-      reset(foot);
-      if (section) section.style.transform = '';
-      section.setAttribute('data-pour-in', '1');
-    };
-
-    if (!motionOn()) {
-      showAll();
-      const onResize = () => { if (motionOn()) bind(); };
-      window.addEventListener('resize', onResize);
-      cleanup = () => window.removeEventListener('resize', onResize);
-      return true;
-    }
-
-    let running = false;
-
-    const apply = () => {
-      const cover = arrival(section, 0.92, 0.18);
-      const enter = ease(cover);
-
-      // Whole viewport rises in as it replaces the wine stage
-      section.style.transform = enter >= 0.999
-        ? 'none'
-        : `translate3d(0, ${(1 - enter) * 64}px, 0)`;
-
-      lines.forEach((el, i) => {
-        const t = easeOut(range(cover, 0.08 + i * 0.1, 0.42 + i * 0.1));
-        el.style.opacity = String(t);
-        el.style.transform = t >= 0.999
-          ? 'none'
-          : `translate3d(0, ${(1 - t) * 28}px, 0)`;
-      });
-
-      if (rail) {
-        // The rail only rises; the cards below own the fade, so the two
-        // don't stack into a muddy double dissolve.
-        const t = easeOut(range(cover, 0.28, 0.78));
-        rail.style.opacity = '';
-        rail.style.transform = t >= 0.999
-          ? 'none'
-          : `translate3d(0, ${(1 - t) * 48}px, 0)`;
-      }
-
-      // Cards deal in left-to-right: a card's delay follows how far right it
-      // sits in the viewport, so the strip assembles itself as you arrive.
-      if (cards.length) {
-        const vw = window.innerWidth || 1;
-        for (let i = 0; i < cards.length; i++) {
-          const card = cards[i];
-          const x = card.getBoundingClientRect().left;
-          if (x > vw * 1.15) continue; // still parked off-stage; it lands revealed
-          const delay = clamp01(x / vw) * 0.3;
-          const t = easeOut(range(cover, 0.3 + delay, 0.72 + delay));
-          card.style.opacity = String(t);
-          card.style.transform = t >= 0.999
-            ? 'none'
-            : `translate3d(0, ${(1 - t) * 34}px, 0) scale(${0.94 + t * 0.06})`;
-        }
-      }
-
-      // Hold the marquee still until the strip is on stage, then let it glide.
-      section.setAttribute('data-pour-in', cover > 0.32 ? '1' : '0');
-
-      if (foot) {
-        const t = easeOut(range(cover, 0.55, 0.95));
-        foot.style.opacity = String(t);
-        foot.style.transform = t >= 0.999
-          ? 'none'
-          : `translate3d(0, ${(1 - t) * 22}px, 0)`;
-      }
-
-    };
-
-    const tick = () => {
-      apply();
-      running = false;
-      raf = 0;
-    };
-
-    const onScroll = () => {
-      if (running) return;
-      running = true;
-      raf = requestAnimationFrame(tick);
-    };
-
-    const onResize = () => {
-      if (!motionOn()) { bind(); return; }
-      onScroll();
-    };
-
-    // The reveal is driven by animation frames, which a restored background
-    // tab can starve — that would strand the section as a blank cream screen.
-    // IntersectionObserver fires without frames, so once the section all but
-    // fills the viewport we guarantee it is shown. By then the scroll-linked
-    // pass has normally finished anyway, which makes this a no-op.
-    let io = null;
-    let rescue = 0;
-    if ('IntersectionObserver' in window) {
-      const stalled = () => {
-        const probe = lines[0] || rail;
-        return probe ? Number(probe.style.opacity || 1) < 0.5 : false;
-      };
-      io = new IntersectionObserver((entries) => {
-        for (const entry of entries) {
-          if (entry.intersectionRatio < 0.85) continue;
-          // Give the frame-driven pass a moment; only step in if it never ran.
-          clearTimeout(rescue);
-          rescue = setTimeout(() => { if (stalled()) showAll(); }, 400);
-        }
-      }, { threshold: [0.85] });
-      io.observe(section);
-    }
-
-    apply();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-    cleanup = () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-      if (io) io.disconnect();
-      io = null;
-      clearTimeout(rescue);
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
-      running = false;
-    };
-    return true;
-  };
-
-  const start = () => {
-    if (bound) return;
-    if (bind()) {
-      bound = true;
-      return;
-    }
-    requestAnimationFrame(start);
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-  else start();
-  const mo = new MutationObserver(() => {
-    if (!document.querySelector('[data-bb-pour]')) return;
-    bound = false;
-    start();
-  });
-  mo.observe(document.body, { childList: true, subtree: true });
-  setTimeout(() => mo.disconnect(), 8000);
-})();
-</script>
+<script src="./blends-motion.js?v=1"></script>
 </body>
 </html>
