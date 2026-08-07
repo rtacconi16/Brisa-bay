@@ -62,7 +62,25 @@ node tools/validate-stores.mjs
 
 Validates all 102 records in `stores.json`. Run it after any stockist edit.
 
-Both exit non-zero on failure, so they work as a build gate. **Run them before every push** —
+```bash
+node tools/test-age-gate.mjs
+```
+
+44 assertions over `age-gate.js` — persistence, keyboard activation, the focus trap, the scroll
+lock's save/restore, and the `inert` fallback for Safari before 15.5. It runs against a small
+hand-written DOM stub rather than jsdom, which keeps the repo dependency-free and lets the
+Safari path be exercised directly by pretending `inert` is unsupported.
+
+```bash
+python3 tools/test-server.py
+```
+
+23 tests over `server.py`: caption truncation, media normalisation for video and carousel posts,
+the fallback path that production actually serves, cache behaviour, and `.env` parsing. It also
+**checks the CSP in `server.py` against the `<meta>` copy in every page** — the same policy is
+written twice, so this fails if they drift.
+
+All four exit non-zero on failure, so they work as a build gate. **Run them before every push** —
 there is no CI enforcing them yet (see [Known gaps](#known-gaps)). Warnings (missing phone
 numbers, coordinate precision) are reported but do not fail the build; they need someone with
 the source data, not a code change.
