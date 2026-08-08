@@ -5,15 +5,14 @@
 //   node tools/test-locator.mjs --live   # also exercise the live geocoder
 //
 // The pure logic (search ranking, distance maths, store data integrity) is
-// extracted from where-to-buy.html so the tests exercise the shipped source
-// rather than a copy that can drift.
+// loaded from the shipped locator-util.js and locator-search.js, so the tests
+// exercise the same code the page runs rather than a copy that can drift.
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const html = readFileSync(join(ROOT, 'where-to-buy.html'), 'utf8');
 
 let pass = 0, fail = 0;
 const failures = [];
@@ -30,31 +29,24 @@ function warn(name, cond, detail = '') {
 }
 function section(t) { console.log(`\n${t}\n${'-'.repeat(t.length)}`); }
 
-// --- pull the real implementations out of the page -------------------------
-function extract(re, label) {
-  const m = html.match(re);
-  if (!m) throw new Error(`could not extract ${label} from where-to-buy.html`);
-  return m[0];
+// --- load the shipped modules ----------------------------------------------
+// Both are plain scripts that hang an object off `window`, so they are loaded
+// into one shared fake window in the same order the page loads them —
+// locator-search.js reads BBLocator.milesBetween at call time.
+//
+// This used to regex the implementations back out of where-to-buy.html and eval
+// them, which meant reformatting the page could break the suite. The functions
+// now live in locator-search.js and are loaded, not scraped.
+function load(file, win) {
+  new Function('window', readFileSync(join(ROOT, file), 'utf8'))(win);
+  return win;
 }
-const src = [
-  extract(/function normalizeText[\s\S]*?\n}/, 'normalizeText'),
-  extract(/function queryTokens[\s\S]*?\n}/, 'queryTokens'),
-  extract(/const PLACE_PROMINENCE = \{[\s\S]*?\n\};/, 'PLACE_PROMINENCE'),
-  extract(/const RANK_WEIGHT = \d+;/, 'RANK_WEIGHT'),
-  extract(/const MAX_DISTANCE_PENALTY = \d+;/, 'MAX_DISTANCE_PENALTY'),
-  extract(/function searchScore[\s\S]*?\n  return score;\n}/, 'searchScore'),
-  extract(/function scoreGeocodeFeature[\s\S]*?\n  return score;\n}/, 'scoreGeocodeFeature'),
-  extract(/function isPlausiblePlace[\s\S]*?\n}/, 'isPlausiblePlace')
-].join('\n');
+const win = {};
+load('locator-util.js', win);
+load('locator-search.js', win);
 
-const util = readFileSync(join(ROOT, 'locator-util.js'), 'utf8');
-const sandbox = { window: {} };
-new Function('window', util)(sandbox.window);
-const { milesBetween, formatMiles, directionsUrl, telHref } = sandbox.window.BBLocator;
-
-const mod = new Function('milesBetween', src + `
-  return { normalizeText, queryTokens, searchScore, scoreGeocodeFeature, isPlausiblePlace };
-`)(milesBetween);
+const { milesBetween, formatMiles, directionsUrl, telHref } = win.BBLocator;
+const mod = win.BBSearch;
 
 // --- store data ------------------------------------------------------------
 // Read from stores.json, the shipped source of truth. Deep structural checks

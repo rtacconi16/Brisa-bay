@@ -66,7 +66,9 @@
           sameAs: ['https://www.instagram.com/brisabaywines'],
           contactPoint: {
             '@type': 'ContactPoint',
-            email: 'info@brisabay.com',
+            // site-data.js is loaded before this file on where-to-buy.html; the
+            // fallback only matters if that ever stops being true.
+            email: (window.BBSite && window.BBSite.contactEmail) || 'info@brisabay.com',
             contactType: 'customer service'
           }
         },

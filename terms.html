@@ -12,8 +12,10 @@
      — script, style, img, connect, font sources, object-src, base-uri,
      form-action — applies here exactly as it does locally. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<link rel="stylesheet" href="./site.css?v=1">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
+<script src="./site-data.js?v=1"></script>
 </head>
 <body>
 <x-dc>
@@ -21,50 +23,6 @@
 
 <helmet>
   <style>
-    @font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
-    @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
-    body { margin: 0; background: #eeeee4; }
-    /* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
-       The UA stylesheet bolds headings and strong/b by default — neutralise it and let
-       size, italic and colour carry the hierarchy instead. */
-    h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
-    /* ---- Site header: one definition, used on every page ---- */
-    [data-bb-wordmark] {
-      font-size: clamp(26px, 2.8vw, 52px);
-      letter-spacing: 0.01em;
-      color: #eeeee4;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    [data-bb-nav] [role="navigation"] {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: clamp(16px, 2.7vw, 52px);
-      font-size: clamp(15px, 1.6vw, 30px);
-      color: #eeeee4;
-    }
-    [data-bb-nav] [role="navigation"] a { color: inherit; text-decoration: none; transition: color 0.2s; }
-    [data-bb-nav] [role="navigation"] a:hover { color: #f5d732; }
-    [data-bb-nav] [data-bb-nav-active] { color: #f5d732; cursor: default; }
-    a { color: #e6393a; }
-    a:hover { color: #f5d732; }
-      /* Keyboard users land here first; visible only when focused. */
-    [data-bb-skiplink] {
-      position: absolute;
-      left: 8px;
-      top: -60px;
-      z-index: 2000;
-      background: #3c3a34;
-      color: #eeeee4;
-      font-family: 'Garamond Pro', Garamond, serif;
-      font-size: 16px;
-      padding: 10px 16px;
-      border-radius: 3px;
-      text-decoration: none;
-      transition: top 0.15s;
-    }
-    [data-bb-skiplink]:focus { top: 8px; }
 </style>
   <title>Terms of Service | Brisa Bay</title>
   <meta name="description" content="The terms governing your use of the Brisa Bay website.">
@@ -73,73 +31,73 @@
 
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#60b98f"></rect><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-size="34" fill="#eeeee4">BB</text></svg></template>
 
-<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: #eeeee4; position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: #57544a">
+<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: var(--bb-cream); position: relative; overflow: hidden; font-family: 'Garamond Pro', serif; color: var(--bb-ink)">
   <main id="bb-content" tabindex="-1">
 
-  <div data-screen-label="Terms Header" style="position: relative; background: #3c3a34; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(40px, 5vw, 96px); box-sizing: border-box">
+  <div data-screen-label="Terms Header" style="position: relative; background: var(--bb-dark); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(40px, 5vw, 96px); box-sizing: border-box">
     <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
       <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
       <div role="navigation" aria-label="Main">
-        <a href="about.html" style-hover="color: #f5d732">About us</a>
-        <a href="blends.html" style-hover="color: #f5d732">Our Wines</a>
-        <a href="where-to-buy.html" style-hover="color: #f5d732">Where to buy</a>
+        <a href="about.html" style-hover="color: var(--bb-yellow)">About us</a>
+        <a href="blends.html" style-hover="color: var(--bb-yellow)">Our Wines</a>
+        <a href="where-to-buy.html" style-hover="color: var(--bb-yellow)">Where to buy</a>
       </div>
     </div>
 
     <div style="max-width: 1180px; margin: 0 auto; padding-top: clamp(40px, 6vw, 118px)">
-      <h1 style="margin: 0 0 clamp(12px, 1.2vw, 22px); font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5vw, 96px); line-height: 1.08; font-weight: 400; letter-spacing: 0.03em; color: #eeeee4">Terms of Service</h1>
-      <p style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 1.4vw, 26px); letter-spacing: 0.09em; color: #f5d732">LAST UPDATED: JULY 31, 2026</p>
+      <h1 style="margin: 0 0 clamp(12px, 1.2vw, 22px); font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5vw, 96px); line-height: 1.08; font-weight: 400; letter-spacing: 0.03em; color: var(--bb-cream)">Terms of Service</h1>
+      <p style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(15px, 1.4vw, 26px); letter-spacing: 0.09em; color: var(--bb-yellow)">LAST UPDATED: JULY 31, 2026</p>
     </div>
   </div>
 
-  <div data-screen-label="Terms Body" style="position: relative; background: #eeeee4; padding: clamp(44px, 5.5vw, 110px) clamp(20px, 5vw, 190px) clamp(60px, 7vw, 140px); box-sizing: border-box">
+  <div data-screen-label="Terms Body" style="position: relative; background: var(--bb-cream); padding: clamp(44px, 5.5vw, 110px) clamp(20px, 5vw, 190px) clamp(60px, 7vw, 140px); box-sizing: border-box">
     <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(34px, 3.6vw, 70px)">
 
       <div id="acceptance" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">1. Acceptance of Terms</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">1. Acceptance of Terms</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">Welcome to Brisa Bay (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) website. These Terms of Use (&ldquo;Terms&rdquo;) govern your access and use of our website (&ldquo;Website&rdquo;). By accessing and using our Website, you agree to be bound by these Terms. If you do not agree with any part of these Terms, please do not use our Website.</p>
       </div>
 
       <sc-if value="{{ showToc }}" hint-placeholder-val="{{ true }}">
-        <div style="background: #60b98f; padding: clamp(22px, 2.4vw, 46px) clamp(22px, 2.6vw, 50px); display: flex; flex-direction: column; gap: clamp(10px, 1vw, 18px)">
-          <p style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.1em; color: #f5d732">ON THIS PAGE</p>
-          <div style="display: flex; flex-wrap: wrap; gap: clamp(14px, 1.6vw, 30px) clamp(24px, 3vw, 56px); font-size: clamp(16px, 1.6vw, 30px); color: #eeeee4">
-            <a href="#age" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">2. Age Verification &amp; Compliance</a>
-            <a href="#responsible" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">3. Responsible Drinking</a>
-            <a href="#use" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">4. Acceptable Use</a>
-            <a href="#geo" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">5. Geographic Restrictions</a>
-            <a href="#ip" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">6. Intellectual Property</a>
-            <a href="#links" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">7. Third-Party Links</a>
-            <a href="#warranties" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">8. Disclaimer of Warranties</a>
-            <a href="#liability" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">9. Limitation of Liability</a>
-            <a href="#indemnification" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">10. Indemnification</a>
-            <a href="#modifications" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">11. Modifications</a>
-            <a href="#governing" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">12. Governing Law</a>
-            <a href="#contact" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: #f5d732; border-color: #f5d732">13. Contact Us</a>
+        <div style="background: var(--bb-sage); padding: clamp(22px, 2.4vw, 46px) clamp(22px, 2.6vw, 50px); display: flex; flex-direction: column; gap: clamp(10px, 1vw, 18px)">
+          <p style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.25vw, 24px); letter-spacing: 0.1em; color: var(--bb-yellow)">ON THIS PAGE</p>
+          <div style="display: flex; flex-wrap: wrap; gap: clamp(14px, 1.6vw, 30px) clamp(24px, 3vw, 56px); font-size: clamp(16px, 1.6vw, 30px); color: var(--bb-cream)">
+            <a href="#age" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">2. Age Verification &amp; Compliance</a>
+            <a href="#responsible" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">3. Responsible Drinking</a>
+            <a href="#use" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">4. Acceptable Use</a>
+            <a href="#geo" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">5. Geographic Restrictions</a>
+            <a href="#ip" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">6. Intellectual Property</a>
+            <a href="#links" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">7. Third-Party Links</a>
+            <a href="#warranties" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">8. Disclaimer of Warranties</a>
+            <a href="#liability" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">9. Limitation of Liability</a>
+            <a href="#indemnification" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">10. Indemnification</a>
+            <a href="#modifications" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">11. Modifications</a>
+            <a href="#governing" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">12. Governing Law</a>
+            <a href="#contact" style="color: inherit; text-decoration: none; border-bottom: 1px solid rgba(238,238,228,0.5)" style-hover="color: var(--bb-yellow); border-color: var(--bb-yellow)">13. Contact Us</a>
           </div>
         </div>
       </sc-if>
 
       <div id="age" style="display: flex; flex-direction: column; gap: clamp(20px, 2vw, 38px)">
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
-          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">2. Age Verification &amp; Legal Compliance</h2>
+          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">2. Age Verification &amp; Legal Compliance</h2>
           <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55">Brisa Bay produces and sells alcoholic beverages. By using this Website, you represent and warrant that:</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-lime); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">2.1 You are at least 21 years of age (or the legal drinking age in your jurisdiction).</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-lime); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">2.2 You are not prohibited by law from purchasing or consuming alcoholic beverages.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-lime); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">2.3 You comply with all federal, state, and local laws and regulations regarding the purchase, possession, and consumption of alcoholic beverages.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #9ac21e; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-lime); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">2.4 You will not purchase, attempt to purchase, or facilitate the purchase of our products if you are below the legal drinking age or if such purchase would violate applicable laws.</p>
           </div>
         </div>
@@ -148,24 +106,24 @@
 
       <div id="responsible" style="display: flex; flex-direction: column; gap: clamp(20px, 2vw, 38px)">
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
-          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">3. Responsible Drinking &amp; Health Warnings</h2>
+          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">3. Responsible Drinking &amp; Health Warnings</h2>
           <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55">Brisa Bay encourages the responsible consumption of alcohol. Please be aware of the following:</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-yellow); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">3.1 Alcohol impairs judgment, motor skills, and coordination. Never operate a vehicle, machinery, or engage in potentially dangerous activities after consuming alcohol.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-yellow); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">3.2 Pregnant women should not consume alcohol, as it may cause birth defects.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-yellow); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">3.3 Excessive alcohol consumption can lead to serious health consequences, including liver disease, heart disease, and addiction.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #f5d732; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-yellow); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">3.4 If you have questions about alcohol consumption and your health, please consult a healthcare professional.</p>
           </div>
         </div>
@@ -173,94 +131,94 @@
 
       <div id="use" style="display: flex; flex-direction: column; gap: clamp(20px, 2vw, 38px)">
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px)">
-          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">4. Acceptable Use</h2>
+          <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">4. Acceptable Use</h2>
           <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55">You agree to use our Website in compliance with all applicable laws, regulations, and these Terms. When using our Website, you must not:</p>
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(12px, 1.2vw, 22px); border-top: 2px solid rgba(87,84,74,0.16); padding-top: clamp(18px, 1.8vw, 34px)">
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.1 Violate any local, state, national, or international laws or regulations, including those governing alcoholic beverages.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.2 Infringe upon the intellectual property rights of others.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.3 Attempt to interfere with or compromise the security of our Website or its servers.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.4 Engage in any unauthorized use, reproduction, distribution, or publication of the content on our Website.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.5 Use our Website to transmit any harmful, harassing, defamatory, or otherwise objectionable content.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.6 Use automated means, such as bots or crawlers, to access our Website without our prior written consent.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.7 Use our Website for any commercial purposes without our express written permission.</p>
           </div>
           <div style="display: flex; gap: clamp(12px, 1.1vw, 20px); align-items: flex-start">
-            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: #e6393a; margin-top: clamp(8px, 0.8vw, 14px)"></div>
+            <div style="flex: none; width: clamp(9px, 0.8vw, 15px); height: clamp(9px, 0.8vw, 15px); border-radius: 50%; background: var(--bb-red); margin-top: clamp(8px, 0.8vw, 14px)"></div>
             <p style="margin: 0; max-width: 70ch; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.5; text-wrap: pretty">4.8 Resell or redistribute our products obtained through this Website without proper licensing and authorization.</p>
           </div>
         </div>
       </div>
 
       <div id="geo" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">5. Geographic Restrictions</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">5. Geographic Restrictions</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">Due to varying state and local alcohol laws, we do not ship to all locations within the United States or internationally. Brisa Bay products are currently distributed in Florida and New Jersey. Shipping to other states or countries may be restricted or prohibited by law. It is your responsibility to verify that ordering from our Website complies with the laws of your jurisdiction.</p>
       </div>
 
       <div id="ip" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">6. Intellectual Property</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">6. Intellectual Property</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">The content on our Website, including but not limited to text, graphics, images, logos, brand names, packaging designs, and software, is protected by intellectual property rights, including copyrights, trademarks, and patents owned or licensed by Brisa Bay or its affiliates. You may not reproduce, distribute, modify, create derivative works of, publicly display, or exploit any part of our Website&rsquo;s content without our prior written consent.</p>
       </div>
 
       <div id="links" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">7. Links to Third-Party Websites</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">7. Links to Third-Party Websites</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">Our Website may contain links to third-party websites or services that are not owned or controlled by Brisa Bay. We do not endorse or assume any responsibility for the content or practices of these third-party websites. Your access to and use of such websites are solely at your own risk, and we recommend that you review their respective terms of use and privacy policies.</p>
       </div>
 
       <div id="warranties" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">8. Disclaimer of Warranties</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">8. Disclaimer of Warranties</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">Our Website is provided &ldquo;as is&rdquo; and &ldquo;as available&rdquo; without any warranties of any kind, whether express or implied. We do not make any representations or warranties regarding the accuracy, reliability, completeness, or availability of our Website or its content. Your use of our Website is at your own risk.</p>
       </div>
 
       <div id="liability" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">9. Limitation of Liability</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">9. Limitation of Liability</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">In no event shall Brisa Bay or its affiliates be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of our Website. This includes, but is not limited to, damages for loss of profits, data, or other intangible losses, even if we have been advised of the possibility of such damages.</p>
       </div>
 
       <div id="indemnification" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">10. Indemnification</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">10. Indemnification</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">You agree to indemnify and hold Brisa Bay, its officers, directors, employees, and agents harmless from and against any claims, liabilities, damages, losses, and expenses (including reasonable attorney&rsquo;s fees) arising out of your use of our Website or any violation of these Terms, including any violations of alcohol laws.</p>
       </div>
 
       <div id="modifications" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">11. Modifications</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">11. Modifications</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">We reserve the right to modify, suspend, or discontinue any part of our Website at any time, with or without notice. We may also revise these Terms at our sole discretion. Your continued use of our Website after any changes to these Terms constitutes your acceptance of the revised Terms.</p>
       </div>
 
       <div id="governing" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">12. Governing Law and Jurisdiction</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">12. Governing Law and Jurisdiction</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">These Terms shall be governed by and construed in accordance with the laws of the State of California. Any disputes arising under or in connection with these Terms shall be subject to the exclusive jurisdiction of the state or federal courts located in Napa County, California.</p>
       </div>
 
       <div id="contact" style="display: flex; flex-direction: column; gap: clamp(14px, 1.4vw, 26px)">
-        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: #5b584e">13. Contact Us</h2>
+        <h2 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(26px, 2.7vw, 52px); font-weight: 400; letter-spacing: 0.03em; color: var(--bb-ink-muted)">13. Contact Us</h2>
         <p style="margin: 0; max-width: 74ch; font-size: clamp(17px, 1.7vw, 32px); line-height: 1.55; text-wrap: pretty">If you have any questions, concerns, or requests related to these Terms or the use of our Website, please contact us at:</p>
         <div style="margin-top: clamp(6px, 0.6vw, 10px); display: flex; flex-direction: column; gap: 4px; font-size: clamp(17px, 1.65vw, 31px); line-height: 1.55">
           <p style="margin: 0">Brisa Bay</p>
           <p style="margin: 0">Napa Valley, California</p>
-          <p style="margin: 0">Email: <a href="mailto:{{ contactEmail }}" style="color: #e6393a">{{ contactEmail }}</a></p>
+          <p style="margin: 0">Email: <a href="mailto:{{ contactEmail }}" style="color: var(--bb-red)">{{ contactEmail }}</a></p>
         </div>
-        <p style="margin: 0; max-width: 74ch; font-size: clamp(15px, 1.4vw, 26px); line-height: 1.55; color: #7a766a">Please allow 5-7 business days for a response to your inquiry.</p>
+        <p style="margin: 0; max-width: 74ch; font-size: clamp(15px, 1.4vw, 26px); line-height: 1.55; color: var(--bb-ink-faint)">Please allow 5-7 business days for a response to your inquiry.</p>
       </div>
 
     </div>
@@ -268,29 +226,29 @@
 
   </main>
 
-  <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: #60b98f; padding: clamp(56px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
+  <div data-screen-label="Footer" role="contentinfo" style="position: relative; background: var(--bb-sage); padding: clamp(56px, 6.6vw, 126px) clamp(20px, 5vw, 190px) clamp(40px, 4.2vw, 80px); box-sizing: border-box">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: clamp(30px, 5vw, 80px)">
-      <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: #eeeee4">Brisa Bay</div>
+      <div style="font-size: clamp(48px, 8.4vw, 160px); line-height: 1; color: var(--bb-cream)">Brisa Bay</div>
       <div style="display: flex; flex-wrap: wrap; gap: clamp(36px, 6.3vw, 120px)">
-        <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: #eeeee4">
-          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Our Wines</a>
-          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Store Locator</a>
+        <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: var(--bb-cream)">
+          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Our Wines</a>
+          <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Store Locator</a>
         </div>
-        <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: #eeeee4">
-          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">About Us</a>
-          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Contact</a>
+        <div style="display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); font-size: clamp(16px, 1.7vw, 32px); color: var(--bb-cream)">
+          <a href="about.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">About Us</a>
+          <a href="mailto:{{ contactEmail }}" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Contact</a>
         </div>
       </div>
     </div>
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: clamp(20px, 3vw, 40px); margin-top: clamp(34px, 2.9vw, 54px)">
-      <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 1.6vw, 30px); color: #eeeee4">
-        <a href="privacy.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Privacy Policy</a>
-        <span style="cursor: default; color: #f5d732">Terms of Service</span>
-        <a href="accessibility.html" style="color: inherit; text-decoration: none" style-hover="color: #f5d732">Accessibility</a>
+      <div style="display: flex; flex-wrap: wrap; gap: clamp(18px, 4.2vw, 80px); font-size: clamp(15px, 1.6vw, 30px); color: var(--bb-cream)">
+        <a href="privacy.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Privacy Policy</a>
+        <span style="cursor: default; color: var(--bb-yellow)">Terms of Service</span>
+        <a href="accessibility.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Accessibility</a>
         <span>&copy; Brisa Bay 2026</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.4vw, 26px)">
-        <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(42px, 3vw, 58px); height: clamp(42px, 3vw, 58px); border-radius: 50%; background: #eeeee4; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
+        <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(42px, 3vw, 58px); height: clamp(42px, 3vw, 58px); border-radius: 50%; background: var(--bb-cream); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
       </div>
     </div>
   </div>
@@ -298,12 +256,12 @@
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;info@brisabay.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;showToc&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Page&quot;},&quot;contactEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Page&quot;}}">
 class Component extends DCLogic {
   renderVals() {
     return {
       showToc: this.props.showToc ?? true,
-      contactEmail: this.props.contactEmail ?? 'info@brisabay.com'
+      contactEmail: this.props.contactEmail ?? BBSite.contactEmail
     };
   }
 }
