@@ -73,8 +73,24 @@
     });
   }
 
+  /**
+   * The footer copyright line.
+   *
+   * The year was hardcoded as "2026" in all seven footers, which would have
+   * quietly become wrong in every one of them on 1 January — the kind of thing
+   * nobody notices until a customer does. Derived from the clock instead.
+   *
+   * Uses the visitor's local year deliberately: this is a "still trading in"
+   * notice, not a legal filing date, and someone in Auckland seeing next year a
+   * few hours early is better than everyone seeing last year for a fortnight.
+   */
+  function copyright() {
+    return '© Brisa Bay ' + new Date().getFullYear();
+  }
+
   global.BBSite = {
     contactEmail: CONTACT_EMAIL,
-    faq: faq
+    faq: faq,
+    copyright: copyright
   };
 })(typeof window !== 'undefined' ? window : globalThis);

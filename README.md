@@ -72,6 +72,19 @@ hand-written DOM stub rather than jsdom, which keeps the repo dependency-free an
 Safari path be exercised directly by pretending `inert` is unsupported.
 
 ```bash
+node tools/check-pages.mjs
+```
+
+98 static checks across the seven pages. The important one is that each page's
+`<script type="text/x-dc">` logic block **parses** — the browser never parses it, the runtime
+compiles it with `new Function` at mount time, so a syntax error there is silent: the component
+simply never mounts and you get raw template. A missing comma in `renderVals` took out three
+pages during the copyright change and the only visible symptom was a `mailto:` link with no
+address. Also checks that every `{{ value }}` has a source, that the shared stylesheet and data
+module are wired up in the right order, that nothing has re-hardcoded the contact address or
+copyright year, and the accessibility basics (one `<h1>`, a skip link, `alt` on every image).
+
+```bash
 python3 tools/test-server.py
 ```
 
@@ -80,7 +93,7 @@ the fallback path that production actually serves, cache behaviour, and `.env` p
 **checks the CSP in `server.py` against the `<meta>` copy in every page** — the same policy is
 written twice, so this fails if they drift.
 
-All four exit non-zero on failure, so they work as a build gate. **Run them before every push** —
+All five exit non-zero on failure, so they work as a build gate. **Run them before every push** —
 there is no CI enforcing them yet (see [Known gaps](#known-gaps)). Warnings (missing phone
 numbers, coordinate precision) are reported but do not fail the build; they need someone with
 the source data, not a code change.
@@ -93,6 +106,9 @@ the source data, not a code change.
 index.html  about.html  blends.html  where-to-buy.html      pages
 privacy.html  terms.html  accessibility.html
 
+site.css              styles shared by every page, and the --bb-* palette
+site-data.js          FAQ list, contact address, copyright — shared content
+
 support.js            the DC runtime — renders every page (read the header comment)
 resources.js          points the runtime at vendored React instead of a CDN
 age-gate.js           shared age verification: persistence, focus trap, scroll lock
@@ -100,6 +116,7 @@ age-gate.js           shared age verification: persistence, focus trap, scroll l
 store-map.js          <store-map> Leaflet custom element
 locator-config.js     every external-service dependency, in one place
 locator-util.js       distance maths, directions URLs, tel: links
+locator-search.js     search ranking and geocode filtering (pure; the tests load it)
 locator-analytics.js  provider-agnostic instrumentation (inert by default)
 locator-jsonld.js     schema.org markup for the locator
 stores.json           102 stockists — the locator's data
@@ -132,10 +149,27 @@ build step to do this for you, and GitHub Pages caches for 10 minutes.
 
 ### Shared code
 
-There is no include mechanism. The site header, the footer and the ~45-line CSS preamble are
-duplicated in all 7 pages, and the FAQ list in 4. A change to any of them means editing every
-copy — roughly one commit in six in this repo's history has done exactly that, and drift has
-crept in more than once. Verify with `grep -l` that you got them all.
+There is still no include mechanism for **markup**, so the site header and footer are written
+out in each page. What used to be duplicated alongside them is not any more:
+
+| what | where it lives now |
+|------|--------------------|
+| fonts, bold reset, header/nav, links, skip link | `site.css` |
+| the brand palette (`--bb-*`) | `site.css` |
+| the FAQ list | `site-data.js` |
+| the contact address | `site-data.js` |
+| the copyright year | `site-data.js`, derived from the clock |
+
+`node tools/check-pages.mjs` fails if a page starts re-declaring any of them.
+
+The header and footer markup is deliberately **not** shared. The content is the same everywhere,
+but each page tunes its own layout — different `z-index`, `padding`, `gap` and `flex` behaviour,
+because the footer sits inside a scroll-pinned section on one page and a flex column on another.
+Sharing it needs either a build step or a runtime component with roughly six layout parameters,
+and the payoff is thin: the link list has changed once in this repo's history. Revisit it if that
+stops being true.
+
+When you do edit the header or footer, `grep -l` to check you got all seven.
 
 ### Vendored dependencies
 

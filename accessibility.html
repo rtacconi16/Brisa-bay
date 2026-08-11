@@ -94,7 +94,7 @@
         <a href="privacy.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Privacy Policy</a>
         <a href="terms.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Terms of Service</a>
         <span style="cursor: default; color: var(--bb-yellow)">Accessibility</span>
-        <span>&copy; Brisa Bay 2026</span>
+        <span>{{ copyright }}</span>
       </div>
       <div style="display: flex; gap: clamp(12px, 1.4vw, 26px)">
         <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay on Instagram" style="width: clamp(42px, 3vw, 58px); height: clamp(42px, 3vw, 58px); border-radius: 50%; background: var(--bb-cream); display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.1)"><svg width="55%" height="55%" viewBox="0 0 24 24" fill="none" stroke="#60b98f" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.2" cy="6.8" r="1.3" fill="#60b98f" stroke="none"></circle></svg></a>
@@ -108,7 +108,8 @@
 class Component extends DCLogic {
   renderVals() {
     return {
-      contactEmail: this.props.contactEmail ?? BBSite.contactEmail
+      contactEmail: this.props.contactEmail ?? BBSite.contactEmail,
+      copyright: BBSite.copyright(),
     };
   }
 }
