@@ -95,12 +95,13 @@ function makeDoc({ inertSupported }) {
 }
 
 let doc;
-function loadGate({ inertSupported = true, storageThrows = false } = {}) {
+function loadGate({ inertSupported = true, storageThrows = false, userAgent = '' } = {}) {
   doc = makeDoc({ inertSupported });
   const store = new Map();
   const win = {
     document: doc,
     HTMLElement: { prototype: doc._HTMLElementPrototype },
+    navigator: { userAgent },
     localStorage: {
       getItem: (k) => { if (storageThrows) throw new Error('denied'); return store.has(k) ? store.get(k) : null; },
       setItem: (k, v) => { if (storageThrows) throw new Error('denied'); store.set(k, String(v)); }
@@ -124,6 +125,20 @@ section('Persistence');
   check('writeOk() persists under the documented key', store.get('bb-age-ok') === '1');
   check('readOk() is true afterwards', gate.readOk() === true);
   check('KEY is exported for callers', gate.KEY === 'bb-age-ok');
+}
+{
+  const { gate, store } = loadGate({ userAgent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' });
+  check('Googlebot is treated as already verified', gate.readOk() === true);
+  check('Googlebot is not written into localStorage', store.size === 0);
+  check('isCrawler() is true for Googlebot', gate.isCrawler() === true);
+}
+{
+  const { gate, store } = loadGate({ userAgent: 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)' });
+  check('Facebook crawler skips the gate without persisting', gate.readOk() === true && store.size === 0);
+}
+{
+  const { gate } = loadGate({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15' });
+  check('a normal browser is not treated as a crawler', gate.readOk() === false && gate.isCrawler() === false);
 }
 {
   // Safari private mode and cookie-blocking extensions both throw here. The gate

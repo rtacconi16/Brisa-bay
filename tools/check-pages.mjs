@@ -16,12 +16,26 @@
 // These checks are static and cheap, and cover the mistakes that are silent at
 // runtime.
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const PAGES = readdirSync(ROOT).filter((f) => f.endsWith('.html')).sort();
+const PUBLIC_PAGES = [
+  'index.html', 'about.html', 'blends.html', 'where-to-buy.html',
+  'privacy.html', 'terms.html', 'accessibility.html'
+];
+const SKIP = new Set(['safari-check.html', '404.html']);
+const PAGES = readdirSync(ROOT)
+  .filter((f) => f.endsWith('.html') && !SKIP.has(f))
+  .sort();
+
+for (const expected of PUBLIC_PAGES) {
+  if (!PAGES.includes(expected)) {
+    console.error(`missing public page: ${expected}`);
+    process.exit(1);
+  }
+}
 
 let pass = 0, fail = 0;
 const failures = [];
@@ -124,6 +138,66 @@ for (const { file, html } of pages) {
     imgs.every((t) => /\bwidth=/.test(t) && /\bheight=/.test(t)) ||
     imgs.filter((t) => !/\bwidth=/.test(t)).every((t) => /\{\{/.test(t)),
     imgs.filter((t) => !/\bwidth=/.test(t) && !/\{\{/.test(t)).length + ' without');
+}
+
+// ===========================================================================
+section('SEO head tags');
+
+for (const { file, html } of pages) {
+  const head = html.slice(0, html.indexOf('</head>'));
+  const helmet = (html.match(/<helmet>[\s\S]*?<\/helmet>/) || [''])[0];
+  check(`${file} has a static <title> in <head>`, /<title>.+<\/title>/.test(head));
+  check(`${file} has a static meta description in <head>`,
+    /<meta name="description" content="[^"]+"/.test(head));
+  check(`${file} has a canonical URL`, /<link rel="canonical" href="https:\/\/brisabay\.com\//.test(head));
+  check(`${file} has og:url`, /property="og:url" content="https:\/\/brisabay\.com\//.test(head));
+  check(`${file} has an absolute og:image`,
+    /property="og:image" content="https:\/\/brisabay\.com\/assets\/web2\/og-share\.jpg"/.test(head));
+  check(`${file} helmet does not duplicate <title>`, !/<title>/.test(helmet));
+  check(`${file} helmet does not duplicate og: tags`, !/property="og:/.test(helmet));
+  const iData = head.indexOf('site-data.js');
+  const iSeo = head.indexOf('seo.js');
+  check(`${file} loads seo.js after site-data.js`,
+    iSeo > -1 && iData > -1 && iData < iSeo, `${iData} / ${iSeo}`);
+}
+
+{
+  const robots = existsSync(join(ROOT, 'robots.txt'))
+    ? readFileSync(join(ROOT, 'robots.txt'), 'utf8') : '';
+  const sitemap = existsSync(join(ROOT, 'sitemap.xml'))
+    ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
+  check('robots.txt exists', robots.length > 0);
+  check('robots.txt points at the sitemap', robots.includes('Sitemap: https://brisabay.com/sitemap.xml'));
+  check('robots.txt disallows safari-check.html', robots.includes('Disallow: /safari-check.html'));
+  check('sitemap.xml exists', sitemap.length > 0);
+  for (const loc of [
+    'https://brisabay.com/',
+    'https://brisabay.com/about.html',
+    'https://brisabay.com/blends.html',
+    'https://brisabay.com/where-to-buy.html',
+    'https://brisabay.com/privacy.html',
+    'https://brisabay.com/terms.html',
+    'https://brisabay.com/accessibility.html'
+  ]) {
+    check(`sitemap lists ${loc}`, sitemap.includes(`<loc>${loc}</loc>`));
+  }
+  check('sitemap does not list safari-check.html', !sitemap.includes('safari-check.html'));
+}
+
+{
+  const safari = join(ROOT, 'safari-check.html');
+  if (existsSync(safari)) {
+    const html = readFileSync(safari, 'utf8');
+    check('safari-check.html is noindex', /name="robots" content="noindex/.test(html));
+  }
+}
+
+{
+  const css = readFileSync(join(ROOT, 'site.css'), 'utf8');
+  const faces = css.match(/@font-face\s*\{[^}]+\}/g) || [];
+  check('every @font-face sets font-display: swap',
+    faces.length >= 2 && faces.every((b) => /font-display:\s*swap/.test(b)),
+    `${faces.length} faces`);
 }
 
 // ===========================================================================

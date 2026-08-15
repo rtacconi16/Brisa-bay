@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Deliberately the SAME policy the real pages ship, so anything Safari blocks
+     here it also blocks on index.html. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+<meta name="robots" content="noindex, nofollow">
+<title>Age gate — Safari diagnostic</title>
+<style>
+  body { font: 15px/1.5 -apple-system, system-ui, sans-serif; margin: 0; padding: 24px; background: #eeeee4; color: #3c3a34; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 15px; margin: 20px 0 6px; }
+  p.sub { margin: 0 0 20px; color: #7a766a; }
+  table { border-collapse: collapse; width: 100%; margin-bottom: 8px; }
+  td { padding: 6px 8px; border-bottom: 1px solid #dfdfd6; vertical-align: top; word-break: break-word; }
+  td:first-child { width: 1.4em; font-weight: 700; }
+  td:nth-child(2) { width: 30%; }
+  td:last-child { color: #57544a; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  .ok { color: #1d7a4c; }
+  .bad { color: #c62828; }
+  .info { color: #7a766a; }
+  ul { margin: 4px 0; padding-left: 20px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  #probe-btn { display: inline-block; background: #9ac21e; color: #fff; font-size: 17px;
+               padding: 12px 30px; border-radius: 999px; cursor: pointer; user-select: none; }
+  .box { background: #fff; border: 1px solid #dfdfd6; border-radius: 8px; padding: 16px; margin-top: 20px; }
+  /* Shown by default; safari-check.js hides it the moment it runs. If this is
+     still on screen, no JavaScript executed on this page at all. */
+  #noscript-banner { background: #c62828; color: #fff; padding: 16px 20px; border-radius: 8px;
+                     font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+  #noscript-banner span { display: block; font-weight: 400; font-size: 14px; margin-top: 6px; }
+</style>
+<!-- Diagnostic first, so its error/CSP listeners are live before the site scripts run. -->
+<script src="./safari-check.js"></script>
+<!-- Exactly what every real page loads, in the same order. -->
+<link rel="stylesheet" href="./site.css?v=2">
+<script src="./resources.js?v=1"></script>
+<script src="./support.js?v=1"></script>
+<script src="./site-data.js?v=1"></script>
+<script src="./age-gate.js?v=3"></script>
+</head>
+<body>
+<h1>Age gate — Safari diagnostic</h1>
+<p class="sub">Temporary page. Open at <strong>localhost:8080/safari-check.html</strong> and screenshot the whole page.</p>
+
+<div id="noscript-banner">
+  ⚠️ No JavaScript ran on this page.
+  <span>safari-check.js never executed — so the dead button is not an age-gate bug, it is that scripts
+        are being blocked entirely. Check the Page URL row below (if it is missing, the address bar
+        will say whether this is a file:// URL rather than http://localhost:8080).</span>
+</div>
+
+<div id="out">Running…</div>
+
+<div class="box">
+  <h2 style="margin-top:0">Click test</h2>
+  <p style="margin:0 0 12px">A plain <code>&lt;div role="button"&gt;</code> with an ordinary
+     <code>addEventListener</code> — no React, no site runtime. If this stays dead, nothing on any
+     page will respond.</p>
+  <div id="probe-btn" role="button" tabindex="0">I'm 21 or older</div>
+  <p id="clickres" style="margin:12px 0 0">Listeners not attached (script did not run).</p>
+</div>
+
+<div class="box">
+  <h2 style="margin-top:0">Native link test</h2>
+  <p style="margin:0 0 12px">This needs no JavaScript at all. If this link does nothing either,
+     the problem is the browser window, not the page.</p>
+  <a href="./safari-check.html?clicked=1">Reload this page with ?clicked=1</a>
+</div>
+</body>
+</html>

@@ -12,11 +12,31 @@
      — script, style, img, connect, font sources, object-src, base-uri,
      form-action — applies here exactly as it does locally. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
-<link rel="stylesheet" href="./site.css?v=1">
+<title>Brisa Bay | Napa Valley wine meant to be lived, not collected</title>
+<meta name="description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out.">
+<meta name="theme-color" content="#60b98f">
+<link rel="canonical" href="https://brisabay.com/">
+<link rel="icon" href="./favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brisa Bay">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
+<meta property="og:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out.">
+<meta property="og:url" content="https://brisabay.com/">
+<meta property="og:image" content="https://brisabay.com/assets/web2/og-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
+<meta name="twitter:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out.">
+<meta name="twitter:image" content="https://brisabay.com/assets/web2/og-share.jpg">
+<link rel="stylesheet" href="./site.css?v=2">
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./site-data.js?v=1"></script>
-<script src="./age-gate.js?v=2"></script>
+<script src="./seo.js?v=1"></script>
+<script src="./age-gate.js?v=3"></script>
 </head>
 <body>
 <x-dc>
@@ -433,14 +453,12 @@
       [data-bb-skip-cta] { opacity: 1 !important; transform: none !important; filter: none !important; }
       [data-bb-skip-rule] { transform: none !important; }
     }
+    /* Mobile keeps the desktop pin-scrub theatre and side-by-side plates.
+       Only density, type, and a couple of overflow guards are retuned. */
     @media (max-width: 900px) {
-      /* Keep page from sideways-scrolling when transforms fire */
       body { overflow-x: clip; }
 
-      /* Shorter / simpler mobile scrub — less sticky fatigue */
-      [data-bb-hero-scroll] { height: 125vh !important; }
-      [data-bb-hero-pin] { height: 100svh !important; }
-      [data-bb-opening] { height: 100% !important; }
+      [data-bb-hero-scroll] { height: 150vh; }
       [data-bb-hero] {
         flex: 1 1 auto !important;
         aspect-ratio: auto !important;
@@ -448,166 +466,143 @@
         height: auto !important;
       }
 
-      /* Story: natural section, no long pin */
-      [data-bb-story-scroll] { height: auto !important; }
-      [data-bb-story] {
-        position: relative !important;
-        height: auto !important;
-        min-height: 88svh !important;
-      }
-      [data-bb-story-copy] {
-        max-width: none !important;
-        margin-left: 0 !important;
-        padding: 48px 20px 40px !important;
-        justify-content: flex-end !important;
-        gap: 18px !important;
-      }
-      [data-bb-story-copy] p {
-        text-align: left !important;
-        font-size: 17px !important;
-        line-height: 1.45 !important;
-      }
-
-      /* Wines: un-pin so stacked copy + bottle never clips */
-      [data-bb-wines-scroll] { height: auto !important; }
-      [data-bb-wines-pin] {
-        position: relative !important;
-        height: auto !important;
-        min-height: 0 !important;
-        overflow: visible !important;
-        padding: 48px 20px 56px !important;
-      }
-      [data-bb-wines] {
-        grid-template-columns: 1fr !important;
-        gap: 28px !important;
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-      }
-      [data-bb-wines-copy] { order: 2; }
-      [data-bb-bottle] { order: 1; }
-      [data-bb-wines] h2 {
-        font-size: clamp(36px, 11vw, 52px) !important;
-        margin-bottom: 16px !important;
-      }
-      [data-bb-wines] h3 {
-        font-size: clamp(18px, 5.2vw, 24px) !important;
-        margin-bottom: 12px !important;
-      }
-      [data-bb-wines] p {
-        font-size: 16px !important;
-        text-align: left !important;
-        margin-bottom: 14px !important;
-      }
-      [data-bb-bottle-img] {
-        height: min(46vh, 320px) !important;
-        max-height: none !important;
-      }
-      [data-bb-wines-controls] {
-        flex-wrap: wrap !important;
-        gap: 10px 12px !important;
-      }
-      [data-bb-wines-controls] > div[role="button"] {
-        width: 48px !important;
-        height: 48px !important;
-        font-size: 22px !important;
-      }
-
-      /* Skip: keep a light pin, tighter type */
-      [data-bb-skip-scroll] { height: 145vh !important; }
-      [data-bb-skip-pin] {
-        padding: max(24px, env(safe-area-inset-top)) 20px 32px !important;
-        align-items: stretch !important;
-      }
-      [data-bb-skip-inner] {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: auto auto 1fr !important;
-        row-gap: 24px !important;
-        align-items: stretch !important;
-        height: 100% !important;
-      }
-      [data-bb-skip-title] {
-        grid-column: 1 !important;
-        max-width: none !important;
-        white-space: nowrap !important;
-        font-size: clamp(28px, 8.5vw, 44px) !important;
-        line-height: 1.05 !important;
-        align-self: start !important;
-        justify-self: start !important;
-      }
-      [data-bb-skip] {
-        grid-column: 1 !important;
-        grid-row: 3 !important;
-        width: 100% !important;
-        max-width: none !important;
-        height: auto !important;
-        justify-content: flex-end !important;
-      }
-      [data-bb-skip-stamp] {
-        grid-column: 1 !important;
-        grid-row: 2 !important;
-        width: clamp(140px, 42vw, 200px) !important;
-        justify-self: start !important;
-        align-self: center !important;
-      }
-      [data-bb-skip-lead] { font-size: 20px !important; }
-      [data-bb-skip-body] {
-        font-size: 18px !important;
-        max-width: none !important;
-      }
-
-      /* Same mobile header treatment as blends / about / where-to-buy */
       [data-bb-nav] { row-gap: 10px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
 
-      [data-bb-ticker] em,
-      [data-bb-ticker] span { font-size: 15px !important; }
+      /* Story: same overlay plate, readable column on a phone */
+      [data-bb-story-scroll] { height: 145vh; }
+      [data-bb-story-copy] {
+        max-width: min(720px, 88%) !important;
+        padding: clamp(28px, 4vh, 48px) 20px !important;
+        gap: 16px !important;
+      }
+      [data-bb-story-copy] p {
+        font-size: clamp(15px, 3.9vw, 18px) !important;
+        line-height: 1.42 !important;
+      }
 
-      [data-bb-deco] { display: none !important; }
+      /* Wines: copy | bottle, pinned, deco stays */
+      [data-bb-wines-scroll] { height: 140vh; }
+      [data-bb-wines-pin] {
+        padding: clamp(24px, 3.2vh, 40px) 16px !important;
+      }
+      [data-bb-wines] {
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
+        gap: clamp(12px, 3vw, 28px) !important;
+        margin-top: 0 !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        align-items: center !important;
+        align-content: center !important;
+      }
+      [data-bb-wines] h2 {
+        font-size: clamp(28px, 7.2vw, 44px) !important;
+        margin-bottom: clamp(10px, 1.6vh, 20px) !important;
+      }
+      [data-bb-wines] h3 {
+        font-size: clamp(15px, 3.8vw, 22px) !important;
+        margin-bottom: 8px !important;
+      }
+      [data-bb-wines] p {
+        font-size: clamp(13px, 3.3vw, 16px) !important;
+        line-height: 1.4 !important;
+        margin-bottom: 10px !important;
+      }
+      [data-bb-wines-copy] > a {
+        font-size: 13px !important;
+        padding: 10px 14px 12px !important;
+        text-align: center;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      [data-bb-bottle] {
+        height: 100%;
+        min-height: 0;
+        justify-content: center;
+      }
+      [data-bb-bottle-img] {
+        height: min(54vh, 460px) !important;
+        max-height: calc(100% - 64px) !important;
+        max-width: 100%;
+        width: auto;
+      }
+      [data-bb-wines-controls] {
+        flex-wrap: wrap !important;
+        gap: 8px 10px !important;
+      }
+      [data-bb-wines-controls] > div[role="button"] {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 20px !important;
+      }
+      [data-bb-wines-deco] {
+        width: clamp(280px, 72vw, 640px) !important;
+        right: -22% !important;
+        bottom: -16% !important;
+      }
 
-      /* Moments */
+      /* Skip: title spanning, stamp | copy */
+      [data-bb-skip-scroll] { height: 165vh; }
+      [data-bb-skip-pin] {
+        padding: max(20px, env(safe-area-inset-top)) 16px 28px !important;
+      }
+      [data-bb-skip-inner] {
+        column-gap: 12px !important;
+        row-gap: 12px !important;
+      }
+      [data-bb-skip-title] {
+        font-size: clamp(32px, 8.6vw, 44px) !important;
+        line-height: 1.05 !important;
+      }
+      [data-bb-skip-stamp] {
+        width: clamp(110px, 30vw, 180px) !important;
+      }
+      [data-bb-skip-stamp] span { font-size: clamp(16px, 4.5vw, 27px) !important; }
+      [data-bb-skip-lead] { font-size: clamp(16px, 4vw, 22px) !important; }
+      [data-bb-skip-body] {
+        font-size: clamp(14px, 3.6vw, 18px) !important;
+      }
+      [data-bb-skip-brush] {
+        width: clamp(280px, 78vw, 640px) !important;
+        right: -28% !important;
+      }
+
+      /* Moments: left lockup, multi-card strip */
       [data-bb-moments-intro] {
-        grid-template-columns: 1fr !important;
-        row-gap: 24px !important;
-        padding: 44px 20px 36px !important;
-        text-align: center !important;
+        padding: clamp(36px, 5vh, 56px) 20px !important;
+        text-align: left !important;
       }
       [data-bb-moments-copy] {
-        max-width: none !important;
-        text-align: center !important;
-        margin: 0 auto !important;
-        gap: 14px !important;
+        text-align: left !important;
+        margin: 0 !important;
+        gap: 12px !important;
       }
       [data-bb-moments-headline] {
-        flex-direction: column !important;
-        align-items: center !important;
-        flex-wrap: wrap !important;
-        gap: 10px !important;
-      }
-      [data-bb-moments-headline] h2,
-      [data-bb-moments-line] {
-        white-space: normal !important;
-        text-wrap: balance !important;
+        align-items: baseline !important;
+        gap: 8px 14px !important;
       }
       [data-bb-moments-headline] h2 {
-        font-size: clamp(34px, 10vw, 48px) !important;
+        font-size: clamp(28px, 8vw, 44px) !important;
       }
       [data-bb-moments-headline] p {
-        font-size: 17px !important;
+        font-size: clamp(15px, 3.8vw, 18px) !important;
         min-width: 0 !important;
       }
       [data-bb-moments-cta] {
         white-space: normal !important;
         text-wrap: pretty !important;
-        font-size: 15px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        font-size: clamp(14px, 3.5vw, 16px) !important;
+      }
+      [data-bb-moments-bar] {
+        height: clamp(64px, 10vw, 120px) !important;
+        top: clamp(-72px, -8vw, -32px) !important;
       }
       [data-bb-moments-gallery] {
-        padding: 16px 8px 28px !important;
+        padding: 16px 0 28px !important;
       }
       [data-bb-moments-gallery] > div:first-child {
         gap: 8px !important;
-        padding: 0 4px !important;
+        padding: 0 8px !important;
       }
       [data-bb-moments-gallery] > div:first-child > div[role="button"] {
         width: 44px !important;
@@ -615,43 +610,24 @@
         font-size: 20px !important;
       }
       [data-bb-moment] {
-        flex: 0 0 100% !important;
-        height: clamp(240px, 70vw, 380px) !important;
-      }
-
-      [data-bb-section] {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
+        flex: 0 0 calc((100% - 8px) / 2) !important;
+        height: clamp(180px, 48vw, 280px) !important;
       }
 
       [data-screen-label="Footer"] {
         padding: 48px 20px 36px !important;
       }
-      [data-screen-label="Footer"] > div:first-of-type > div:first-child {
-        font-size: clamp(48px, 16vw, 72px) !important;
-      }
     }
 
     @media (max-width: 480px) {
       [data-bb-skip-title] {
-        font-size: clamp(32px, 12vw, 42px) !important;
+        font-size: clamp(28px, 8.8vw, 36px) !important;
       }
-      [data-bb-bottle-img] {
-        height: min(42vh, 280px) !important;
+      [data-bb-wines] {
+        column-gap: 8px !important;
       }
     }
 </style>
-  <title>Brisa Bay | Napa Valley wine meant to be lived, not collected</title>
-  <meta name="description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
-  <meta name="theme-color" content="#60b98f">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Brisa Bay">
-  <meta property="og:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
-  <meta property="og:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
-  <meta property="og:image" content="assets/web2/bottle.webp">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
-  <meta name="twitter:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out, and find a bottle near you.">
 </helmet>
 
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#60b98f"></rect><text x="50" y="50" text-anchor="middle" dominant-baseline="central" font-family="Georgia, serif" font-size="34" fill="#eeeee4">BB</text></svg></template>
@@ -781,16 +757,31 @@
       <img loading="lazy" width="1200" height="452" data-bb-deco="" data-bb-skip-brush="" src="assets/brush/swoosh-lime.webp" alt="" aria-hidden="true">
       <div data-bb-skip-inner="">
         <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: var(--bb-ink-muted); letter-spacing: 0.03em">Skip&nbsp;the&nbsp;Cellar<br>Find&nbsp;a&nbsp;Bottle</h2>
+        <!-- Same stamp as the one on about.html's Brisa Way, in red instead of
+             sage. It was built here from different parts — an off-centre
+             asterisk sized to the whole box, a brush bar behind the wordmark,
+             and a wider ring — and the ring's radius (230 of a 460 viewBox) put
+             the letters right on the edge, so [data-bb-skip-pin]'s overflow
+             clipped them against the left padding. about.html's numbers leave
+             the ring room inside the box, so they are used verbatim below;
+             asterisk-red-centered.webp is asterisk-red.webp cropped to the same
+             461x461 frame as the sage one, so 17%/66% lands identically. -->
         <div data-bb-stamp="" data-bb-skip-stamp="" aria-hidden="true">
-          <img loading="lazy" width="810" height="796" src="assets/brush/asterisk-red.webp" alt="" style="position: absolute; left: -4%; top: -6%; width: 100%; transform: rotate(20deg)">
-          <div style="position: absolute; left: 7%; top: 33%; width: 86%; height: 32%; transform: rotate(22deg); display: flex; align-items: center; justify-content: center">
-            <img loading="lazy" width="1201" height="452" src="assets/brush/bar-red.webp" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%">
-            <span style="position: relative; font-size: clamp(22px, 2.6vw, 44px); color: var(--bb-cream)">Brisa Bay</span>
+          <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
+            <img loading="lazy" width="461" height="461" src="assets/brush/asterisk-red-centered.webp" alt="" style="width: 100%; height: 100%; transform: rotate(8deg)">
           </div>
-          <svg aria-hidden="true" focusable="false" viewBox="0 0 460 460" style="position: absolute; inset: 5%; width: 90%; height: 90%; overflow: visible; transform: rotate(-14deg); animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
-            <defs><path id="skipStampCircleR" d="M 230,230 m -230,0 a 230,230 0 1,1 460,0 a 230,230 0 1,1 -460,0"></path></defs>
-            <text font-family="Garamond Pro, serif" font-size="33" letter-spacing="12" fill="#e6393a" font-weight="600"><textPath href="#skipStampCircleR">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-          </svg>
+          <!-- Concentric with the asterisk and the ring; see the note on the
+               matching block in about.html for why this is inset:0 and not
+               sized by `top` + auto height. -->
+          <div style="position: absolute; inset: 0; transform: rotate(7deg); display: flex; align-items: center; justify-content: center">
+            <span style="font-size: clamp(27px, 3.3vw, 48px); color: var(--bb-cream); white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
+          </div>
+          <div style="position: absolute; inset: 7%; transform: rotate(-50deg)">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 440 440" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
+              <defs><path id="skipStampCircleR" d="M 220,220 m -205,0 a 205,205 0 1,1 410,0 a 205,205 0 1,1 -410,0"></path></defs>
+              <text font-family="Old Newspaper, serif" font-size="30" letter-spacing="13" fill="#e6393a"><textPath href="#skipStampCircleR" startOffset="0%">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
+            </svg>
+          </div>
         </div>
         <div data-bb-skip="">
           <span data-bb-skip-rule="" aria-hidden="true"></span>
@@ -1496,7 +1487,7 @@ class Component extends DCLogic {
     ];
     const moments = (this.state.moments && this.state.moments.length) ? this.state.moments : fallbackMoments;
     const momentCount = moments.length;
-    const visible = this.state.narrow ? 1 : Math.min(3, Math.max(1, momentCount));
+    const visible = this.state.narrow ? 2 : Math.min(3, Math.max(1, momentCount));
     const maxMoment = Math.max(0, momentCount - visible);
     const m = Math.min(Math.max(0, this.state.moment | 0), maxMoment);
     const setMoment = (n) => this.setState({ moment: ((n % (maxMoment + 1)) + (maxMoment + 1)) % (maxMoment + 1) });

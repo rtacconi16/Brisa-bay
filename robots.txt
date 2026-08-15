@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /safari-check.html
+Disallow: /safari-check.js
+
+Sitemap: https://brisabay.com/sitemap.xml

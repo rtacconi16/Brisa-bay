@@ -10,12 +10,6 @@
 // data lives in stores.json now — one source of truth, no hand-maintained copy
 // that silently drifts.
 (() => {
-  const BRAND = {
-    '@type': 'Brand',
-    name: 'Brisa Bay',
-    url: 'https://brisabay.com/'
-  };
-
   // schema.org has no "wine shop" type; map each stockist kind to the closest
   // standard one so the markup is honest rather than decorative.
   const TYPE_MAP = {
@@ -55,35 +49,20 @@
 
   function emit(stores) {
     if (!Array.isArray(stores) || !stores.length) return;
+    // Organization lives in seo.js so it is present on every page. This file
+    // only emits the stockist ItemList — duplicating Organization here would
+    // give Google two copies of the same node.
     const graph = {
       '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'Organization',
-          name: 'Brisa Bay',
-          url: 'https://brisabay.com/',
-          brand: BRAND,
-          sameAs: ['https://www.instagram.com/brisabaywines'],
-          contactPoint: {
-            '@type': 'ContactPoint',
-            // site-data.js is loaded before this file on where-to-buy.html; the
-            // fallback only matters if that ever stops being true.
-            email: (window.BBSite && window.BBSite.contactEmail) || 'info@brisabay.com',
-            contactType: 'customer service'
-          }
-        },
-        {
-          '@type': 'ItemList',
-          name: 'Brisa Bay stockists',
-          description: 'Shops, bars and restaurants carrying Brisa Bay Napa Valley wine.',
-          numberOfItems: stores.length,
-          itemListElement: stores.map((s, i) => ({
-            '@type': 'ListItem',
-            position: i + 1,
-            item: storeNode(s)
-          }))
-        }
-      ]
+      '@type': 'ItemList',
+      name: 'Brisa Bay stockists',
+      description: 'Shops, bars and restaurants carrying Brisa Bay Napa Valley wine.',
+      numberOfItems: stores.length,
+      itemListElement: stores.map((s, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: storeNode(s)
+      }))
     };
     const el = document.createElement('script');
     el.type = 'application/ld+json';
