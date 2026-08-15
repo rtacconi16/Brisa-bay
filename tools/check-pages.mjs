@@ -95,7 +95,10 @@ for (const { file, html } of pages) {
   const head = html.slice(0, html.indexOf('</head>'));
   check(`${file} links site.css`, /href="\.\/site\.css\?v=\d+"/.test(head));
   check(`${file} loads site-data.js`, /src="\.\/site-data\.js\?v=\d+"/.test(head));
-  check(`${file} carries a meta CSP`, /http-equiv="Content-Security-Policy"/.test(head));
+  check(`${file} does not carry a meta CSP`, !/http-equiv="Content-Security-Policy"/.test(head));
+  check(`${file} preloads both WOFF2 faces`,
+    /rel="preload"[^>]+AGaramondPro-Regular\.woff2/.test(head) &&
+    /rel="preload"[^>]+OldNewspaperTypes\.woff2/.test(head));
 
   // resources.js must precede support.js or the vendored-React override is read
   // too late; site.css must precede both so it is not render-blocking mid-parse.
@@ -151,8 +154,13 @@ for (const { file, html } of pages) {
     /<meta name="description" content="[^"]+"/.test(head));
   check(`${file} has a canonical URL`, /<link rel="canonical" href="https:\/\/brisabay\.com\//.test(head));
   check(`${file} has og:url`, /property="og:url" content="https:\/\/brisabay\.com\//.test(head));
-  check(`${file} has an absolute og:image`,
-    /property="og:image" content="https:\/\/brisabay\.com\/assets\/web2\/og-share\.jpg"/.test(head));
+  const og = (head.match(/property="og:image" content="(https:\/\/brisabay\.com\/assets\/web2\/og-[^"]+\.jpg)"/) || [])[1];
+  check(`${file} has an absolute og:image under assets/web2`, Boolean(og), og || 'missing');
+  const canonical = (head.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
+  const ogUrl = (head.match(/property="og:url" content="([^"]+)"/) || [])[1] || '';
+  const expectedCanon = file === 'index.html' ? 'https://brisabay.com/' : `https://brisabay.com/${file}`;
+  check(`${file} canonical is self-referential`, canonical === expectedCanon, canonical);
+  check(`${file} og:url matches canonical`, ogUrl === canonical, ogUrl);
   check(`${file} helmet does not duplicate <title>`, !/<title>/.test(helmet));
   check(`${file} helmet does not duplicate og: tags`, !/property="og:/.test(helmet));
   const iData = head.indexOf('site-data.js');
@@ -162,26 +170,53 @@ for (const { file, html } of pages) {
 }
 
 {
+  const titles = [];
+  const descs = [];
+  for (const { file, html } of pages) {
+    const head = html.slice(0, html.indexOf('</head>'));
+    const title = (head.match(/<title>([^<]+)<\/title>/) || [])[1] || '';
+    const desc = (head.match(/<meta name="description" content="([^"]+)"/) || [])[1] || '';
+    const plainTitle = title.replace(/&amp;/g, '&');
+    check(`${file} title length 15–70`, plainTitle.length >= 15 && plainTitle.length <= 70,
+      `${plainTitle.length}`);
+    check(`${file} description length 50–160`, desc.length >= 50 && desc.length <= 160,
+      `${desc.length}`);
+    titles.push([file, plainTitle]);
+    descs.push([file, desc]);
+  }
+  for (let i = 0; i < titles.length; i++) {
+    for (let j = i + 1; j < titles.length; j++) {
+      check(`titles unique: ${titles[i][0]} vs ${titles[j][0]}`, titles[i][1] !== titles[j][1]);
+      check(`descriptions unique: ${descs[i][0]} vs ${descs[j][0]}`, descs[i][1] !== descs[j][1]);
+    }
+  }
+}
+
+{
   const robots = existsSync(join(ROOT, 'robots.txt'))
     ? readFileSync(join(ROOT, 'robots.txt'), 'utf8') : '';
   const sitemap = existsSync(join(ROOT, 'sitemap.xml'))
     ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
   check('robots.txt exists', robots.length > 0);
   check('robots.txt points at the sitemap', robots.includes('Sitemap: https://brisabay.com/sitemap.xml'));
-  check('robots.txt disallows safari-check.html', robots.includes('Disallow: /safari-check.html'));
+  check('robots.txt does not Disallow safari-check', !/Disallow:\s*\/safari-check/.test(robots));
   check('sitemap.xml exists', sitemap.length > 0);
-  for (const loc of [
-    'https://brisabay.com/',
-    'https://brisabay.com/about.html',
-    'https://brisabay.com/blends.html',
-    'https://brisabay.com/where-to-buy.html',
-    'https://brisabay.com/privacy.html',
-    'https://brisabay.com/terms.html',
-    'https://brisabay.com/accessibility.html'
-  ]) {
-    check(`sitemap lists ${loc}`, sitemap.includes(`<loc>${loc}</loc>`));
+  check('sitemap uses lastmod', sitemap.includes('<lastmod>'));
+  check('sitemap omits changefreq', !sitemap.includes('<changefreq>'));
+  check('sitemap omits priority', !sitemap.includes('<priority>'));
+  for (const f of PUBLIC_PAGES) {
+    const loc = f === 'index.html' ? 'https://brisabay.com/' : `https://brisabay.com/${f}`;
+    check(`sitemap lists public ${f}`, sitemap.includes(`<loc>${loc}</loc>`));
+  }
+  const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  check('sitemap has loc entries', locs.length > 0);
+  for (const loc of locs) {
+    const path = loc.replace('https://brisabay.com/', '').replace(/\/$/, '');
+    const file = path === '' ? 'index.html' : path;
+    check(`sitemap loc resolves: ${loc}`, existsSync(join(ROOT, file)), file);
   }
   check('sitemap does not list safari-check.html', !sitemap.includes('safari-check.html'));
+  check('sitemap does not list 404.html', !sitemap.includes('404.html'));
 }
 
 {
@@ -190,6 +225,44 @@ for (const { file, html } of pages) {
     const html = readFileSync(safari, 'utf8');
     check('safari-check.html is noindex', /name="robots" content="noindex/.test(html));
   }
+  const notFound = join(ROOT, '404.html');
+  if (existsSync(notFound)) {
+    const html = readFileSync(notFound, 'utf8');
+    check('404.html is noindex', /name="robots" content="noindex/.test(html));
+  }
+}
+
+{
+  const stockDir = join(ROOT, 'stockists');
+  const stockFiles = existsSync(stockDir)
+    ? readdirSync(stockDir).filter((f) => f.endsWith('.html')).sort()
+    : [];
+  check('stockist pages exist', stockFiles.length >= 16, `${stockFiles.length}`);
+  const sitemap = existsSync(join(ROOT, 'sitemap.xml'))
+    ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
+  for (const f of stockFiles) {
+    const html = readFileSync(join(stockDir, f), 'utf8');
+    const canonical = (html.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
+    check(`stockists/${f} canonical is self-referential`,
+      canonical === `https://brisabay.com/stockists/${f}`, canonical);
+    check(`stockists/${f} is in the sitemap`,
+      sitemap.includes(`<loc>https://brisabay.com/stockists/${f}</loc>`));
+    check(`stockists/${f} has one h1`, (html.match(/<h1[\s>]/g) || []).length === 1);
+    check(`stockists/${f} is not noindex`, !/name="robots" content="noindex/.test(html));
+  }
+  const wtb = readFileSync(join(ROOT, 'where-to-buy.html'), 'utf8');
+  for (const f of stockFiles) {
+    check(`where-to-buy links stockists/${f}`, wtb.includes(`stockists/${f}`));
+  }
+}
+
+{
+  const headers = existsSync(join(ROOT, '_headers'))
+    ? readFileSync(join(ROOT, '_headers'), 'utf8') : '';
+  check('_headers exists', headers.length > 0);
+  check('_headers sends CSP', headers.includes('Content-Security-Policy:'));
+  check('_headers sends X-Frame-Options', headers.includes('X-Frame-Options: DENY'));
+  check('_redirects exists', existsSync(join(ROOT, '_redirects')));
 }
 
 {
@@ -198,6 +271,7 @@ for (const { file, html } of pages) {
   check('every @font-face sets font-display: swap',
     faces.length >= 2 && faces.every((b) => /font-display:\s*swap/.test(b)),
     `${faces.length} faces`);
+  check('fonts are woff2', faces.every((b) => /format\('woff2'\)/.test(b)));
 }
 
 // ===========================================================================

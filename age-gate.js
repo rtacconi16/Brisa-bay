@@ -7,19 +7,8 @@
 
   var KEY = 'bb-age-ok';
   var FOCUSABLE = 'a[href],button,input,select,textarea,iframe,[tabindex]';
-  var CRAWLER_UA = /Googlebot|Google-InspectionTool|bingbot|BingPreview|Slurp|DuckDuckBot|Baiduspider|YandexBot|facebookexternalhit|Facebot|Twitterbot|LinkedInBot|Pinterestbot|Slackbot|WhatsApp/i;
-
-  function isCrawler() {
-    try {
-      var ua = (global.navigator && global.navigator.userAgent) || '';
-      return CRAWLER_UA.test(ua);
-    } catch (e) {
-      return false;
-    }
-  }
 
   function readOk() {
-    if (isCrawler()) return true;
     try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; }
   }
 
@@ -149,7 +138,6 @@
     KEY: KEY,
     readOk: readOk,
     writeOk: writeOk,
-    isCrawler: isCrawler,
     activate: activate,
     setInert: setInert,
     syncModal: syncModal,

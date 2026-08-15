@@ -3,15 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
-     server.py never reaches real users; this meta tag is how it gets there.
-     Keep it in sync with CSP in server.py.
-
-     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
-     clickjacking protection still needs a CDN in front of Pages. Everything else
-     — script, style, img, connect, font sources, object-src, base-uri,
-     form-action — applies here exactly as it does locally. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <title>Brisa Bay | Napa Valley wine meant to be lived, not collected</title>
 <meta name="description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out.">
 <meta name="theme-color" content="#60b98f">
@@ -31,12 +22,14 @@
 <meta name="twitter:title" content="Brisa Bay | Napa Valley wine meant to be lived, not collected">
 <meta name="twitter:description" content="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out.">
 <meta name="twitter:image" content="https://brisabay.com/assets/web2/og-share.jpg">
-<link rel="stylesheet" href="./site.css?v=2">
+<link rel="stylesheet" href="./site.css?v=3">
+<link rel="preload" href="./assets/fonts/AGaramondPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin>
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./site-data.js?v=1"></script>
-<script src="./seo.js?v=1"></script>
-<script src="./age-gate.js?v=3"></script>
+<script src="./seo.js?v=2"></script>
+<script src="./age-gate.js?v=4"></script>
 </head>
 <body>
 <x-dc>
@@ -644,7 +637,8 @@
           <!-- poster paints on the first frame so the hero is never a black box while
                the file streams in; the encode is faststart, so playback begins long
                before the download finishes. -->
-          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="assets/web2/hero-poster.jpg" width="1920" height="960" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline webkit-playsinline preload="none" poster="assets/web2/hero-poster.jpg" width="960" height="480" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+            <source src="assets/web2/hero-video.webm" type="video/webm">
             <source src="assets/web2/hero-video.mp4" type="video/mp4">
           </video>
           <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
@@ -692,7 +686,7 @@
       <div style="position: absolute; inset: 0; background: linear-gradient(to right, rgba(45,45,42,0.72) 0%, rgba(45,45,42,0.35) 48%, rgba(45,45,42,0.12) 100%); pointer-events: none; z-index: 2"></div>
       <div data-bb-story-copy="" style="position: relative; z-index: 3; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: clamp(22px, 2.3vw, 44px); padding: clamp(40px, 4.2vw, 80px) clamp(22px, 5vw, 110px); box-sizing: border-box; max-width: min(720px, 52%); margin-right: auto">
         <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.9vw, 36px); line-height: 1.42; color: var(--bb-cream); text-align: justify; text-wrap: pretty">Where the water meets the vines, the San Pablo Bay breeze inspired our family to take our deep Napa roots in a fresh direction. Working with growers who put their hearts into the soil, we craft vibrant wines with no barriers or exclusivity.</p>
-        <p data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); color: var(--bb-cream); font-style: italic">This is wine meant to be lived.</p>
+        <h2 data-bb-story-line="" style="margin: 0; font-size: clamp(17px, 1.8vw, 34px); font-weight: 400; color: var(--bb-cream); font-style: italic">This is wine meant to be lived.</h2>
         <div data-bb-story-line="" style="display: flex; flex-wrap: wrap; align-items: center; gap: clamp(18px, 1.9vw, 36px)">
           <a href="about.html" style="background: var(--bb-yellow); color: var(--bb-ink); font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.3vw, 44px) clamp(13px, 1.05vw, 20px); border-radius: 30px; text-decoration: none; transition: transform 0.25s" style-hover="transform: scale(1.06)">Learn the Brisa Way</a>
         </div>
@@ -1474,7 +1468,7 @@ class Component extends DCLogic {
       ? 'opacity:1;transform:none;z-index:2'
       : `opacity:0;transform:translate3d(${fromX}px,16px,0) rotate(${fromRot}deg) scale(0.96);z-index:1;pointer-events:none`;
     const fallbackMoments = [
-      { src: 'assets/web2/story-photo.webp', alt: 'Friends on a beach blanket pouring Brisa Bay Chardonnay', permalink: 'https://www.instagram.com/brisabaywines' },
+      { src: 'assets/web2/vibe-chardonnay.webp', alt: 'Brisa Bay Chardonnay chilling by the pool', permalink: 'https://www.instagram.com/brisabaywines' },
       { src: 'assets/web2/collage-a.webp', alt: 'Friends clinking glasses of Brisa Bay over a picnic blanket', permalink: 'https://www.instagram.com/brisabaywines' },
       { src: 'assets/web2/collage-b.webp', alt: 'A table set with Brisa Bay bottles, white wine and small plates', permalink: 'https://www.instagram.com/brisabaywines' },
       { src: 'assets/web2/collage-c.webp', alt: 'A pool float afternoon with a bottle of Brisa Bay Sauvignon Blanc', permalink: 'https://www.instagram.com/brisabaywines' },
@@ -1483,7 +1477,7 @@ class Component extends DCLogic {
       { src: 'assets/web2/freshness-first.webp', alt: 'Chilled bottles of Brisa Bay held up against a blue sky', permalink: 'https://www.instagram.com/brisabaywines' },
       { src: 'assets/web2/intro-photo.webp', alt: 'An afternoon pour of Brisa Bay in the sun', permalink: 'https://www.instagram.com/brisabaywines' },
       { src: 'assets/web2/keeping-simple.webp', alt: 'Keeping it simple with Brisa Bay', permalink: 'https://www.instagram.com/brisabaywines' },
-      { src: 'assets/web2/vibe-chardonnay.webp', alt: 'Brisa Bay Chardonnay chilling by the pool', permalink: 'https://www.instagram.com/brisabaywines' }
+      { src: 'assets/web2/pour/16-img-6287.webp', alt: 'Pouring Brisa Bay at the table', permalink: 'https://www.instagram.com/brisabaywines' }
     ];
     const moments = (this.state.moments && this.state.moments.length) ? this.state.moments : fallbackMoments;
     const momentCount = moments.length;

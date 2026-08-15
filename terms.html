@@ -3,15 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
-     server.py never reaches real users; this meta tag is how it gets there.
-     Keep it in sync with CSP in server.py.
-
-     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
-     clickjacking protection still needs a CDN in front of Pages. Everything else
-     — script, style, img, connect, font sources, object-src, base-uri,
-     form-action — applies here exactly as it does locally. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <title>Terms of Service | Brisa Bay</title>
 <meta name="description" content="The terms governing your use of the Brisa Bay website.">
 <meta name="theme-color" content="#60b98f">
@@ -31,11 +22,13 @@
 <meta name="twitter:title" content="Terms of Service | Brisa Bay">
 <meta name="twitter:description" content="The terms governing your use of the Brisa Bay website.">
 <meta name="twitter:image" content="https://brisabay.com/assets/web2/og-share.jpg">
-<link rel="stylesheet" href="./site.css?v=2">
+<link rel="stylesheet" href="./site.css?v=3">
+<link rel="preload" href="./assets/fonts/AGaramondPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin>
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./site-data.js?v=1"></script>
-<script src="./seo.js?v=1"></script>
+<script src="./seo.js?v=2"></script>
 </head>
 <body>
 <x-dc>

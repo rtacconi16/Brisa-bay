@@ -3,15 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
-     server.py never reaches real users; this meta tag is how it gets there.
-     Keep it in sync with CSP in server.py.
-
-     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
-     clickjacking protection still needs a CDN in front of Pages. Everything else
-     — script, style, img, connect, font sources, object-src, base-uri,
-     form-action — applies here exactly as it does locally. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <title>Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc</title>
 <meta name="description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
 <meta name="theme-color" content="#60b98f">
@@ -24,19 +15,21 @@
 <meta property="og:title" content="Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc">
 <meta property="og:description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
 <meta property="og:url" content="https://brisabay.com/blends.html">
-<meta property="og:image" content="https://brisabay.com/assets/web2/og-share.jpg">
+<meta property="og:image" content="https://brisabay.com/assets/web2/og-blends.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Our Wines | Brisa Bay Chardonnay &amp; Sauvignon Blanc">
 <meta name="twitter:description" content="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine.">
-<meta name="twitter:image" content="https://brisabay.com/assets/web2/og-share.jpg">
-<link rel="stylesheet" href="./site.css?v=2">
+<meta name="twitter:image" content="https://brisabay.com/assets/web2/og-blends.jpg">
+<link rel="stylesheet" href="./site.css?v=3">
+<link rel="preload" href="./assets/fonts/AGaramondPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin>
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./site-data.js?v=1"></script>
-<script src="./seo.js?v=1"></script>
-<script src="./age-gate.js?v=3"></script>
+<script src="./seo.js?v=2"></script>
+<script src="./age-gate.js?v=4"></script>
 </head>
 <body>
 <x-dc>
@@ -736,7 +729,7 @@
       <div data-bb-blend-stage="" data-blend="{{ blendAttr }}" aria-labelledby="bb-active-wine">
         <p id="bb-active-wine" data-bb-stage-live="" aria-live="polite" aria-atomic="true">{{ liveLabel }}</p>
         <div data-bb-stage-copy="">
-          <div data-bb-copy-panel="" style="opacity: {{ fade0 }}; transform: {{ shift0 }}; pointer-events: {{ pointer0 }}" aria-hidden="{{ hidden0 }}">
+            <div data-bb-copy-panel="" id="chardonnay" style="opacity: {{ fade0 }}; transform: {{ shift0 }}; pointer-events: {{ pointer0 }}" aria-hidden="{{ hidden0 }}">
             <h2 id="bb-wine-chardonnay">Chardonnay</h2>
             <p>A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
             <dl data-bb-spec="">
@@ -744,7 +737,7 @@
               <div><dt>Best served</dt><dd>Cold, during a long lunch that rolls right into dinner.</dd></div>
             </dl>
           </div>
-          <div data-bb-copy-panel="" style="opacity: {{ fade1 }}; transform: {{ shift1 }}; pointer-events: {{ pointer1 }}" aria-hidden="{{ hidden1 }}">
+            <div data-bb-copy-panel="" id="sauvignon-blanc" style="opacity: {{ fade1 }}; transform: {{ shift1 }}; pointer-events: {{ pointer1 }}" aria-hidden="{{ hidden1 }}">
             <h2 id="bb-wine-sauvignon">Sauvignon Blanc</h2>
             <p>Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
             <dl data-bb-spec="">
@@ -902,9 +895,27 @@ class Component extends DCLogic {
     faqOpen: false,
     gateDenied: false
   };
-  componentDidMount() { this._syncAgeModal(); }
+  componentDidMount() {
+    this._applyWineHash();
+    this._syncAgeModal();
+    if (typeof window !== 'undefined') {
+      this._onHash = () => this._applyWineHash();
+      window.addEventListener('hashchange', this._onHash);
+    }
+  }
   componentDidUpdate() { this._syncAgeModal(); }
-  componentWillUnmount() { if (window.BBAgeGate) BBAgeGate.cleanupModal(this); }
+  componentWillUnmount() {
+    if (typeof window !== 'undefined' && this._onHash) {
+      window.removeEventListener('hashchange', this._onHash);
+    }
+    if (window.BBAgeGate) BBAgeGate.cleanupModal(this);
+  }
+  _applyWineHash() {
+    if (typeof location === 'undefined') return;
+    const h = String(location.hash || '').replace(/^#/, '').toLowerCase();
+    if (h === 'sauvignon-blanc' || h === 'bb-wine-sauvignon') this.setState({ blendIndex: 1 });
+    else if (h === 'chardonnay' || h === 'bb-wine-chardonnay') this.setState({ blendIndex: 0 });
+  }
   _syncAgeModal() {
     if (!window.BBAgeGate) return;
     BBAgeGate.syncModal(this, {

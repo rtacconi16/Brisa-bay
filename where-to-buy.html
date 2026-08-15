@@ -3,15 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Production CSP. GitHub Pages cannot send response headers, so the policy in
-     server.py never reaches real users; this meta tag is how it gets there.
-     Keep it in sync with CSP in server.py.
-
-     Meta cannot express frame-ancestors, and X-Frame-Options is header-only, so
-     clickjacking protection still needs a CDN in front of Pages. Everything else
-     — script, style, img, connect, font sources, object-src, base-uri,
-     form-action — applies here exactly as it does locally. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <title>Where to Buy Brisa Bay | Napa Valley wine near you</title>
 <meta name="description" content="Find shops, bars and restaurants pouring Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc. Search by city or use the map to locate a bottle near you.">
 <meta name="theme-color" content="#3c3a34">
@@ -24,19 +15,21 @@
 <meta property="og:title" content="Where to Buy Brisa Bay | Napa Valley wine near you">
 <meta property="og:description" content="Find shops, bars and restaurants pouring Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc. Search by city or use the map to locate a bottle near you.">
 <meta property="og:url" content="https://brisabay.com/where-to-buy.html">
-<meta property="og:image" content="https://brisabay.com/assets/web2/og-share.jpg">
+<meta property="og:image" content="https://brisabay.com/assets/web2/og-locator.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Where to Buy Brisa Bay | Napa Valley wine near you">
 <meta name="twitter:description" content="Find shops, bars and restaurants pouring Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc. Search by city or use the map to locate a bottle near you.">
-<meta name="twitter:image" content="https://brisabay.com/assets/web2/og-share.jpg">
-<link rel="stylesheet" href="./site.css?v=2">
+<meta name="twitter:image" content="https://brisabay.com/assets/web2/og-locator.jpg">
+<link rel="stylesheet" href="./site.css?v=3">
+<link rel="preload" href="./assets/fonts/AGaramondPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin>
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./site-data.js?v=1"></script>
-<script src="./seo.js?v=1"></script>
-<script src="./age-gate.js?v=3"></script>
+<script src="./seo.js?v=2"></script>
+<script src="./age-gate.js?v=4"></script>
 <script src="./locator-config.js?v=2"></script>
 <script src="./locator-util.js?v=1"></script>
 <script src="./locator-search.js?v=1"></script>
@@ -625,6 +618,37 @@
 
     </div>
   </div>
+
+  <section data-bb-cities="" aria-labelledby="bb-shop-by-city" style="background: var(--bb-cream); padding: clamp(40px, 6vw, 96px) clamp(20px, 5vw, 190px); box-sizing: border-box">
+    <h2 id="bb-shop-by-city" style="margin: 0 0 12px; font-family: 'Old Newspaper', serif; font-size: clamp(28px, 3.2vw, 54px); font-weight: 400; color: var(--bb-dark)">Shop by city</h2>
+    <p style="margin: 0 0 28px; max-width: 42em; font-size: clamp(16px, 1.5vw, 26px); line-height: 1.45">City pages for the denser markets, and a state page when a town has only one shop. The map above still has every account.</p>
+    <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 28px; font-size: clamp(16px, 1.5vw, 24px)">
+      <li><a href="stockists/atlanta-ga.html">Atlanta, GA</a></li>
+      <li><a href="stockists/san-juan-pr.html">San Juan, PR</a></li>
+      <li><a href="stockists/boca-raton-fl.html">Boca Raton, FL</a></li>
+      <li><a href="stockists/decatur-ga.html">Decatur, GA</a></li>
+      <li><a href="stockists/miami-fl.html">Miami, FL</a></li>
+      <li><a href="stockists/cumming-ga.html">Cumming, GA</a></li>
+      <li><a href="stockists/long-branch-nj.html">Long Branch, NJ</a></li>
+      <li><a href="stockists/red-bank-nj.html">Red Bank, NJ</a></li>
+      <li><a href="stockists/columbus-oh.html">Columbus, OH</a></li>
+      <li><a href="stockists/caguas-pr.html">Caguas, PR</a></li>
+      <li><a href="stockists/palm-beach-gardens-fl.html">Palm Beach Gardens, FL</a></li>
+      <li><a href="stockists/west-palm-beach-fl.html">West Palm Beach, FL</a></li>
+      <li><a href="stockists/delray-beach-fl.html">Delray Beach, FL</a></li>
+      <li><a href="stockists/avondale-estates-ga.html">Avondale Estates, GA</a></li>
+      <li><a href="stockists/asbury-park-nj.html">Asbury Park, NJ</a></li>
+      <li><a href="stockists/naranjito-pr.html">Naranjito, PR</a></li>
+    </ul>
+    <h3 style="margin: 36px 0 12px; font-family: 'Old Newspaper', serif; font-size: clamp(20px, 2.2vw, 36px); font-weight: 400; color: var(--bb-dark)">By state</h3>
+    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px 28px; font-size: clamp(16px, 1.5vw, 24px)">
+      <li><a href="stockists/florida.html">Florida</a></li>
+      <li><a href="stockists/georgia.html">Georgia</a></li>
+      <li><a href="stockists/new-jersey.html">New Jersey</a></li>
+      <li><a href="stockists/ohio.html">Ohio</a></li>
+      <li><a href="stockists/puerto-rico.html">Puerto Rico</a></li>
+    </ul>
+  </section>
 
   </main>
 

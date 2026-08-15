@@ -128,17 +128,9 @@ section('Persistence');
 }
 {
   const { gate, store } = loadGate({ userAgent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' });
-  check('Googlebot is treated as already verified', gate.readOk() === true);
-  check('Googlebot is not written into localStorage', store.size === 0);
-  check('isCrawler() is true for Googlebot', gate.isCrawler() === true);
-}
-{
-  const { gate, store } = loadGate({ userAgent: 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)' });
-  check('Facebook crawler skips the gate without persisting', gate.readOk() === true && store.size === 0);
-}
-{
-  const { gate } = loadGate({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15' });
-  check('a normal browser is not treated as a crawler', gate.readOk() === false && gate.isCrawler() === false);
+  check('Googlebot is not given a user-agent bypass', gate.readOk() === false);
+  check('sniffing a crawler does not write localStorage', store.size === 0);
+  check('isCrawler is not exported', typeof gate.isCrawler === 'undefined');
 }
 {
   // Safari private mode and cookie-blocking extensions both throw here. The gate

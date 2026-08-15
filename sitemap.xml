@@ -2,37 +2,114 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://brisabay.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-08-15</lastmod>
   </url>
   <url>
     <loc>https://brisabay.com/about.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-15</lastmod>
   </url>
   <url>
     <loc>https://brisabay.com/blends.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-08-15</lastmod>
   </url>
   <url>
     <loc>https://brisabay.com/where-to-buy.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <lastmod>2026-08-15</lastmod>
   </url>
   <url>
     <loc>https://brisabay.com/privacy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <lastmod>2026-08-15</lastmod>
   </url>
   <url>
     <loc>https://brisabay.com/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <lastmod>2026-08-15</lastmod>
   </url>
   <url>
     <loc>https://brisabay.com/accessibility.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
+    <lastmod>2026-08-15</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/atlanta-ga.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/san-juan-pr.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/boca-raton-fl.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/decatur-ga.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/caguas-pr.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/columbus-oh.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/cumming-ga.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/long-branch-nj.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/miami-fl.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/red-bank-nj.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/asbury-park-nj.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/avondale-estates-ga.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/delray-beach-fl.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/naranjito-pr.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/palm-beach-gardens-fl.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/west-palm-beach-fl.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/florida.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/georgia.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/new-jersey.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/ohio.html</loc>
+    <lastmod>2026-08-07</lastmod>
+  </url>
+  <url>
+    <loc>https://brisabay.com/stockists/puerto-rico.html</loc>
+    <lastmod>2026-08-07</lastmod>
   </url>
 </urlset>

@@ -10,8 +10,8 @@ for the locator — but three things in it are worth pinning down:
     GitHub Pages does not run this file and /api/instagram/moments 404s there;
   * media normalisation, which has real branching for video and carousel posts
     and silently drops anything it cannot resolve to an image;
-  * the security headers, whose CSP must stay in step with the <meta> copy now
-    embedded in every page — they are the same policy expressed twice.
+  * the security headers, whose CSP must stay in step with `_headers`
+    (Cloudflare Pages). They are the same policy expressed twice.
 
 Standard library only: this repo has no package.json and server.py has no pip
 dependencies, and that is worth keeping.
@@ -179,21 +179,30 @@ class SecurityHeaders(unittest.TestCase):
         script_src = [d for d in server.CSP.split("; ") if d.startswith("script-src")][0]
         self.assertNotIn("unsafe-inline", script_src)
 
-    def test_the_csp_matches_the_copy_embedded_in_every_page(self):
-        # server.py and the <meta> tags are the same policy expressed twice;
-        # meta cannot express frame-ancestors, so that one is expected to differ.
+    def test_the_csp_matches_the_cloudflare_headers_file(self):
+        # Production headers live in `_headers` (Cloudflare Pages). server.py is
+        # the local copy. They must stay in lockstep, including frame-ancestors.
         import re
-        server_directives = {d.split(" ")[0]: d for d in server.CSP.split("; ")}
+        headers = (ROOT / "_headers").read_text(encoding="utf8")
+        m = re.search(r"Content-Security-Policy:\s*(.+)", headers)
+        self.assertIsNotNone(m, "_headers is missing Content-Security-Policy")
+        file_csp = m.group(1).strip()
+        self.assertEqual(file_csp, server.CSP)
+
+    def test_public_pages_do_not_carry_a_meta_csp(self):
+        public = {
+            "index.html", "about.html", "blends.html", "where-to-buy.html",
+            "privacy.html", "terms.html", "accessibility.html",
+        }
         for page in sorted(ROOT.glob("*.html")):
+            if page.name not in public:
+                continue
             html = page.read_text(encoding="utf8")
-            m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', html)
-            self.assertIsNotNone(m, f"{page.name} has no meta CSP")
-            meta_directives = {d.split(" ")[0]: d for d in m.group(1).split("; ")}
-            self.assertNotIn("frame-ancestors", meta_directives,
-                             f"{page.name}: meta cannot express frame-ancestors")
-            for name, directive in meta_directives.items():
-                self.assertEqual(directive, server_directives.get(name),
-                                 f"{page.name}: {name} has drifted from server.py")
+            self.assertNotIn(
+                'http-equiv="Content-Security-Policy"',
+                html,
+                f"{page.name} still has a meta CSP; production headers come from _headers",
+            )
 
 
 class DotEnv(unittest.TestCase):

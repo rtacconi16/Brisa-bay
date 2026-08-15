@@ -31,8 +31,8 @@ DEFAULT_LIMIT = 10
 FALLBACK_MOMENTS = [
     {
         "id": "local-1",
-        "src": "assets/web2/story-photo.webp",
-        "alt": "Friends on a beach blanket pouring Brisa Bay Chardonnay",
+        "src": "assets/web2/vibe-chardonnay.webp",
+        "alt": "Brisa Bay Chardonnay chilling by the pool",
         "permalink": "https://www.instagram.com/brisabaywines",
     },
     {
@@ -85,8 +85,8 @@ FALLBACK_MOMENTS = [
     },
     {
         "id": "local-10",
-        "src": "assets/web2/vibe-chardonnay.webp",
-        "alt": "Brisa Bay Chardonnay chilling by the pool",
+        "src": "assets/web2/pour/16-img-6287.webp",
+        "alt": "Pouring Brisa Bay at the table",
         "permalink": "https://www.instagram.com/brisabaywines",
     },
 ]
@@ -240,7 +240,7 @@ CSP = "; ".join([
     "default-src 'self'",
     "script-src 'self' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https://tile.openstreetmap.org",
+    "img-src 'self' data: https://tile.openstreetmap.org https://*.cdninstagram.com https://*.fbcdn.net",
     "connect-src 'self' https://photon.komoot.io",
     "font-src 'self'",
     "object-src 'none'",

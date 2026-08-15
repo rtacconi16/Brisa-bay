@@ -56,6 +56,25 @@
   });
 
   var page = pageName();
+  var crumbs = {
+    'about.html': ['About'],
+    'blends.html': ['Our Wines'],
+    'where-to-buy.html': ['Where to Buy'],
+    'privacy.html': ['Privacy Policy'],
+    'terms.html': ['Terms of Service'],
+    'accessibility.html': ['Accessibility']
+  };
+  if (crumbs[page]) {
+    emit({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: ORIGIN },
+        { '@type': 'ListItem', position: 2, name: crumbs[page][0], item: ORIGIN + page }
+      ]
+    });
+  }
+
   var faqPages = {
     '': true,
     'index.html': true,
@@ -91,7 +110,7 @@
           category: 'Wine',
           description: 'A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.',
           image: ORIGIN + 'assets/web2/bottle.webp',
-          url: ORIGIN + 'blends.html',
+          url: ORIGIN + 'blends.html#chardonnay',
           additionalProperty: [
             { '@type': 'PropertyValue', name: 'vintage', value: '2024' },
             { '@type': 'PropertyValue', name: 'alcoholByVolume', value: '13.5%' },
@@ -106,7 +125,7 @@
           category: 'Wine',
           description: 'Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.',
           image: ORIGIN + 'assets/web2/bottle-sauvblanc.webp',
-          url: ORIGIN + 'blends.html',
+          url: ORIGIN + 'blends.html#sauvignon-blanc',
           additionalProperty: [
             { '@type': 'PropertyValue', name: 'vintage', value: '2024' },
             { '@type': 'PropertyValue', name: 'alcoholByVolume', value: '13.0%' },
