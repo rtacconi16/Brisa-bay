@@ -57,8 +57,8 @@
   --bb-map-bg: #cfcfc7;
 }
 
-@font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); }
-@font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); }
+@font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.ttf') format('truetype'); font-display: swap; }
 
 body { margin: 0; background: var(--bb-cream); }
 
