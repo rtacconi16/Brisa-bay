@@ -106,3 +106,62 @@ a:hover { color: var(--bb-yellow); }
   transition: top 0.15s;
 }
 [data-bb-skiplink]:focus { top: 8px; }
+
+/* ---- Site footer on small screens -------------------------------------
+ *
+ * The footer is two space-between rows: wordmark | link columns, then legal
+ * links | Instagram. Both rows are flex-wrap: wrap inline, so under about
+ * 900px every group wrapped onto its own left-aligned line and the footer
+ * stopped looking like the desktop one — the link columns dropped under the
+ * wordmark, and the Instagram circle dropped under the legal links.
+ *
+ * Keep the two-column arrangement instead, and scale the type down far enough
+ * that it still fits a 320px phone. Every value below is clamped so that at
+ * the 900px breakpoint it computes to the same number the inline style does —
+ * the layout tightens continuously rather than jumping at the boundary.
+ *
+ * The inline styles these override are on the elements themselves, so the
+ * !important is load-bearing, not cargo-culted.
+ *
+ * Structural selectors rather than hooks: all seven footers are the same
+ * hand-written markup, and adding data- attributes would mean editing seven
+ * files to say something the structure already says.
+ */
+@media (max-width: 900px) {
+  [data-screen-label="Footer"] > div {
+    flex-wrap: nowrap !important;
+  }
+
+  /* Row 1 — wordmark | link columns */
+  [data-screen-label="Footer"] > div:first-child {
+    gap: clamp(16px, 5vw, 80px) !important;
+  }
+  [data-screen-label="Footer"] > div:first-child > div:first-child {
+    font-size: clamp(26px, 8.4vw, 96px) !important;
+    white-space: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  [data-screen-label="Footer"] > div:first-child > div:last-child {
+    gap: clamp(20px, 6.3vw, 120px) !important;
+    flex: 0 0 auto;
+  }
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div {
+    font-size: clamp(15px, 1.7vw, 32px) !important;
+  }
+
+  /* Row 2 — legal links | Instagram. The legal links keep their own wrapping:
+     four of them plus the icon will not sit on one 390px line at any size worth
+     reading, so that group is allowed to run to two lines inside its column. */
+  [data-screen-label="Footer"] > div:last-child {
+    gap: clamp(14px, 3vw, 40px) !important;
+  }
+  [data-screen-label="Footer"] > div:last-child > div:first-child {
+    gap: 8px clamp(8px, 4.2vw, 80px) !important;
+    font-size: clamp(13px, 1.6vw, 30px) !important;
+    min-width: 0;
+  }
+  [data-screen-label="Footer"] > div:last-child > div:last-child {
+    flex: 0 0 auto;
+  }
+}
