@@ -54,7 +54,6 @@
     }
     @keyframes bb-marquee { from { transform: translateX(0) } to { transform: translateX(-50%) } }
     @keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
-    @keyframes bb-floaty { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
 
     /* Hero → Story cinematic scrub */
     [data-bb-hero-scroll] {
@@ -143,10 +142,40 @@
       will-change: opacity, transform;
     }
     [data-bb-bottle-stage] {
+      grid-column: 2;
+      grid-row: 1;
       display: grid;
-      place-items: center;
+      grid-template-rows: 100%;
+      grid-template-columns: 100%;
+      place-items: stretch;
+      width: 100%;
+      min-width: 0;
+      min-height: 0;
       will-change: transform;
       transform-origin: center 70%;
+    }
+    /* Bottle row: arrows flank the bottle, plinth grounds it — same
+       composition as blends.html's stage instead of floating with
+       controls stacked underneath. */
+    [data-bb-bottle-row] {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: center;
+      justify-items: center;
+      column-gap: clamp(10px, 1.6vw, 28px);
+      width: 100%;
+    }
+    [data-bb-bottle-arrow][data-dir="prev"] { grid-column: 1; grid-row: 1; }
+    [data-bb-bottle-arrow][data-dir="next"] { grid-column: 3; grid-row: 1; }
+    [data-bb-bottle-plinth] {
+      grid-column: 2;
+      grid-row: 2;
+      width: min(100%, 30vw);
+      height: 1px;
+      margin-top: clamp(4px, 0.8vh, 10px);
+      background: rgba(87, 84, 74, 0.3);
+      box-shadow: 0 1px 3px rgba(87, 84, 74, 0.18);
     }
     [data-bb-wines-deco] {
       will-change: transform;
@@ -165,33 +194,39 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 100%;
+      width: 100%;
       transition: opacity 0.38s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
       will-change: opacity, transform;
-      justify-self: center;
     }
     [data-bb-bottle-hover] {
       display: flex;
       align-items: center;
       justify-content: center;
+      height: 100%;
+      width: 100%;
       transform-origin: 50% 85%;
       transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
       will-change: transform;
       cursor: pointer;
     }
+    /* object-fit: contain — same technique as blends.html's bottle img —
+       so the bottle shrinks to fit the flanking-arrow row's available width
+       instead of distorting when height grows past what the row can offer. */
     [data-bb-bottle-img] {
       display: block;
-      height: clamp(360px, 52vw, 1000px);
-      filter: drop-shadow(0 30px 40px rgba(87,84,74,0.25));
-      animation: bb-floaty 5.5s ease-in-out infinite;
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5));
       transition: filter 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
     }
     @media (hover: hover) and (pointer: fine) {
       [data-bb-bottle-stage]:hover [data-bb-bottle-hover] {
-        transform: translate3d(0, -18px, 0) rotate(-4deg) scale(1.05);
+        transform: translate3d(0, -14px, 0) rotate(-3deg);
       }
       [data-bb-bottle-stage]:hover [data-bb-bottle-img] {
-        filter: drop-shadow(0 42px 48px rgba(87,84,74,0.32));
-        animation-duration: 3.2s;
+        filter: drop-shadow(0 38px 44px rgba(45,45,42,0.58));
       }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -201,11 +236,11 @@
       [data-bb-bottle-img] {
         transition: none !important;
       }
-      [data-bb-bottle-img] {
-        animation: none !important;
-      }
       [data-bb-bottle-stage]:hover [data-bb-bottle-hover] {
         transform: none !important;
+      }
+      [data-bb-bottle-stage]:hover [data-bb-bottle-img] {
+        filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5)) !important;
       }
     }
 
@@ -225,18 +260,8 @@
       align-items: stretch;
       padding: clamp(28px, 4.5vh, 56px) clamp(28px, 5vw, 96px) clamp(40px, 6vh, 72px) clamp(28px, 4.5vw, 72px);
       box-sizing: border-box;
-      background: var(--bb-cream);
+      background: url(assets/web2/skip-poolside.webp) center / cover no-repeat;
       overflow: hidden;
-    }
-    [data-bb-skip-brush] {
-      position: absolute;
-      right: -18%;
-      top: -10%;
-      width: clamp(480px, 62vw, 1100px);
-      z-index: 1;
-      pointer-events: none;
-      transform: rotate(-32deg);
-      transform-origin: 80% 20%;
     }
     /* Bottled Moments scrolls over Skip so text can fade as it arrives */
     [data-bb-moments],
@@ -253,14 +278,12 @@
       will-change: opacity, transform;
     }
     [data-bb-skip-stamp] {
-      grid-column: 1;
-      grid-row: 2;
-      align-self: end;
-      justify-self: start;
-      position: relative;
-      width: min(100%, clamp(180px, 22vw, 320px));
+      position: absolute;
+      right: clamp(-14px, 1.5vw, 46px);
+      top: clamp(8px, 2vh, 28px);
+      width: clamp(170px, 22vw, 400px);
       aspect-ratio: 1;
-      z-index: 2;
+      z-index: 3;
       pointer-events: none;
     }
     [data-bb-moments-bar] {
@@ -298,7 +321,7 @@
       justify-self: start;
     }
     [data-bb-skip] {
-      grid-column: 2;
+      grid-column: 1 / -1;
       grid-row: 2;
       width: 100%;
       max-width: none;
@@ -334,7 +357,8 @@
       font-size: clamp(26px, 2.6vw, 46px);
       line-height: 1.25;
       font-style: italic;
-      color: var(--bb-ink-muted);
+      color: var(--bb-cream);
+      text-align: justify;
     }
     [data-bb-skip-body] {
       margin: 0;
@@ -342,8 +366,9 @@
       max-width: 34em;
       font-size: clamp(22px, 2.15vw, 38px);
       line-height: 1.35;
-      color: var(--bb-grey);
+      color: var(--bb-cream);
       text-wrap: pretty;
+      text-align: justify;
     }
     [data-bb-skip-cta] {
       margin-top: clamp(4px, 1vh, 12px);
@@ -362,8 +387,14 @@
         min-height: 0;
         flex: 1 1 auto;
         height: 100%;
-        align-items: center;
+        align-items: stretch !important;
         align-content: center;
+      }
+      [data-bb-wines-copy] {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
       [data-bb-moments-intro] {
         display: grid;
@@ -409,8 +440,8 @@
         gap: clamp(12px, 1.5vh, 24px);
         min-height: 0;
       }
-      [data-bb-bottle-img] {
-        height: min(58vh, 560px);
+      [data-bb-bottle-stage] {
+        height: min(54vh, 460px);
         max-height: calc(100% - 72px);
       }
       [data-bb-skip-title] {
@@ -485,8 +516,14 @@
         margin-top: 0 !important;
         min-height: 0 !important;
         height: 100% !important;
-        align-items: center !important;
+        align-items: stretch !important;
         align-content: center !important;
+      }
+      [data-bb-wines-copy] {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
       [data-bb-wines] h2 {
         font-size: clamp(28px, 7.2vw, 44px) !important;
@@ -513,20 +550,24 @@
         min-height: 0;
         justify-content: center;
       }
-      [data-bb-bottle-img] {
+      [data-bb-bottle-stage] {
         height: min(54vh, 460px) !important;
         max-height: calc(100% - 64px) !important;
-        max-width: 100%;
-        width: auto;
+      }
+      [data-bb-bottle-row] {
+        column-gap: clamp(6px, 2.5vw, 16px) !important;
+      }
+      [data-bb-bottle-arrow] {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 18px !important;
+      }
+      [data-bb-bottle-plinth] {
+        width: min(70%, 180px) !important;
       }
       [data-bb-wines-controls] {
         flex-wrap: wrap !important;
         gap: 8px 10px !important;
-      }
-      [data-bb-wines-controls] > div[role="button"] {
-        width: 44px !important;
-        height: 44px !important;
-        font-size: 20px !important;
       }
       [data-bb-wines-deco] {
         width: clamp(280px, 72vw, 640px) !important;
@@ -549,15 +590,13 @@
       }
       [data-bb-skip-stamp] {
         width: clamp(110px, 30vw, 180px) !important;
+        right: 6px !important;
+        top: clamp(100px, 13vh, 140px) !important;
       }
       [data-bb-skip-stamp] span { font-size: clamp(16px, 4.5vw, 27px) !important; }
       [data-bb-skip-lead] { font-size: clamp(16px, 4vw, 22px) !important; }
       [data-bb-skip-body] {
         font-size: clamp(14px, 3.6vw, 18px) !important;
-      }
-      [data-bb-skip-brush] {
-        width: clamp(280px, 78vw, 640px) !important;
-        right: -28% !important;
       }
 
       /* Moments: left lockup, multi-card strip */
@@ -637,10 +676,11 @@
           <!-- poster paints on the first frame so the hero is never a black box while
                the file streams in; the encode is faststart, so playback begins long
                before the download finishes. -->
-          <video id="bb-hero-video" data-bb-hero-video="" autoplay muted loop playsinline webkit-playsinline preload="none" poster="assets/web2/hero-poster.jpg" width="960" height="480" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
-            <source src="assets/web2/hero-video.webm" type="video/webm">
-            <source src="assets/web2/hero-video.mp4" type="video/mp4">
+          <video id="bb-hero-video" data-bb-hero-video="" muted loop playsinline webkit-playsinline preload="none" poster="assets/web2/hero-poster.jpg" width="1600" height="800" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+            <source data-bb-src="assets/web2/hero-video.webm" type="video/webm">
+            <source data-bb-src="assets/web2/hero-video.mp4" type="video/mp4">
           </video>
+          <img id="bb-hero-mobile-poster" data-bb-hero-mobile-poster="" alt="Brisa Bay — meant to be lived, not collected" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: calc(50% + 7px) center; display: none; z-index: 0">
           <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
           <div data-bb-hero-veil="" aria-hidden="true"></div>
 
@@ -718,24 +758,27 @@
           </div>
           <a href="blends.html" style="background: var(--bb-red); color: var(--bb-cream); font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: clamp(10px, 0.85vw, 16px) clamp(26px, 2.4vw, 46px) clamp(13px, 1.05vw, 20px); border-radius: 999px; text-decoration: none; display: inline-block; transition: transform 0.25s" style-hover="transform: scale(1.06)">See both blends &amp; tasting notes</a>
         </div>
-        <div data-bb-bottle="" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(16px, 1.8vw, 28px); min-height: 0">
-          <div data-bb-bottle-stage="">
-            <div data-bb-bottle-layer="" style="{{ wine0Bottle }}" aria-hidden="{{ wine0Hidden }}">
-              <div data-bb-bottle-hover="">
-                <img loading="lazy" width="182" height="700" data-bb-bottle-img="" src="assets/web2/bottle.webp" alt="Brisa Bay Napa Valley Chardonnay bottle" style="animation-play-state: {{ wine0Play }}">
+        <div data-bb-bottle="" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: clamp(12px, 1.4vw, 22px); min-height: 0; width: 100%">
+          <div data-bb-bottle-row="">
+            <div data-bb-bottle-arrow="" data-dir="prev" onClick="{{ prevWine }}" role="button" aria-label="Show the Chardonnay" title="Previous wine — Chardonnay" style="width: clamp(44px, 3.8vw, 72px); height: clamp(44px, 3.8vw, 72px); border-radius: 50%; background: var(--bb-lime); box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--bb-cream); font-size: clamp(20px, 1.8vw, 34px); transition: transform 0.25s" style-hover="transform: scale(1.1)">←</div>
+            <div data-bb-bottle-stage="">
+              <div data-bb-bottle-layer="" style="{{ wine0Bottle }}" aria-hidden="{{ wine0Hidden }}">
+                <div data-bb-bottle-hover="">
+                  <img loading="lazy" width="182" height="700" data-bb-bottle-img="" src="assets/web2/bottle.webp" alt="Brisa Bay Napa Valley Chardonnay bottle">
+                </div>
+              </div>
+              <div data-bb-bottle-layer="" style="{{ wine1Bottle }}" aria-hidden="{{ wine1Hidden }}">
+                <div data-bb-bottle-hover="">
+                  <img loading="lazy" width="152" height="599" data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc-trim.webp" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle">
+                </div>
               </div>
             </div>
-            <div data-bb-bottle-layer="" style="{{ wine1Bottle }}" aria-hidden="{{ wine1Hidden }}">
-              <div data-bb-bottle-hover="">
-                <img loading="lazy" width="561" height="700" data-bb-bottle-img="" src="assets/web2/bottle-sauvblanc.webp" alt="Brisa Bay Napa Valley Sauvignon Blanc bottle" style="animation-play-state: {{ wine1Play }}">
-              </div>
-            </div>
+            <div data-bb-bottle-arrow="" data-dir="next" onClick="{{ nextWine }}" role="button" aria-label="Show the Sauvignon Blanc" title="Next wine — Sauvignon Blanc" style="width: clamp(44px, 3.8vw, 72px); height: clamp(44px, 3.8vw, 72px); border-radius: 50%; background: var(--bb-lime); box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--bb-cream); font-size: clamp(20px, 1.8vw, 34px); transition: transform 0.25s" style-hover="transform: scale(1.1)">→</div>
+            <div data-bb-bottle-plinth="" aria-hidden="true"></div>
           </div>
-          <div data-bb-wines-controls="" style="display: flex; align-items: center; justify-content: center; gap: clamp(14px, 1.4vw, 26px)">
+          <div data-bb-wines-controls="" style="display: flex; align-items: center; justify-content: center; gap: clamp(10px, 1vw, 18px)">
             <span style="font-family: 'Old Newspaper', serif; font-size: clamp(14px, 1.15vw, 22px); letter-spacing: 0.08em; color: rgba(87,84,74,0.6)">SWITCH WINE</span>
-            <div onClick="{{ prevWine }}" role="button" aria-label="Show the Chardonnay" title="Previous wine — Chardonnay" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: var(--bb-lime); box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--bb-cream); font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">←</div>
-            <div onClick="{{ nextWine }}" role="button" aria-label="Show the Sauvignon Blanc" title="Next wine — Sauvignon Blanc" style="width: clamp(54px, 4.6vw, 88px); height: clamp(54px, 4.6vw, 88px); border-radius: 50%; background: var(--bb-lime); box-shadow: 0 6px 18px rgba(87,84,74,0.18); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--bb-cream); font-size: clamp(24px, 2.1vw, 40px); transition: transform 0.25s" style-hover="transform: scale(1.1)">→</div>
-            <div style="display: flex; align-items: center; gap: clamp(8px, 0.7vw, 13px); margin-left: clamp(4px, 0.6vw, 12px)">
+            <div style="display: flex; align-items: center; gap: clamp(8px, 0.7vw, 13px)">
               <div onClick="{{ showWine0 }}" role="button" aria-label="Show the Chardonnay" title="Chardonnay" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot0 }}"></div>
               <div onClick="{{ showWine1 }}" role="button" aria-label="Show the Sauvignon Blanc" title="Sauvignon Blanc" style="width: clamp(9px, 0.7vw, 14px); height: clamp(9px, 0.7vw, 14px); border-radius: 50%; cursor: pointer; background: {{ dot1 }}"></div>
             </div>
@@ -748,35 +791,41 @@
   <!-- ================= SKIP THE CELLAR ================= -->
   <div data-bb-skip-scroll="" data-screen-label="Skip the Cellar">
     <div data-bb-skip-pin="">
-      <img loading="lazy" width="1200" height="452" data-bb-deco="" data-bb-skip-brush="" src="assets/brush/swoosh-lime.webp" alt="" aria-hidden="true">
-      <div data-bb-skip-inner="">
-        <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: var(--bb-ink-muted); letter-spacing: 0.03em">Skip&nbsp;the&nbsp;Cellar<br>Find&nbsp;a&nbsp;Bottle</h2>
-        <!-- Same stamp as the one on about.html's Brisa Way, in red instead of
-             sage. It was built here from different parts — an off-centre
-             asterisk sized to the whole box, a brush bar behind the wordmark,
-             and a wider ring — and the ring's radius (230 of a 460 viewBox) put
-             the letters right on the edge, so [data-bb-skip-pin]'s overflow
-             clipped them against the left padding. about.html's numbers leave
-             the ring room inside the box, so they are used verbatim below;
-             asterisk-red-centered.webp is asterisk-red.webp cropped to the same
-             461x461 frame as the sage one, so 17%/66% lands identically. -->
-        <div data-bb-stamp="" data-bb-skip-stamp="" aria-hidden="true">
-          <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
-            <img loading="lazy" width="461" height="461" src="assets/brush/asterisk-red-centered.webp" alt="" style="width: 100%; height: 100%; transform: rotate(8deg)">
-          </div>
-          <!-- Concentric with the asterisk and the ring; see the note on the
-               matching block in about.html for why this is inset:0 and not
-               sized by `top` + auto height. -->
-          <div style="position: absolute; inset: 0; transform: rotate(7deg); display: flex; align-items: center; justify-content: center">
-            <span style="font-size: clamp(27px, 3.3vw, 48px); color: var(--bb-cream); white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
-          </div>
-          <div style="position: absolute; inset: 7%; transform: rotate(-50deg)">
-            <svg aria-hidden="true" focusable="false" viewBox="0 0 440 440" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
-              <defs><path id="skipStampCircleR" d="M 220,220 m -205,0 a 205,205 0 1,1 410,0 a 205,205 0 1,1 -410,0"></path></defs>
-              <text font-family="Old Newspaper, serif" font-size="30" letter-spacing="13" fill="#e6393a"><textPath href="#skipStampCircleR" startOffset="0%">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
-            </svg>
-          </div>
+      <!-- Directional scrim, same technique as Our Story's photo overlay: dark
+           where the copy sits (bottom, full-width now that it spans the grid),
+           fading to clear at the top so the pool photo stays vivid behind the
+           title and stamp. -->
+      <div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(45,45,42,0.72) 0%, rgba(45,45,42,0.4) 40%, rgba(45,45,42,0.1) 75%, rgba(45,45,42,0) 100%); pointer-events: none; z-index: 1"></div>
+      <!-- Same stamp as the one on about.html's Brisa Way, in red instead of
+           sage. It was built here from different parts — an off-centre
+           asterisk sized to the whole box, a brush bar behind the wordmark,
+           and a wider ring — and the ring's radius (230 of a 460 viewBox) put
+           the letters right on the edge, so [data-bb-skip-pin]'s overflow
+           clipped them against the left padding. about.html's numbers leave
+           the ring room inside the box, so they are used verbatim below;
+           asterisk-red-centered.webp is asterisk-red.webp cropped to the same
+           461x461 frame as the sage one, so 17%/66% lands identically. Sits
+           top-right of the pin (replacing the old swoosh-lime brush) so the
+           wordmark reads as the section's brand mark. -->
+      <div data-bb-stamp="" data-bb-skip-stamp="" aria-hidden="true">
+        <div style="position: absolute; left: 17%; top: 17%; width: 66%; aspect-ratio: 1">
+          <img loading="lazy" width="461" height="461" src="assets/brush/asterisk-red-centered.webp" alt="" style="width: 100%; height: 100%; transform: rotate(8deg)">
         </div>
+        <!-- Concentric with the asterisk and the ring; see the note on the
+             matching block in about.html for why this is inset:0 and not
+             sized by `top` + auto height. -->
+        <div style="position: absolute; inset: 0; transform: rotate(7deg); display: flex; align-items: center; justify-content: center">
+          <span style="font-size: clamp(27px, 3.3vw, 48px); color: var(--bb-cream); white-space: nowrap; text-shadow: 0 1px 2px rgba(91, 88, 78, 0.18)">Brisa Bay</span>
+        </div>
+        <div style="position: absolute; inset: 7%; transform: rotate(-50deg)">
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 440 440" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; animation: bb-stamp 24s linear infinite; animation-play-state: {{ play }}">
+            <defs><path id="skipStampCircleR" d="M 220,220 m -205,0 a 205,205 0 1,1 410,0 a 205,205 0 1,1 -410,0"></path></defs>
+            <text font-family="Old Newspaper, serif" font-size="30" letter-spacing="13" fill="#e6393a"><textPath href="#skipStampCircleR" startOffset="0%">MEANT TO BE LIVED, NOT COLLECTED.</textPath></text>
+          </svg>
+        </div>
+      </div>
+      <div data-bb-skip-inner="">
+        <h2 data-bb-skip-title="" style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(42px, 7vw, 118px); line-height: 1.02; font-weight: 400; color: var(--bb-cream); letter-spacing: 0.03em">Skip&nbsp;the&nbsp;Cellar<br>Find&nbsp;a&nbsp;Bottle</h2>
         <div data-bb-skip="">
           <span data-bb-skip-rule="" aria-hidden="true"></span>
           <p data-bb-skip-lead="">No pretense<br>No wine snobs<br>No occasion required</p>
@@ -935,7 +984,7 @@ class Component extends DCLogic {
     this._syncAgeModal();
     this._kickHeroVideo();
     this._mq = window.matchMedia('(max-width: 900px)');
-    this._onMq = () => this.setState({ narrow: !!this._mq.matches, moment: 0 });
+    this._onMq = () => { this.setState({ narrow: !!this._mq.matches, moment: 0 }); this._kickHeroVideo(); };
     this._onMq();
     if (this._mq.addEventListener) this._mq.addEventListener('change', this._onMq);
     else if (this._mq.addListener) this._mq.addListener(this._onMq);
@@ -968,6 +1017,27 @@ class Component extends DCLogic {
   _kickHeroVideo() {
     const v = document.getElementById('bb-hero-video');
     if (!v) return;
+    const poster = document.getElementById('bb-hero-mobile-poster');
+    const narrow = window.matchMedia('(max-width: 900px)').matches;
+    if (narrow) {
+      v.pause();
+      v.style.display = 'none';
+      if (poster) {
+        if (!poster.getAttribute('src')) poster.setAttribute('src', 'assets/web2/hero-mobile-poster.jpg');
+        poster.style.display = 'block';
+      }
+      return;
+    }
+    if (poster) poster.style.display = 'none';
+    v.style.display = 'block';
+    if (!v.dataset.wired) {
+      v.querySelectorAll('source').forEach((s) => {
+        const src = s.getAttribute('data-bb-src');
+        if (src) s.setAttribute('src', src);
+      });
+      v.load();
+      v.dataset.wired = '1';
+    }
     v.muted = true;
     v.defaultMuted = true;
     v.setAttribute('muted', '');
@@ -1496,8 +1566,6 @@ class Component extends DCLogic {
       wine1Panel: winePanel(w === 1, 14),
       wine0Bottle: wineBottle(w === 0, -28, -4),
       wine1Bottle: wineBottle(w === 1, 28, 4),
-      wine0Play: w === 0 && motionOn ? 'running' : 'paused',
-      wine1Play: w === 1 && motionOn ? 'running' : 'paused',
       wine0Hidden: w !== 0,
       wine1Hidden: w !== 1,
       dot0: w === 0 ? 'var(--bb-red)' : 'rgba(87,84,74,0.28)',
