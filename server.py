@@ -4,11 +4,17 @@
 Serves the static site and exposes:
   GET /api/instagram/moments?limit=10
 
+The homepage Bottled Moments carousel loads that endpoint. When credentials
+are present it prefers photos people tagged @brisabaywines in, then the
+brand's own posts that mention #BrisaBay / @brisabaywines, then other posts
+from the account so the strip is never empty.
+
 Credentials (optional — falls back to local gallery images if missing):
   INSTAGRAM_USER_ID       Instagram professional account ID
   INSTAGRAM_ACCESS_TOKEN  Long-lived access token
   INSTAGRAM_GRAPH_HOST    graph.instagram.com (default) or graph.facebook.com
   INSTAGRAM_API_VERSION   e.g. v21.0 (default)
+  INSTAGRAM_HASHTAG       caption hashtag to prefer (default BrisaBay)
   PORT                    default 8080
 """
 
@@ -16,6 +22,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
 import urllib.error
@@ -121,6 +128,12 @@ def _caption_alt(caption: str | None) -> str:
     return one_line[:140] + ("…" if len(one_line) > 140 else "")
 
 
+MEDIA_FIELDS = (
+    "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,"
+    "children{media_type,media_url,thumbnail_url}"
+)
+
+
 def _normalize_media(item: dict) -> dict | None:
     media_type = (item.get("media_type") or "").upper()
     src = item.get("media_url") or item.get("thumbnail_url")
@@ -144,34 +157,85 @@ def _normalize_media(item: dict) -> dict | None:
     }
 
 
+def _is_ugc_caption(caption: str | None) -> bool:
+    """True when a caption asks to be in Bottled Moments: #BrisaBay or @brisabaywines."""
+    if not caption:
+        return False
+    hashtag = os.environ.get("INSTAGRAM_HASHTAG", "BrisaBay").strip().lstrip("#") or "BrisaBay"
+    return bool(re.search(rf"(?i)(#{re.escape(hashtag)}\b|@brisabaywines\b)", caption))
+
+
+def _by_timestamp(item: dict) -> str:
+    return str(item.get("timestamp") or "")
+
+
+def _merge_moments(tagged: list[dict], own: list[dict], limit: int) -> list[dict]:
+    tagged = sorted(tagged, key=_by_timestamp, reverse=True)
+    own = sorted(own, key=_by_timestamp, reverse=True)
+    seen: set[str] = set()
+    out: list[dict] = []
+
+    def add(items: list[dict], require_ugc: bool) -> bool:
+        for item in items:
+            if require_ugc and not _is_ugc_caption(item.get("caption")):
+                continue
+            normalized = _normalize_media(item)
+            if not normalized:
+                continue
+            key = str(normalized["id"])
+            if key in seen:
+                continue
+            seen.add(key)
+            out.append(normalized)
+            if len(out) >= limit:
+                return True
+        return False
+
+    if add(tagged, False):
+        return out
+    if add(own, True):
+        return out
+    add(own, False)
+    return out
+
+
+def _get_json(url: str) -> dict:
+    req = urllib.request.Request(
+        url, headers={"Accept": "application/json", "User-Agent": "BrisaBayMoments/1.0"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Instagram HTTP {exc.code}: {body[:300]}") from exc
+
+
+def _fetch_edge(user_id: str, token: str, host: str, version: str, edge: str, limit: int) -> list[dict]:
+    query = urllib.parse.urlencode(
+        {
+            "fields": MEDIA_FIELDS,
+            "limit": max(limit * 2, 25),
+            "access_token": token,
+        }
+    )
+    url = f"https://{host}/{version}/{user_id}/{edge}?{query}"
+    payload = _get_json(url)
+    return payload.get("data") or []
+
+
 def _fetch_instagram(limit: int) -> list[dict]:
     user_id = os.environ["INSTAGRAM_USER_ID"].strip()
     token = os.environ["INSTAGRAM_ACCESS_TOKEN"].strip()
     host = os.environ.get("INSTAGRAM_GRAPH_HOST", "graph.instagram.com").strip()
     version = os.environ.get("INSTAGRAM_API_VERSION", "v21.0").strip()
-    fields = (
-        "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,"
-        "children{media_type,media_url,thumbnail_url}"
-    )
-    query = urllib.parse.urlencode(
-        {
-            "fields": fields,
-            "limit": max(limit * 2, limit),
-            "access_token": token,
-        }
-    )
-    url = f"https://{host}/{version}/{user_id}/media?{query}"
-    req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": "BrisaBayMoments/1.0"})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        payload = json.loads(resp.read().decode("utf-8"))
-
-    moments: list[dict] = []
-    for item in payload.get("data") or []:
-        normalized = _normalize_media(item)
-        if normalized:
-            moments.append(normalized)
-        if len(moments) >= limit:
-            break
+    own = _fetch_edge(user_id, token, host, version, "media", limit)
+    tagged: list[dict] = []
+    try:
+        tagged = _fetch_edge(user_id, token, host, version, "tags", limit)
+    except RuntimeError:
+        tagged = []
+    moments = _merge_moments(tagged, own, limit)
     if not moments:
         raise RuntimeError("Instagram returned no displayable media")
     return moments
@@ -226,7 +290,7 @@ def get_moments(limit: int = DEFAULT_LIMIT) -> dict:
 #
 # Classic inline <script> blocks are intentionally NOT allowed (no 'unsafe-inline'
 # in script-src). Page motion helpers must live in external .js files
-# (e.g. blends-motion.js) so the local CSP does not strip them — GitHub Pages
+# (e.g. wines-motion.js) so the local CSP does not strip them — GitHub Pages
 # does not send this header, which is why a missing externalization only
 # breaks locally.
 #

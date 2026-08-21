@@ -27,6 +27,8 @@ function captionAlt(caption) {
   return one.length > 140 ? `${one.slice(0, 140)}…` : one;
 }
 
+const MEDIA_FIELDS = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{media_type,media_url,thumbnail_url}';
+
 function normalizeMedia(item) {
   const mediaType = String(item.media_type || '').toUpperCase();
   let src = item.media_url || item.thumbnail_url;
@@ -47,22 +49,61 @@ function normalizeMedia(item) {
   };
 }
 
-async function fetchInstagram(env, limit) {
+function isUgcCaption(caption, env) {
+  if (!caption) return false;
+  const hashtag = String((env && env.INSTAGRAM_HASHTAG) || 'BrisaBay').trim().replace(/^#/, '') || 'BrisaBay';
+  const escaped = hashtag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(#${escaped}\\b|@brisabaywines\\b)`, 'i').test(caption);
+}
+
+function mergeMoments(tagged, own, limit, env) {
+  const byTime = (a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || ''));
+  tagged = [...tagged].sort(byTime);
+  own = [...own].sort(byTime);
+  const seen = new Set();
+  const out = [];
+
+  const add = (items, requireUgc) => {
+    for (const item of items) {
+      if (requireUgc && !isUgcCaption(item.caption, env)) continue;
+      const n = normalizeMedia(item);
+      if (!n) continue;
+      const key = String(n.id);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(n);
+      if (out.length >= limit) return true;
+    }
+    return false;
+  };
+
+  if (add(tagged, false)) return out;
+  if (add(own, true)) return out;
+  add(own, false);
+  return out;
+}
+
+async function fetchEdge(env, edge, limit) {
   const userId = env.INSTAGRAM_USER_ID;
   const token = env.INSTAGRAM_ACCESS_TOKEN;
   const host = env.INSTAGRAM_GRAPH_HOST || 'graph.instagram.com';
   const version = env.INSTAGRAM_API_VERSION || 'v21.0';
-  const fields = 'id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,children{media_type,media_url,thumbnail_url}';
-  const url = `https://${host}/${version}/${userId}/media?fields=${encodeURIComponent(fields)}&limit=${Math.max(limit * 2, limit)}&access_token=${encodeURIComponent(token)}`;
+  const url = `https://${host}/${version}/${userId}/${edge}?fields=${encodeURIComponent(MEDIA_FIELDS)}&limit=${Math.max(limit * 2, 25)}&access_token=${encodeURIComponent(token)}`;
   const res = await fetch(url, { headers: { Accept: 'application/json' } });
-  if (!res.ok) throw new Error(`Instagram HTTP ${res.status}`);
+  if (!res.ok) throw new Error(`Instagram ${edge} HTTP ${res.status}`);
   const payload = await res.json();
-  const moments = [];
-  for (const item of payload.data || []) {
-    const n = normalizeMedia(item);
-    if (n) moments.push(n);
-    if (moments.length >= limit) break;
+  return payload.data || [];
+}
+
+async function fetchInstagram(env, limit) {
+  const own = await fetchEdge(env, 'media', limit);
+  let tagged = [];
+  try {
+    tagged = await fetchEdge(env, 'tags', limit);
+  } catch {
+    tagged = [];
   }
+  const moments = mergeMoments(tagged, own, limit, env);
   if (!moments.length) throw new Error('Instagram returned no displayable media');
   return moments;
 }

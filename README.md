@@ -31,7 +31,7 @@ origin. Always test through the server.
    `'unsafe-inline'` for scripts, so a classic inline `<script>` is *blocked locally* and
    works fine on GitHub Pages. That asymmetry is intentional: it makes the stricter
    environment the one you develop against. Page JavaScript belongs in an external `.js`
-   file (see `blends-motion.js`).
+   file (see `wines-motion.js`).
 
 ### Instagram feed (optional)
 
@@ -103,7 +103,7 @@ the source data, not a code change.
 ## Layout
 
 ```
-index.html  about.html  blends.html  where-to-buy.html      pages
+index.html  about.html  wines.html  where-to-buy.html      pages
 privacy.html  terms.html  accessibility.html
 
 site.css              styles shared by every page, and the --bb-* palette
@@ -121,7 +121,7 @@ locator-analytics.js  provider-agnostic instrumentation (inert by default)
 locator-jsonld.js     schema.org markup for the locator
 stores.json           102 stockists — the locator's data
 
-blends-motion.js      carousel motion for blends.html
+wines-motion.js      carousel motion for wines.html
 server.py             dev server + Instagram API + security headers
 tools/                tests, data validation, dependency vendoring
 assets/web2/          the live image set (see the note in Known gaps)
@@ -198,7 +198,7 @@ Every `<img>` needs `width` and `height` set to the file's real pixel dimensions
 reserves layout space and stops the page jumping as images arrive. Add `loading="lazy"` too,
 **except** for the image that fills the top of the page: deferring that one delays the largest
 paint, which is the opposite of what lazy loading is for. Today that exception is the band image
-on `about.html` and the hero on `blends.html`. Images that fill a fixed-size CSS box with
+on `about.html` and the hero on `wines.html`. Images that fill a fixed-size CSS box with
 `object-fit: cover` (the Bottled Moments tiles) don't need dimensions — the box already
 reserves the space.
 
