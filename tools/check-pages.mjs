@@ -97,7 +97,7 @@ for (const { file, html } of pages) {
   check(`${file} loads site-data.js`, /src="\.\/site-data\.js\?v=\d+"/.test(head));
   check(`${file} does not carry a meta CSP`, !/http-equiv="Content-Security-Policy"/.test(head));
   check(`${file} preloads both WOFF2 faces`,
-    /rel="preload"[^>]+AGaramondPro-Regular\.woff2/.test(head) &&
+    /rel="preload"[^>]+EBGaramond-Regular\.woff2/.test(head) &&
     /rel="preload"[^>]+OldNewspaperTypes\.woff2/.test(head));
 
   // resources.js must precede support.js or the vendored-React override is read

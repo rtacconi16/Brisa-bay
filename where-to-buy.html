@@ -22,8 +22,8 @@
 <meta name="twitter:title" content="Where to Buy Brisa Bay | Napa Valley wine near you">
 <meta name="twitter:description" content="Find shops, bars and restaurants pouring Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc. Search by city or use the map to locate a bottle near you.">
 <meta name="twitter:image" content="https://brisabay.com/assets/web2/og-locator.jpg">
-<link rel="stylesheet" href="./site.css?v=4">
-<link rel="preload" href="./assets/fonts/AGaramondPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./site.css?v=5">
+<link rel="preload" href="./assets/fonts/EBGaramond-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin>
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
@@ -56,7 +56,7 @@
       border: 1px solid rgba(87,84,74,0.12);
     }
     .leaflet-popup-tip { background: var(--bb-cream); }
-    .leaflet-container { font-family: 'Garamond Pro', Garamond, serif; background: var(--bb-cream-dim); }
+    .leaflet-container { font-family: 'EB Garamond', Garamond, serif; background: var(--bb-cream-dim); }
     .leaflet-popup-content a:hover { color: var(--bb-sage) !important; }
     .leaflet-control-zoom {
       border: 1px solid rgba(87,84,74,0.2) !important;
@@ -93,8 +93,8 @@
     }
     .leaflet-control-attribution a { color: rgba(87,84,74,0.7) !important; }
 
-    /* Locator runs on two voices only: Garamond for the headline, mono for every
-       piece of data. Matches the reference's structure without borrowing its brand. */
+    /* Locator runs on two voices only: EB Garamond for the UI, Old Newspaper for
+       the page titles. Matches the reference's structure without borrowing its brand. */
     [data-bb-toolbar] {
       flex: 0 0 auto;
       display: flex;
@@ -122,7 +122,7 @@
       background: transparent;
       border: none;
       outline: none;
-      font-family: 'Garamond Pro', Garamond, serif;
+      font-family: 'EB Garamond', Garamond, serif;
       font-size: clamp(16px, 1.15vw, 20px);
       color: var(--bb-dark);
     }
@@ -137,7 +137,7 @@
 
     [data-bb-radius] { flex: none; display: block; }
     [data-bb-radius] select {
-      font-family: 'Garamond Pro', Garamond, serif;
+      font-family: 'EB Garamond', Garamond, serif;
       font-size: clamp(15px, 1.05vw, 19px);
       color: var(--bb-dark);
       background: rgba(255, 255, 255, 0.5);
@@ -492,7 +492,7 @@
 </style>
 </helmet>
 
-<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: var(--bb-cream); font-family: 'Garamond Pro', Garamond, serif; color: var(--bb-ink)">
+<div style="width: 100%; max-width: 1920px; margin: 0 auto; background: var(--bb-cream); font-family: 'EB Garamond', Garamond, serif; color: var(--bb-ink)">
   <main id="bb-content" tabindex="-1">
 
   <!-- ================= LOCATOR VIEWPORT ================= -->
@@ -685,7 +685,7 @@
 
 <!-- ================= FAQ MODAL ================= -->
 <sc-if value="{{ faqOpen }}" hint-placeholder-val="{{ false }}">
-  <div data-bb-faq="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'Garamond Pro', Garamond, serif">
+  <div data-bb-faq="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'EB Garamond', Garamond, serif">
     <div style="background: var(--bb-cream); width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
       <div onClick="{{ closeFaq }}" onKeyDown="{{ closeFaqKey }}" role="button" tabindex="0" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: var(--bb-red); color: var(--bb-cream); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">&times;</div>
       <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: var(--bb-ink-muted); letter-spacing: 0.03em">FAQs</h2>
@@ -703,7 +703,7 @@
 
 <!-- ================= AGE GATE ================= -->
 <sc-if value="{{ showGate }}" hint-placeholder-val="{{ false }}">
-  <div data-bb-age-gate="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'Garamond Pro', Garamond, serif">
+  <div data-bb-age-gate="" role="dialog" aria-modal="true" tabindex="-1" aria-label="Age verification. You must confirm you are of legal drinking age before entering." style="position: fixed; inset: 0; background: rgba(60,58,52,0.95); display: flex; align-items: center; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1200; font-family: 'EB Garamond', Garamond, serif">
     <div style="background: var(--bb-cream); width: 100%; max-width: 820px; padding: clamp(36px, 4.4vw, 84px) clamp(24px, 5vw, 96px); box-sizing: border-box; text-align: center">
       <div style="font-size: clamp(24px, 2.3vw, 44px); color: var(--bb-ink); margin-bottom: clamp(18px, 1.8vw, 34px)">Brisa Bay</div>
       <sc-if value="{{ gateAsking }}" hint-placeholder-val="{{ true }}">

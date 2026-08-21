@@ -175,15 +175,15 @@ function page({ title, description, canonicalPath, h1, lead, extraHtml, list, js
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
 <meta name="twitter:image" content="${ORIGIN}/assets/web2/og-locator.jpg">
-<link rel="stylesheet" href="../site.css?v=3">
-<link rel="preload" href="../assets/fonts/AGaramondPro-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../site.css?v=5">
+<link rel="preload" href="../assets/fonts/EBGaramond-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin>
 <script type="application/ld+json">${ld1}</script>
 <script type="application/ld+json">${ld2}</script>
 </head>
 <body style="margin:0;background:var(--bb-cream)">
 <a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
-<div style="width:100%;max-width:1920px;margin:0 auto;background:var(--bb-cream);font-family:'Garamond Pro',serif;color:var(--bb-ink)">
+<div style="width:100%;max-width:1920px;margin:0 auto;background:var(--bb-cream);font-family:'EB Garamond',serif;color:var(--bb-ink)">
   <main id="bb-content" tabindex="-1">
     <div style="background:var(--bb-dark);padding:clamp(20px,3vw,44px) clamp(20px,4.7vw,90px) clamp(40px,5vw,72px);box-sizing:border-box">
       <div data-bb-nav="" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:clamp(12px,2vw,40px)">

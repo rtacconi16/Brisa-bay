@@ -65,7 +65,7 @@
   const clusterPin = (count) => {
     const size = count < 10 ? 34 : (count < 50 ? 40 : 46);
     const font = count < 10 ? 15 : (count < 50 ? 16 : 17);
-    return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#e6393a;border:2px solid #eeeee4;box-shadow:0 1px 8px rgba(60,58,52,.35);display:flex;align-items:center;justify-content:center;font-family:'Garamond Pro',Garamond,serif;font-size:${font}px;color:#eeeee4;font-variant-numeric:tabular-nums">${count}</div>`;
+    return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#e6393a;border:2px solid #eeeee4;box-shadow:0 1px 8px rgba(60,58,52,.35);display:flex;align-items:center;justify-content:center;font-family:'EB Garamond',Garamond,serif;font-size:${font}px;color:#eeeee4;font-variant-numeric:tabular-nums">${count}</div>`;
   };
   const userPin = () => `<div style="width:14px;height:14px;border-radius:50%;background:#3c3a34;border:2px solid #eeeee4;box-shadow:0 0 0 5px rgba(60,58,52,.16)"></div>`;
   const searchPin = () => `<div style="width:14px;height:14px;border-radius:50%;background:#60b98f;border:2px solid #eeeee4;box-shadow:0 0 0 5px rgba(96,185,143,.22)"></div>`;
@@ -177,7 +177,7 @@
       this._el.style.boxSizing = 'border-box';
       const msg = document.createElement('div');
       msg.setAttribute('role', 'status');
-      msg.style.cssText = "max-width:34ch;text-align:center;font-family:'Garamond Pro',Garamond,serif;"
+      msg.style.cssText = "max-width:34ch;text-align:center;font-family:'EB Garamond',Garamond,serif;"
         + 'color:#57544a;font-size:clamp(15px,1.05vw,20px);line-height:1.5';
       msg.innerHTML = '<div style="font-size:1.15em;color:#3c3a34;margin-bottom:8px">Map unavailable</div>'
         + '<div>Every stockist is still listed alongside, with addresses and directions.</div>';
@@ -356,7 +356,7 @@
     _setupWheelZoom() {
       const hint = document.createElement('div');
       hint.style.cssText = 'position:absolute;inset:0;z-index:450;display:flex;align-items:center;justify-content:center;'
-        + 'background:rgba(60,58,52,0.42);color:#eeeee4;font-family:\'Garamond Pro\',Garamond,serif;font-size:19px;'
+        + 'background:rgba(60,58,52,0.42);color:#eeeee4;font-family:\'EB Garamond\',Garamond,serif;font-size:19px;'
         + 'letter-spacing:0.03em;pointer-events:none;opacity:0;transition:opacity .25s';
       const mod = /Mac|iPhone|iPad/.test(navigator.platform || '') ? '⌘' : 'Ctrl';
       hint.textContent = 'Hold ' + mod + ' and scroll to zoom';
@@ -480,8 +480,8 @@
       const actionRow = actions.length
         ? `<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px">${actions.join('')}</div>`
         : '';
-      return `<div style="font-family:'Garamond Pro',Garamond,serif;color:#3c3a34;min-width:170px;padding:2px 0">
-         <div style="font-size:17px;font-style:italic;font-weight:700;line-height:1.2;margin-bottom:4px">${escapeHtml(s.name)}</div>
+      return `<div style="font-family:'EB Garamond',Garamond,serif;color:#3c3a34;min-width:170px;padding:2px 0">
+         <div style="font-size:17px;font-style:italic;font-weight:400;line-height:1.2;margin-bottom:4px">${escapeHtml(s.name)}</div>
          <div style="font-size:13px;color:#8a8578;margin-bottom:6px">${escapeHtml(s.type || '')} · ${escapeHtml(s.city || '')}</div>
          <div style="font-size:14px;line-height:1.35;color:#57544a">${escapeHtml(s.address)}</div>
          ${dist}
@@ -640,7 +640,7 @@
         icon: this._L.divIcon({ html: userPin(), className: '', iconSize: [24, 24], iconAnchor: [12, 12] })
       }).addTo(this._map);
       this._userMarker.bindPopup(
-        `<div style="font-family:'Garamond Pro',Garamond,serif;color:#3c3a34;font-size:15px">You are here</div>`,
+        `<div style="font-family:'EB Garamond',Garamond,serif;color:#3c3a34;font-size:15px">You are here</div>`,
         this._popupOpts()
       );
     }
@@ -655,7 +655,7 @@
         icon: this._L.divIcon({ html: searchPin(), className: '', iconSize: [24, 24], iconAnchor: [12, 12] })
       }).addTo(this._map);
       this._searchMarker.bindPopup(
-        `<div style="font-family:'Garamond Pro',Garamond,serif;color:#3c3a34;font-size:15px">Searched area</div>`,
+        `<div style="font-family:'EB Garamond',Garamond,serif;color:#3c3a34;font-size:15px">Searched area</div>`,
         this._popupOpts()
       );
     }

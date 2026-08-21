@@ -57,14 +57,27 @@
   --bb-map-bg: #cfcfc7;
 }
 
-@font-face { font-family: 'Garamond Pro'; src: url('assets/fonts/AGaramondPro-Regular.woff2') format('woff2'); font-display: swap; }
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('assets/fonts/EBGaramond-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('assets/fonts/EBGaramond-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
 @font-face { font-family: 'Old Newspaper'; src: url('assets/fonts/OldNewspaperTypes.woff2') format('woff2'); font-display: swap; }
 
 body { margin: 0; background: var(--bb-cream); }
 
-/* Garamond Pro ships Regular only, so any bold is a browser-synthesized fake.
-   The UA stylesheet bolds headings and strong/b by default — neutralise it and let
-   size, italic and colour carry the hierarchy instead. */
+/* We ship EB Garamond Regular and Italic only. The UA stylesheet bolds headings
+   and strong/b by default — keep them at 400 so size, italic and colour carry
+   the hierarchy, and so the browser does not synthesize a fake bold. */
 h1, h2, h3, h4, h5, h6, strong, b, th, dt, optgroup { font-weight: 400; }
 
 /* ---- Site header: one definition, used on every page ---- */
@@ -98,7 +111,7 @@ a:hover { color: var(--bb-yellow); }
   z-index: 2000;
   background: var(--bb-dark);
   color: var(--bb-cream);
-  font-family: 'Garamond Pro', Garamond, serif;
+  font-family: 'EB Garamond', Garamond, serif;
   font-size: 16px;
   padding: 10px 16px;
   border-radius: 3px;
