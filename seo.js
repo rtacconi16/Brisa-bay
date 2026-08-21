@@ -59,6 +59,7 @@
   var crumbs = {
     'about.html': ['About'],
     'wines.html': ['Our Wines'],
+    'happenings.html': ['Happenings'],
     'where-to-buy.html': ['Where to Buy'],
     'privacy.html': ['Privacy Policy'],
     'terms.html': ['Terms of Service'],

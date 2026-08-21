@@ -254,7 +254,7 @@ class SecurityHeaders(unittest.TestCase):
 
     def test_public_pages_do_not_carry_a_meta_csp(self):
         public = {
-            "index.html", "about.html", "wines.html", "where-to-buy.html",
+            "index.html", "about.html", "wines.html", "happenings.html", "where-to-buy.html",
             "privacy.html", "terms.html", "accessibility.html",
         }
         for page in sorted(ROOT.glob("*.html")):
