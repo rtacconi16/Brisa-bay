@@ -22,7 +22,7 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLIC_PAGES = [
-  'index.html', 'about.html', 'blends.html', 'where-to-buy.html',
+  'index.html', 'about.html', 'wines.html', 'where-to-buy.html',
   'privacy.html', 'terms.html', 'accessibility.html'
 ];
 const SKIP = new Set(['safari-check.html', '404.html']);

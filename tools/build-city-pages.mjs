@@ -190,7 +190,7 @@ function page({ title, description, canonicalPath, h1, lead, extraHtml, list, js
         <a href="../index.html" data-bb-wordmark="">Brisa Bay</a>
         <div role="navigation" aria-label="Main">
           <a href="../about.html">About us</a>
-          <a href="../blends.html">Our Wines</a>
+          <a href="../wines.html">Our Wines</a>
           <a href="../where-to-buy.html">Where to buy</a>
         </div>
       </div>
@@ -198,7 +198,7 @@ function page({ title, description, canonicalPath, h1, lead, extraHtml, list, js
     </div>
     <div style="padding:clamp(36px,5vw,80px) clamp(20px,5vw,190px) clamp(64px,8vw,120px);box-sizing:border-box">
       <p style="margin:0 0 28px;max-width:46em;font-size:clamp(18px,1.7vw,28px);line-height:1.45">${esc(lead)}</p>
-      <p style="margin:0 0 36px;font-size:clamp(16px,1.4vw,22px)"><a href="../blends.html#chardonnay">Chardonnay</a> · <a href="../blends.html#sauvignon-blanc">Sauvignon Blanc</a> · <a href="../where-to-buy.html">Full locator</a></p>
+      <p style="margin:0 0 36px;font-size:clamp(16px,1.4vw,22px)"><a href="../wines.html#chardonnay">Chardonnay</a> · <a href="../wines.html#sauvignon-blanc">Sauvignon Blanc</a> · <a href="../where-to-buy.html">Full locator</a></p>
       ${extraHtml || ''}
       <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px">
         ${storeRows(list)}
@@ -298,7 +298,7 @@ for (const [st, list] of [...byState.entries()].sort()) {
 const publicPages = [
   { loc: `${ORIGIN}/`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/about.html`, lastmod: LASTMOD },
-  { loc: `${ORIGIN}/blends.html`, lastmod: LASTMOD },
+  { loc: `${ORIGIN}/wines.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/where-to-buy.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/privacy.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/terms.html`, lastmod: LASTMOD },

@@ -106,7 +106,7 @@ https://www.brisabay.com/*  https://brisabay.com/:splat  301
 
 Once the real header ships, the duplicate is strictly worse than nothing: it cannot express `frame-ancestors`, and it is a second copy of a policy that has already drifted once.
 
-- **Touches:** `index` · `about` · `blends` · `where-to-buy` · `privacy` · `terms` · `accessibility`
+- **Touches:** `index` · `about` · `wines` · `where-to-buy` · `privacy` · `terms` · `accessibility`
 - **Verify:** `node tools/check-pages.mjs` · `python3 tools/test-server.py`
 
 ### 0.6 Port the Instagram endpoint (optional, defer if you like)
@@ -147,7 +147,7 @@ Verify the domain in Google Search Console and Bing Webmaster Tools, submit the 
 
 ### 1.4 Re-validate the share cards
 
-Run the homepage and `blends.html` through Facebook's and LinkedIn's debuggers to flush their caches of the 404 image, and confirm 1200×630 renders.
+Run the homepage and `wines.html` through Facebook's and LinkedIn's debuggers to flush their caches of the 404 image, and confirm 1200×630 renders.
 
 ### 1.5 Re-confirm the 404 (finding 13)
 
@@ -211,7 +211,7 @@ Capture LCP, CLS and total transfer on a throttled mobile profile before and aft
 
 ### 4.1 Give each wine its own URL
 
-Both `Product` nodes in `seo.js` currently point at `blends.html`, so neither can rank as a distinct entity. Split into `chardonnay.html` and `sauvignon-blanc.html`, or at minimum give each a stable anchor and use it in the markup.
+Both `Product` nodes in `seo.js` currently point at `wines.html`, so neither can rank as a distinct entity. Split into `chardonnay.html` and `sauvignon-blanc.html`, or at minimum give each a stable anchor and use it in the markup.
 
 ### 4.2 On `offers`: don't fake it
 
@@ -223,7 +223,7 @@ To the interior pages, emitted from `seo.js` alongside the existing nodes so it 
 
 ### 4.4 Per-page `og:image`
 
-One share card across seven pages means every link looks identical. Bottle shot for `blends`, story photo for `about`, a map crop for `where-to-buy`.
+One share card across seven pages means every link looks identical. Bottle shot for `wines`, story photo for `about`, a map crop for `where-to-buy`.
 
 ### 4.5 Keep `FAQPage`, lower expectations
 

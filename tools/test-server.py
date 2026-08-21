@@ -81,6 +81,69 @@ class NormalizeMedia(unittest.TestCase):
         self.assertEqual(out["id"], "a.jpg")
 
 
+class UgcCaption(unittest.TestCase):
+    def test_hashtag_and_mention_count_as_ugc(self):
+        self.assertTrue(server._is_ugc_caption("Sunset pour #BrisaBay"))
+        self.assertTrue(server._is_ugc_caption("tag @brisabaywines please"))
+        self.assertTrue(server._is_ugc_caption("#brisabay on the patio"))
+
+    def test_brand_copy_without_the_hashtag_is_not_ugc(self):
+        self.assertFalse(server._is_ugc_caption("Chardonnay in the sun"))
+        self.assertFalse(server._is_ugc_caption(""))
+        self.assertFalse(server._is_ugc_caption(None))
+
+
+class MergeMoments(unittest.TestCase):
+    def test_tagged_posts_come_before_the_brand_grid(self):
+        tagged = [{"id": "t1", "media_type": "IMAGE", "media_url": "t.jpg", "timestamp": "2026-08-01"}]
+        own = [{"id": "o1", "media_type": "IMAGE", "media_url": "o.jpg", "caption": "hello", "timestamp": "2026-08-02"}]
+        out = server._merge_moments(tagged, own, 10)
+        self.assertEqual([m["id"] for m in out], ["t1", "o1"])
+
+    def test_own_ugc_captions_rank_above_other_own_posts(self):
+        own = [
+            {"id": "brand", "media_type": "IMAGE", "media_url": "a.jpg", "caption": "New chardonnay", "timestamp": "2026-08-02"},
+            {"id": "ugc", "media_type": "IMAGE", "media_url": "b.jpg", "caption": "Sunset #BrisaBay", "timestamp": "2026-08-01"},
+        ]
+        out = server._merge_moments([], own, 10)
+        self.assertEqual([m["id"] for m in out], ["ugc", "brand"])
+
+    def test_duplicate_ids_are_kept_once(self):
+        tagged = [{"id": "same", "media_type": "IMAGE", "media_url": "t.jpg", "timestamp": "2026-08-02"}]
+        own = [{"id": "same", "media_type": "IMAGE", "media_url": "o.jpg", "caption": "#BrisaBay", "timestamp": "2026-08-01"}]
+        out = server._merge_moments(tagged, own, 10)
+        self.assertEqual([m["id"] for m in out], ["same"])
+        self.assertEqual(out[0]["src"], "t.jpg")
+
+
+class FetchInstagram(unittest.TestCase):
+    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
+    @mock.patch.object(server, "_get_json")
+    def test_fetch_requests_tags_and_media(self, get_json):
+        def fake(url):
+            if "/tags?" in url:
+                return {"data": [{"id": "t1", "media_type": "IMAGE", "media_url": "t.jpg"}]}
+            if "/media?" in url:
+                return {"data": [{"id": "o1", "media_type": "IMAGE", "media_url": "o.jpg"}]}
+            raise AssertionError(url)
+        get_json.side_effect = fake
+        out = server._fetch_instagram(2)
+        self.assertEqual([m["id"] for m in out], ["t1", "o1"])
+
+    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
+    @mock.patch.object(server, "_get_json")
+    def test_a_tags_failure_still_uses_own_media(self, get_json):
+        def fake(url):
+            if "/tags?" in url:
+                raise RuntimeError("Instagram HTTP 400: tags not available")
+            if "/media?" in url:
+                return {"data": [{"id": "o1", "media_type": "IMAGE", "media_url": "o.jpg"}]}
+            raise AssertionError(url)
+        get_json.side_effect = fake
+        out = server._fetch_instagram(2)
+        self.assertEqual([m["id"] for m in out], ["o1"])
+
+
 class GetMoments(unittest.TestCase):
     def setUp(self):
         server._cache = {"at": 0.0, "payload": None}
@@ -191,7 +254,7 @@ class SecurityHeaders(unittest.TestCase):
 
     def test_public_pages_do_not_carry_a_meta_csp(self):
         public = {
-            "index.html", "about.html", "blends.html", "where-to-buy.html",
+            "index.html", "about.html", "wines.html", "where-to-buy.html",
             "privacy.html", "terms.html", "accessibility.html",
         }
         for page in sorted(ROOT.glob("*.html")):

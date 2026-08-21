@@ -28,7 +28,7 @@
 <script src="./resources.js?v=1"></script>
 <script src="./support.js?v=1"></script>
 <script src="./site-data.js?v=1"></script>
-<script src="./seo.js?v=2"></script>
+<script src="./seo.js?v=3"></script>
 <script src="./age-gate.js?v=4"></script>
 </head>
 <body>
@@ -296,7 +296,7 @@
       [data-bb-way-progress] { display: none !important; }
     }
     @media (max-width: 900px) {
-      /* Same mobile header treatment as blends / where-to-buy: let the nav wrap
+      /* Same mobile header treatment as wines / where-to-buy: let the nav wrap
          onto its own row instead of crowding the wordmark. */
       [data-bb-nav] { row-gap: 10px !important; }
       [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
@@ -412,14 +412,17 @@
 
   <!-- ================= THE BRISA WAY — TITLE BAND (pinned) ================= -->
   <div data-screen-label="Brisa Way Band" data-curtain="" data-bb-band="" style="position: sticky; top: 0; z-index: 3; height: 100svh; min-height: clamp(390px, 44vw, 750px); overflow: hidden">
-    <img width="1024" height="572" src="assets/web/way-band.webp" alt="Sunlit vineyard rows leading toward rolling hills under a clear sky" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+    <video id="bb-band-video" data-bb-band-video="" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="assets/web/way-band-poster.jpg" width="1920" height="1080" aria-label="Aerial view drifting over sunlit vineyard rows toward rolling Napa Valley hills" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+      <source src="assets/web/way-band-video.webm" type="video/webm">
+      <source src="assets/web/way-band-video.mp4" type="video/mp4">
+    </video>
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(60,58,52,0.28) 0%, rgba(60,58,52,0) 55%)"></div>
     <div style="position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(24px, 3vw, 50px); box-sizing: border-box">
       <div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
         <a href="index.html" data-bb-wordmark="">Brisa Bay</a>
         <div role="navigation" aria-label="Main">
           <span data-bb-nav-active="">About us</span>
-          <a href="blends.html" style-hover="color: var(--bb-yellow)">Our Wines</a>
+          <a href="wines.html" style-hover="color: var(--bb-yellow)">Our Wines</a>
           <a href="where-to-buy.html" style-hover="color: var(--bb-yellow)">Where to buy</a>
         </div>
       </div>
@@ -519,15 +522,14 @@
   <div data-curtain="" data-bb-hello="" style="position: sticky; top: 0; z-index: 5; height: 100svh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55)">
 
   <div data-screen-label="Say Hello" style="position: relative; flex: 1; min-height: 0; display: flex; align-items: center">
-    <img loading="lazy" width="1400" height="1050" src="assets/web/hello-band.webp" alt="Oak barrels stacked along a Napa wine cave" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
+    <img loading="lazy" width="1400" height="933" src="assets/web/hello-band.webp" alt="An osprey carrying a fish flies over the vineyard" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block">
     
     <div style="position: relative; z-index: 3; width: 100%; padding: clamp(24px, 3vw, 56px) clamp(20px, 5vw, 190px)">
-      <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; background: var(--bb-cream); padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
-        <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(24px, 2.4vw, 44px); font-style: italic; color: var(--bb-grey)">Say hello.</h2>
-        <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(15px, 1.6vw, 30px); color: var(--bb-grey)">
-          <span>{{ contactEmail }}</span>
+      <div data-bb-hello-card="" style="max-width: 1160px; margin: 0 auto; padding: clamp(24px, 3vw, 54px) clamp(20px, 4vw, 60px); box-sizing: border-box; text-align: center">
+        <h2 style="margin: 0 0 clamp(16px, 1.8vw, 32px); font-size: clamp(28px, 2.8vw, 52px); font-style: italic; color: var(--bb-cream); text-shadow: 0 2px 18px rgba(60,58,52,0.45)">Say hello.</h2>
+        <div style="display: flex; flex-direction: column; gap: clamp(10px, 1.4vw, 24px); font-size: clamp(19px, 2vw, 36px); color: var(--bb-cream); text-shadow: 0 2px 18px rgba(60,58,52,0.45)">
           <span>Let's Work Together: {{ contactEmail }}</span>
-          <span>Follow the Vibe: @brisabaywines</span>
+          <span>Follow the Vibe: <a href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">@brisabaywines</a></span>
         </div>
       </div>
     </div>
@@ -541,7 +543,7 @@
       <div style="font-size: clamp(40px, 5.4vw, 100px); line-height: 1; color: var(--bb-cream)">Brisa Bay</div>
       <div style="display: flex; flex-wrap: wrap; gap: clamp(28px, 4.6vw, 90px)">
         <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: var(--bb-cream)">
-          <a href="blends.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Our Wines</a>
+          <a href="wines.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Our Wines</a>
           <a href="where-to-buy.html" style="color: inherit; text-decoration: none" style-hover="color: var(--bb-yellow)">Store Locator</a>
         </div>
         <div style="display: flex; flex-direction: column; gap: clamp(4px, 0.5vw, 8px); font-size: clamp(15px, 1.5vw, 28px); color: var(--bb-cream)">
@@ -635,6 +637,7 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this._syncAgeModal();
+    this._kickBandVideo();
     // Defer so the DC template DOM is painted before measuring.
     requestAnimationFrame(() => this._bindWayScroll());
   }
@@ -644,6 +647,24 @@ class Component extends DCLogic {
   componentWillUnmount() {
     if (window.BBAgeGate) BBAgeGate.cleanupModal(this);
     if (this._wayCleanup) this._wayCleanup();
+    if (this._bandVisKick) document.removeEventListener('visibilitychange', this._bandVisKick);
+  }
+
+  _kickBandVideo() {
+    const v = document.getElementById('bb-band-video');
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.setAttribute('muted', '');
+    v.loop = true;
+    v.playsInline = true;
+    const tryPlay = () => { if (v.paused) v.play().catch(() => {}); };
+    tryPlay();
+    ['loadeddata', 'canplay', 'canplaythrough'].forEach((evt) => {
+      v.addEventListener(evt, tryPlay, { once: true });
+    });
+    this._bandVisKick = () => { if (!document.hidden) tryPlay(); };
+    document.addEventListener('visibilitychange', this._bandVisKick);
   }
 
   _bindWayScroll() {
