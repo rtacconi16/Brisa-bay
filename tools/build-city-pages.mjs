@@ -191,7 +191,6 @@ function page({ title, description, canonicalPath, h1, lead, extraHtml, list, js
         <div role="navigation" aria-label="Main">
           <a href="../about.html">About us</a>
           <a href="../wines.html">Our Wines</a>
-          <a href="../happenings.html">Happenings</a>
           <a href="../where-to-buy.html">Where to buy</a>
         </div>
       </div>
@@ -300,7 +299,6 @@ const publicPages = [
   { loc: `${ORIGIN}/`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/about.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/wines.html`, lastmod: LASTMOD },
-  { loc: `${ORIGIN}/happenings.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/where-to-buy.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/privacy.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/terms.html`, lastmod: LASTMOD },
