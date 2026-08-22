@@ -26,10 +26,10 @@
     // Vendored locally: no third-party CDN at runtime, survives ad blockers and
     // corporate proxies, and keeps the CSP simple. Update via tools/vendor.sh.
     assets: {
-      leafletCss: 'assets/vendor/leaflet/leaflet.css',
-      leafletJs: 'assets/vendor/leaflet/leaflet.js',
-      clusterCss: 'assets/vendor/leaflet/MarkerCluster.css',
-      clusterJs: 'assets/vendor/leaflet/leaflet.markercluster.js'
+      leafletCss: '/assets/vendor/leaflet/leaflet.css',
+      leafletJs: '/assets/vendor/leaflet/leaflet.js',
+      clusterCss: '/assets/vendor/leaflet/MarkerCluster.css',
+      clusterJs: '/assets/vendor/leaflet/leaflet.markercluster.js'
     },
 
     tiles: {
@@ -45,7 +45,7 @@
     // on its own, and so it can later come from a CMS or a build step without
     // touching the page.
     stores: {
-      url: 'stores.json'
+      url: '/stores.json'
     },
 
     geocode: {

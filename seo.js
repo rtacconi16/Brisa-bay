@@ -9,8 +9,14 @@
 (function () {
   'use strict';
 
-  var ORIGIN = 'https://brisabay.com/';
+  var ORIGIN = 'https://www.brisabay.com/';
   var EMAIL = (window.BBSite && window.BBSite.contactEmail) || 'info@brisabay.com';
+
+  try {
+    if ((window.location.pathname || '') === '/index.html') {
+      history.replaceState(null, '', '/' + (window.location.search || '') + (window.location.hash || ''));
+    }
+  } catch (e) {}
 
   function emit(obj) {
     var el = document.createElement('script');
@@ -58,8 +64,8 @@
   var page = pageName();
   var crumbs = {
     'about.html': ['About'],
-    'wines.html': ['Our Wines'],
-    'where-to-buy.html': ['Where to Buy'],
+    'ourWines.html': ['Our Wines'],
+    'findBrisaBay.html': ['Where to Buy'],
     'privacy.html': ['Privacy Policy'],
     'terms.html': ['Terms of Service'],
     'accessibility.html': ['Accessibility']
@@ -79,8 +85,8 @@
     '': true,
     'index.html': true,
     'about.html': true,
-    'wines.html': true,
-    'where-to-buy.html': true
+    'ourWines.html': true,
+    'findBrisaBay.html': true
   };
 
   if (faqPages[page] && window.BBSite && typeof window.BBSite.faq === 'function') {
@@ -98,7 +104,7 @@
     });
   }
 
-  if (page === 'wines.html') {
+  if (page === 'ourWines.html') {
     emit({
       '@context': 'https://schema.org',
       '@graph': [
@@ -110,7 +116,7 @@
           category: 'Wine',
           description: 'A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.',
           image: ORIGIN + 'assets/web2/bottle.webp',
-          url: ORIGIN + 'wines.html#chardonnay',
+          url: ORIGIN + 'ourWines.html#chardonnay',
           additionalProperty: [
             { '@type': 'PropertyValue', name: 'vintage', value: '2024' },
             { '@type': 'PropertyValue', name: 'alcoholByVolume', value: '13.5%' },
@@ -125,7 +131,7 @@
           category: 'Wine',
           description: 'Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.',
           image: ORIGIN + 'assets/web2/bottle-sauvblanc.webp',
-          url: ORIGIN + 'wines.html#sauvignon-blanc',
+          url: ORIGIN + 'ourWines.html#sauvignon-blanc',
           additionalProperty: [
             { '@type': 'PropertyValue', name: 'vintage', value: '2024' },
             { '@type': 'PropertyValue', name: 'alcoholByVolume', value: '13.0%' },

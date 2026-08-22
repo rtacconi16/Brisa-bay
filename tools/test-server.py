@@ -1,296 +1,175 @@
 #!/usr/bin/env python3
-"""Smoke tests for server.py.
+"""Tests for server.py and for the CSP it shares with the site.
 
     python3 tools/test-server.py
 
-server.py had no tests. It is only the dev server, so the bar here is lower than
-for the locator — but three things in it are worth pinning down:
+server.py is only the local dev server, so the bar here is lower than for the
+locator. Two things still earn tests:
 
-  * the fallback path, which is what production actually serves today, since
-    GitHub Pages does not run this file and /api/instagram/moments 404s there;
-  * media normalisation, which has real branching for video and carousel posts
-    and silently drops anything it cannot resolve to an image;
-  * the security headers, whose CSP must stay in step with `_headers`
-    (Cloudflare Pages). They are the same policy expressed twice.
+  * the CSP wiring. tools/csp.json is the single source of truth for a policy
+    that production enforces through a meta tag and nothing else — Wix sends no
+    security headers — so a policy that drifts, or a page mapped to the wrong
+    one, is a real hole rather than a tidiness problem;
+  * the hosting behaviours this server exists to imitate. Wix serves uploaded
+    files verbatim with no directory indexes and no server-side code, and the
+    point of developing against this file is that those limits bite locally
+    instead of after a release.
 
 Standard library only: this repo has no package.json and server.py has no pip
 dependencies, and that is worth keeping.
 """
 
 import json
-import os
 import sys
 import unittest
 from pathlib import Path
-from unittest import mock
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import server  # noqa: E402
 
-
-class CaptionAlt(unittest.TestCase):
-    def test_missing_caption_falls_back(self):
-        self.assertIn("brisabaywines", server._caption_alt(None))
-        self.assertIn("brisabaywines", server._caption_alt(""))
-
-    def test_whitespace_is_collapsed(self):
-        self.assertEqual(server._caption_alt("a\n\n  b\tc"), "a b c")
-
-    def test_long_captions_are_truncated_with_an_ellipsis(self):
-        alt = server._caption_alt("x" * 200)
-        self.assertEqual(len(alt), 141)          # 140 chars + the ellipsis
-        self.assertTrue(alt.endswith("…"))
-
-    def test_a_caption_at_the_limit_is_not_ellipsised(self):
-        self.assertEqual(server._caption_alt("y" * 140), "y" * 140)
+CSP = json.loads((ROOT / "tools" / "csp.json").read_text(encoding="utf8"))
+PAGES = [
+    "index.html", "about.html", "ourWines.html", "findBrisaBay.html",
+    "privacy.html", "terms.html", "accessibility.html", "404.html",
+]
 
 
-class NormalizeMedia(unittest.TestCase):
-    def test_image_uses_media_url(self):
-        out = server._normalize_media({"id": "1", "media_type": "IMAGE", "media_url": "a.jpg"})
-        self.assertEqual(out["src"], "a.jpg")
-        self.assertEqual(out["mediaType"], "IMAGE")
+class CspSourceOfTruth(unittest.TestCase):
+    def test_every_page_carries_the_policy_csp_json_assigns_it(self):
+        for name in PAGES:
+            html = (ROOT / name).read_text(encoding="utf8")
+            expected = CSP["policies"][CSP["pages"].get(name, CSP["default"])]
+            self.assertIn(
+                f'<meta http-equiv="Content-Security-Policy" content="{expected}">',
+                html,
+                f"{name} does not carry the policy tools/csp.json assigns it",
+            )
 
-    def test_video_prefers_the_thumbnail(self):
-        # A video's media_url is the mp4; using it as an <img src> shows nothing.
-        out = server._normalize_media(
-            {"id": "2", "media_type": "VIDEO", "media_url": "clip.mp4", "thumbnail_url": "thumb.jpg"}
-        )
-        self.assertEqual(out["src"], "thumb.jpg")
+    def test_inline_script_stays_forbidden(self):
+        # The DC runtime needs 'unsafe-eval' for new Function. It does not need
+        # 'unsafe-inline', and allowing it would give an injected <script> block
+        # everything it wants.
+        for name, policy in CSP["policies"].items():
+            script_src = [d for d in policy.split("; ") if d.startswith("script-src")][0]
+            self.assertNotIn("unsafe-inline", script_src, f"{name} allows inline script")
 
-    def test_carousel_falls_back_to_its_first_child(self):
-        out = server._normalize_media({
-            "id": "3", "media_type": "CAROUSEL_ALBUM",
-            "children": {"data": [{"media_url": "first.jpg"}, {"media_url": "second.jpg"}]},
-        })
-        self.assertEqual(out["src"], "first.jpg")
+    def test_only_the_locator_widens_the_policy(self):
+        # A page gets the wider policy by being named in csp.json, not by
+        # accident. If another page needs external origins, that is a decision
+        # to make explicitly here.
+        self.assertEqual(CSP["pages"], {"findBrisaBay.html": "locator"})
+        self.assertEqual(CSP["default"], "base")
 
-    def test_items_with_no_usable_image_are_dropped(self):
-        self.assertIsNone(server._normalize_media({"id": "4", "media_type": "IMAGE"}))
-        self.assertIsNone(server._normalize_media({"id": "5", "media_type": "CAROUSEL_ALBUM",
-                                                   "children": {"data": []}}))
+    def test_the_base_policy_reaches_nothing_off_origin(self):
+        base = CSP["policies"]["base"]
+        self.assertNotIn("https://", base)
 
-    def test_permalink_defaults_to_the_profile(self):
-        out = server._normalize_media({"id": "6", "media_type": "IMAGE", "media_url": "a.jpg"})
-        self.assertIn("instagram.com/brisabaywines", out["permalink"])
+    def test_the_locator_allows_exactly_the_origins_it_uses(self):
+        locator = CSP["policies"]["locator"]
+        for origin in ("https://tile.openstreetmap.org", "https://photon.komoot.io",
+                       "https://www.wixapis.com", "https://esm.sh"):
+            self.assertIn(origin, locator)
 
-    def test_id_falls_back_to_src_so_react_keys_stay_stable(self):
-        out = server._normalize_media({"media_type": "IMAGE", "media_url": "a.jpg"})
-        self.assertEqual(out["id"], "a.jpg")
-
-
-class UgcCaption(unittest.TestCase):
-    def test_hashtag_and_mention_count_as_ugc(self):
-        self.assertTrue(server._is_ugc_caption("Sunset pour #BrisaBay"))
-        self.assertTrue(server._is_ugc_caption("tag @brisabaywines please"))
-        self.assertTrue(server._is_ugc_caption("#brisabay on the patio"))
-
-    def test_brand_copy_without_the_hashtag_is_not_ugc(self):
-        self.assertFalse(server._is_ugc_caption("Chardonnay in the sun"))
-        self.assertFalse(server._is_ugc_caption(""))
-        self.assertFalse(server._is_ugc_caption(None))
-
-
-class MergeMoments(unittest.TestCase):
-    def test_tagged_posts_come_before_the_brand_grid(self):
-        tagged = [{"id": "t1", "media_type": "IMAGE", "media_url": "t.jpg", "timestamp": "2026-08-01"}]
-        own = [{"id": "o1", "media_type": "IMAGE", "media_url": "o.jpg", "caption": "hello", "timestamp": "2026-08-02"}]
-        out = server._merge_moments(tagged, own, 10)
-        self.assertEqual([m["id"] for m in out], ["t1", "o1"])
-
-    def test_own_ugc_captions_rank_above_other_own_posts(self):
-        own = [
-            {"id": "brand", "media_type": "IMAGE", "media_url": "a.jpg", "caption": "New chardonnay", "timestamp": "2026-08-02"},
-            {"id": "ugc", "media_type": "IMAGE", "media_url": "b.jpg", "caption": "Sunset #BrisaBay", "timestamp": "2026-08-01"},
-        ]
-        out = server._merge_moments([], own, 10)
-        self.assertEqual([m["id"] for m in out], ["ugc", "brand"])
-
-    def test_duplicate_ids_are_kept_once(self):
-        tagged = [{"id": "same", "media_type": "IMAGE", "media_url": "t.jpg", "timestamp": "2026-08-02"}]
-        own = [{"id": "same", "media_type": "IMAGE", "media_url": "o.jpg", "caption": "#BrisaBay", "timestamp": "2026-08-01"}]
-        out = server._merge_moments(tagged, own, 10)
-        self.assertEqual([m["id"] for m in out], ["same"])
-        self.assertEqual(out[0]["src"], "t.jpg")
+    def test_frame_ancestors_is_header_only(self):
+        # frame-ancestors is ignored in a meta tag, so it must not be smuggled
+        # into the page policies where it would read as protection the site
+        # does not have. server.py adds it; production cannot.
+        for policy in CSP["policies"].values():
+            self.assertNotIn("frame-ancestors", policy)
+        self.assertIn("frame-ancestors", CSP["headerOnly"])
 
 
-class FetchInstagram(unittest.TestCase):
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
-    @mock.patch.object(server, "_get_json")
-    def test_fetch_requests_tags_and_media(self, get_json):
-        def fake(url):
-            if "/tags?" in url:
-                return {"data": [{"id": "t1", "media_type": "IMAGE", "media_url": "t.jpg"}]}
-            if "/media?" in url:
-                return {"data": [{"id": "o1", "media_type": "IMAGE", "media_url": "o.jpg"}]}
-            raise AssertionError(url)
-        get_json.side_effect = fake
-        out = server._fetch_instagram(2)
-        self.assertEqual([m["id"] for m in out], ["t1", "o1"])
+class PolicySelection(unittest.TestCase):
+    def test_the_locator_path_gets_the_locator_policy(self):
+        self.assertIn("https://esm.sh", server.policy_for("/findBrisaBay.html"))
 
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
-    @mock.patch.object(server, "_get_json")
-    def test_a_tags_failure_still_uses_own_media(self, get_json):
-        def fake(url):
-            if "/tags?" in url:
-                raise RuntimeError("Instagram HTTP 400: tags not available")
-            if "/media?" in url:
-                return {"data": [{"id": "o1", "media_type": "IMAGE", "media_url": "o.jpg"}]}
-            raise AssertionError(url)
-        get_json.side_effect = fake
-        out = server._fetch_instagram(2)
-        self.assertEqual([m["id"] for m in out], ["o1"])
+    def test_an_ordinary_page_gets_the_base_policy(self):
+        self.assertNotIn("https://esm.sh", server.policy_for("/about.html"))
 
+    def test_the_root_resolves_to_the_home_page_policy(self):
+        self.assertEqual(server.policy_for("/"), server.policy_for("/index.html"))
 
-class GetMoments(unittest.TestCase):
-    def setUp(self):
-        server._cache = {"at": 0.0, "payload": None}
+    def test_the_server_adds_the_directives_meta_cannot_express(self):
+        self.assertIn("frame-ancestors 'none'", server.policy_for("/about.html"))
 
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "", "INSTAGRAM_ACCESS_TOKEN": ""}, clear=False)
-    def test_unconfigured_serves_the_fallback_gallery(self):
-        # This is the production path today.
-        out = server.get_moments(4)
-        self.assertEqual(out["source"], "fallback")
-        self.assertFalse(out["configured"])
-        self.assertEqual(len(out["moments"]), 4)
-
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "", "INSTAGRAM_ACCESS_TOKEN": ""}, clear=False)
-    def test_limit_is_clamped_to_a_sane_range(self):
-        # `limit or DEFAULT_LIMIT` means 0 reads as "not specified" and takes the
-        # default rather than clamping to 1 — ?limit=0 returns a full strip.
-        self.assertEqual(len(server.get_moments(0)["moments"]), server.DEFAULT_LIMIT)
-
-        # A negative is not falsy, so it does clamp to the floor of 1.
-        server._cache = {"at": 0.0, "payload": None}
-        self.assertEqual(len(server.get_moments(-5)["moments"]), 1)
-
-        server._cache = {"at": 0.0, "payload": None}
-        self.assertEqual(len(server.get_moments(3)["moments"]), 3)
-
-        # Ceiling is 25; the fallback list is shorter, so it caps there instead.
-        server._cache = {"at": 0.0, "payload": None}
-        self.assertEqual(len(server.get_moments(9999)["moments"]), len(server.FALLBACK_MOMENTS))
-
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
-    def test_a_graph_failure_degrades_to_the_fallback(self):
-        # A dead token or a network blip must not blank the homepage strip.
-        with mock.patch.object(server, "_fetch_instagram", side_effect=RuntimeError("boom")):
-            out = server.get_moments(3)
-        self.assertEqual(out["source"], "fallback")
-        self.assertTrue(out["configured"])
-        self.assertIn("boom", out["error"])
-        self.assertEqual(len(out["moments"]), 3)
-
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
-    def test_a_successful_fetch_is_cached(self):
-        calls = []
-
-        def fake(limit):
-            calls.append(limit)
-            return [{"id": "x", "src": "x.jpg", "alt": "", "permalink": "p"}]
-
-        with mock.patch.object(server, "_fetch_instagram", side_effect=fake):
-            first = server.get_moments(5)
-            second = server.get_moments(5)
-        self.assertEqual(first["source"], "instagram")
-        self.assertEqual(second["source"], "instagram")
-        self.assertEqual(len(calls), 1, "second call should have been served from cache")
-
-    @mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "u", "INSTAGRAM_ACCESS_TOKEN": "t"}, clear=False)
-    def test_a_different_limit_is_not_served_from_cache(self):
-        calls = []
-
-        def fake(limit):
-            calls.append(limit)
-            return [{"id": "x", "src": "x.jpg", "alt": "", "permalink": "p"}]
-
-        with mock.patch.object(server, "_fetch_instagram", side_effect=fake):
-            server.get_moments(5)
-            server.get_moments(6)
-        self.assertEqual(calls, [5, 6])
-
-    def test_the_returned_payload_never_leaks_the_cache_key(self):
-        with mock.patch.dict(os.environ, {"INSTAGRAM_USER_ID": "", "INSTAGRAM_ACCESS_TOKEN": ""}):
-            server.get_moments(2)
-            cached = server.get_moments(2)
-        self.assertNotIn("limit", cached)
-
-
-class FallbackGallery(unittest.TestCase):
-    def test_every_fallback_image_exists_on_disk(self):
-        # These are the images production actually shows. A rename during the
-        # WebP conversion would otherwise surface as a broken homepage strip.
-        for m in server.FALLBACK_MOMENTS:
-            self.assertTrue((ROOT / m["src"]).is_file(), f"missing {m['src']}")
-
-    def test_every_fallback_entry_has_alt_text(self):
-        for m in server.FALLBACK_MOMENTS:
-            self.assertTrue(m["alt"].strip(), f"{m['id']} has no alt text")
+    def test_an_unknown_path_still_gets_a_policy(self):
+        self.assertIn("default-src 'self'", server.policy_for("/nope.html"))
 
 
 class SecurityHeaders(unittest.TestCase):
     def test_the_expected_headers_are_present(self):
-        for h in ("Content-Security-Policy", "X-Content-Type-Options",
-                  "Referrer-Policy", "Permissions-Policy", "X-Frame-Options"):
+        for h in ("X-Content-Type-Options", "Referrer-Policy",
+                  "Permissions-Policy", "X-Frame-Options"):
             self.assertIn(h, server.SECURITY_HEADERS)
 
-    def test_inline_script_stays_forbidden(self):
-        # The local CSP is deliberately stricter than GitHub Pages so a classic
-        # inline <script> fails here rather than in production.
-        script_src = [d for d in server.CSP.split("; ") if d.startswith("script-src")][0]
-        self.assertNotIn("unsafe-inline", script_src)
 
-    def test_the_csp_matches_the_cloudflare_headers_file(self):
-        # Production headers live in `_headers` (Cloudflare Pages). server.py is
-        # the local copy. They must stay in lockstep, including frame-ancestors.
+class WixParity(unittest.TestCase):
+    """The dev server must not offer what production cannot."""
+
+    def test_no_api_routes_remain(self):
+        source = (ROOT / "server.py").read_text(encoding="utf8")
+        self.assertNotIn("/api/", source)
+
+    def test_no_pages_are_reachable_without_their_extension(self):
+        # Wix has no directory indexes and no rewrite rules, so a pretty URL is
+        # a 404 there. do_GET refuses trailing-slash paths for the same reason.
+        source = (ROOT / "server.py").read_text(encoding="utf8")
+        self.assertIn('endswith("/")', source)
+
+    def test_the_cloudflare_files_are_gone(self):
+        for name in ("_headers", "_redirects", "functions"):
+            self.assertFalse((ROOT / name).exists(), f"{name} still present")
+
+    def test_the_release_output_directory_is_dist(self):
+        cfg = json.loads((ROOT / "wix.config.json").read_text(encoding="utf8"))
+        self.assertEqual(cfg["site"]["outputDirectory"], "dist")
+
+
+class RedirectStubs(unittest.TestCase):
+    """A 301 is not available on Wix, so the old URLs redirect from the page."""
+
+    def test_each_stub_points_at_a_page_that_exists(self):
+        for stub, target in (("where-to-buy.html", "findBrisaBay.html"),
+                             ("wines.html", "ourWines.html")):
+            html = (ROOT / stub).read_text(encoding="utf8")
+            self.assertIn(f'content="0;url=/{target}"', html)
+            self.assertTrue((ROOT / target).exists())
+
+    def test_the_redirect_helper_refuses_to_leave_the_origin(self):
+        js = (ROOT / "redirect.js").read_text(encoding="utf8")
+        # The data-to value is validated against a same-origin path pattern, so
+        # a stub cannot be turned into an open redirect by editing one attribute.
+        self.assertIn("^\\/[A-Za-z0-9._~\\-/]*$", js)
+
+
+class CuratedMoments(unittest.TestCase):
+    """Bottled Moments ships with the page; there is no endpoint to fill it."""
+
+    def test_the_homepage_calls_no_instagram_endpoint(self):
+        html = (ROOT / "index.html").read_text(encoding="utf8")
+        self.assertNotIn("/api/instagram", html)
+        self.assertNotIn("loadMoments", html)
+
+    def test_every_curated_image_exists_on_disk(self):
         import re
-        headers = (ROOT / "_headers").read_text(encoding="utf8")
-        m = re.search(r"Content-Security-Policy:\s*(.+)", headers)
-        self.assertIsNotNone(m, "_headers is missing Content-Security-Policy")
-        file_csp = m.group(1).strip()
-        self.assertEqual(file_csp, server.CSP)
+        html = (ROOT / "index.html").read_text(encoding="utf8")
+        block = html[html.index("const curatedMoments"):]
+        block = block[:block.index("];")]
+        srcs = re.findall(r"src: '([^']+)'", block)
+        self.assertGreaterEqual(len(srcs), 6)
+        for src in srcs:
+            self.assertTrue((ROOT / src).exists(), f"missing {src}")
 
-    def test_public_pages_do_not_carry_a_meta_csp(self):
-        public = {
-            "index.html", "about.html", "wines.html", "where-to-buy.html",
-            "privacy.html", "terms.html", "accessibility.html",
-        }
-        for page in sorted(ROOT.glob("*.html")):
-            if page.name not in public:
-                continue
-            html = page.read_text(encoding="utf8")
-            self.assertNotIn(
-                'http-equiv="Content-Security-Policy"',
-                html,
-                f"{page.name} still has a meta CSP; production headers come from _headers",
-            )
-
-
-class DotEnv(unittest.TestCase):
-    def test_values_are_parsed_and_quotes_stripped(self):
-        import tempfile
-        with tempfile.TemporaryDirectory() as d:
-            env = Path(d) / ".env"
-            env.write_text('# comment\nA=1\nB="two"\nC=\'three\'\nD=has=equals\nbad line\n')
-            with mock.patch.object(server, "ROOT", Path(d)), \
-                 mock.patch.dict(os.environ, {}, clear=True):
-                server._load_dotenv()
-                self.assertEqual(os.environ["A"], "1")
-                self.assertEqual(os.environ["B"], "two")
-                self.assertEqual(os.environ["C"], "three")
-                self.assertEqual(os.environ["D"], "has=equals")
-                self.assertNotIn("bad line", os.environ)
-
-    def test_the_real_environment_wins_over_the_file(self):
-        import tempfile
-        with tempfile.TemporaryDirectory() as d:
-            (Path(d) / ".env").write_text("A=from_file\n")
-            with mock.patch.object(server, "ROOT", Path(d)), \
-                 mock.patch.dict(os.environ, {"A": "from_env"}, clear=True):
-                server._load_dotenv()
-                self.assertEqual(os.environ["A"], "from_env")
+    def test_every_curated_entry_has_alt_text(self):
+        import re
+        html = (ROOT / "index.html").read_text(encoding="utf8")
+        block = html[html.index("const curatedMoments"):]
+        block = block[:block.index("];")]
+        entries = re.findall(r"\{[^}]*\}", block)
+        for entry in entries:
+            self.assertIn("alt: '", entry)
 
 
 if __name__ == "__main__":

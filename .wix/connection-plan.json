@@ -1,0 +1,23 @@
+{
+  "bindingMap": [
+    {
+      "file": "findBrisaBay.html",
+      "anchor": "[data-bb-store-scroll]",
+      "entity": "data.items",
+      "shape": "list"
+    }
+  ],
+  "augmentation": [
+    {
+      "capability": "contact",
+      "app": "wix-forms",
+      "component": "contact-form",
+      "injectAt": {
+        "file": "index.html",
+        "anchor": "main#bb-content",
+        "position": "after"
+      }
+    }
+  ],
+  "persistenceSwap": []
+}

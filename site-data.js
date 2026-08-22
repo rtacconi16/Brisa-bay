@@ -55,7 +55,7 @@
    * The FAQ list for a page.
    *
    * `overrides` maps an item id to a replacement answer, for the one case where
-   * a page can answer better than the generic copy: on where-to-buy.html the
+   * a page can answer better than the generic copy: on findBrisaBay.html the
    * locator is on screen, so "where can I buy" describes the controls in front
    * of the reader rather than pointing at the page they are already on.
    *

@@ -3,8 +3,9 @@
 Marketing site for Brisa Bay, a Napa Valley wine label. Seven static pages plus a
 store locator that maps ~100 stockists.
 
-Live: GitHub Pages, served from `main`. There is no build step — **what is in the repo
-is what ships**.
+Live: **Wix**, released with the Wix CLI from `dist/`. Pages are addressed by their
+`.html` path — `/findBrisaBay.html`, not `/findBrisaBay` — because Wix serves uploaded
+files verbatim and has no directory indexes.
 
 ---
 
@@ -22,27 +23,102 @@ origin. Always test through the server.
 
 ### Why a server at all
 
-`server.py` does three things a plain file server doesn't:
+`server.py` exists to imitate Wix, so that what works locally works after a release:
 
-1. **Sends the security headers** (CSP, `X-Frame-Options`, `Permissions-Policy`, …). See
-   [Security headers](#security-headers) — these are local-only today, which matters.
-2. **Serves `/api/instagram/moments`**, the homepage's "Bottled Moments" feed.
-3. **Applies the CSP that catches inline-script mistakes.** The policy deliberately omits
-   `'unsafe-inline'` for scripts, so a classic inline `<script>` is *blocked locally* and
-   works fine on GitHub Pages. That asymmetry is intentional: it makes the stricter
-   environment the one you develop against. Page JavaScript belongs in an external `.js`
-   file (see `wines-motion.js`).
+1. **It serves `.html` paths and nothing else.** No directory indexes, no rewrites, no
+   pretty URLs — request `/about` locally and you get the 404 page, exactly as you would
+   in production. A link that works here works there.
+2. **It sends the CSP from `tools/csp.json`**, the same policy each page carries as a
+   `<meta>` tag, plus the directives a meta tag cannot express. The policy deliberately
+   omits `'unsafe-inline'` for scripts, so a classic inline `<script>` is blocked while
+   you are developing rather than after you ship. Page JavaScript belongs in an external
+   `.js` file (see `wines-motion.js`, `redirect.js`).
+3. **It runs no server-side code**, because Wix runs none. If a feature needs an endpoint,
+   it cannot be built this way — see [What Wix takes over](#what-wix-takes-over).
 
-### Instagram feed (optional)
+---
+
+## Deploying
 
 ```bash
-cp .env.example .env   # then fill in the two required values
+node tools/build-wix.mjs --check
+npx @wix/cli@latest release
 ```
 
-Without credentials the API returns a curated fallback gallery, which is what production
-serves today (see [Known gaps](#known-gaps)). `.env` is gitignored — keep it that way.
+The build assembles `dist/`, which is the directory `wix.config.json` points the CLI at
+and the only thing that ships. **This is a real build step now, and skipping it releases
+a stale `dist/`.**
 
-Check status: <http://127.0.0.1:8080/api/health>
+`dist/` is built by an explicit allowlist in `tools/build-wix.mjs`, not by copying the
+repo. That is deliberate: `outputDirectory` used to be `"."`, and everything in the repo
+was live and fetchable on the domain — `/server.py`, `/README.md`, `/AGENTS.md`,
+`/_headers`, and the Pages function under `/functions`, which Wix served as readable text
+rather than executing. Adding a page or an asset directory means adding it to `SITE` in
+that file; anything not named there does not ship.
+
+`--check` fails the build if `dist/` contains something unshippable, if a page has lost
+its CSP tag, if a page links an extensionless URL, or if a page calls an `/api/` route.
+CI runs it on every push.
+
+**Then verify the release from outside:**
+
+```bash
+node tools/verify-live.mjs
+```
+
+Everything else in `tools/` checks the repo. This is the only thing that checks what
+visitors actually get, and the two have been out of step before: one release shipped the
+renamed pages together with apex canonicals, no CSP, and the entire repo as public files,
+and nothing noticed because nothing was looking at production. It exits non-zero on
+failure, so it can gate a deploy script. It is not in CI — CI has no site to look at.
+
+### URL shape
+
+Pages are addressed as `.html` — `/findBrisaBay.html`, not `/findBrisaBay`. Whether that is
+*necessary* is an open question, and the answer is worth having before the renamed URLs get
+indexed.
+
+Wix documents none of this, and the obvious test is misleading: `/about` returns 404 today,
+but so does `/about/index.html`, because no such directory has ever been released. What is
+known is that Wix 301s `/about/` to `/about`, stripping the trailing slash even when nothing
+is deployed at either path — which is how a host behaves when it *does* resolve directory
+indexes.
+
+`dist/urlcheck/index.html` settles it. After the next release:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' https://www.brisabay.com/urlcheck
+```
+
+- **200** — directory indexes work. Clean URLs are available; see below.
+- **404** — they do not. `.html` is required, and the question is closed.
+
+The probe is noindex, linked from nowhere, and about a kilobyte. Delete `tools/urlcheck/`
+and the `PROBE` entry in `tools/build-wix.mjs` once it has answered.
+
+**If the answer is 200**, switching costs one focused change: emit each page as
+`<name>/index.html` in `tools/build-wix.mjs` instead of `<name>.html`, drop the suffix from
+every internal link, canonical, `og:url` and sitemap entry, keep the current `.html` files as
+redirect stubs so existing links survive, and invert the "links no extensionless URLs" checks
+in `tools/check-pages.mjs` and the build. The source tree does not have to change shape — the
+build can do the renaming, which keeps one file per page in the repo.
+
+### What Wix takes over
+
+Three things are not ours to control from this repo, and all three were found the hard way:
+
+| Path / concern | What actually happens |
+| --- | --- |
+| `robots.txt`, `sitemap.xml` | **Wix serves its own.** Ask for `/sitemap.xml` and you get a Wix-generated page, not our file. Both files stay in the repo as the canonical URL inventory (`tools/check-pages.mjs` validates every entry), but they are not uploaded — configure crawling and the submitted sitemap in the Wix dashboard, under SEO Tools. |
+| Response headers | Wix sends `nosniff` and its own HSTS, and offers no way to add others. There is no `_headers` equivalent. This is why the CSP is a meta tag. |
+| Redirects | No 301s for uploaded files. `where-to-buy.html` and `wines.html` are stub pages that redirect to their new names — the only mechanism available. |
+| The 404 page | **Wix serves its own.** Ask for a path that does not exist and you get Wix's "Page wasn't found", never our `404.html`. The file still ships because `server.py` uses it locally and it costs nothing, but production never shows it — restyle the 404 in the Wix dashboard, not here. |
+
+Canonical host is `https://www.brisabay.com/`: Wix 301s the apex to `www`, and every
+canonical, `og:url` and sitemap entry matches that. Changing it means changing the primary
+domain in the Wix dashboard *and* the URLs in this repo, together.
+
+---
 
 ---
 
@@ -103,8 +179,11 @@ the source data, not a code change.
 ## Layout
 
 ```
-index.html  about.html  wines.html  where-to-buy.html      pages
-privacy.html  terms.html  accessibility.html
+index.html  about.html  ourWines.html  findBrisaBay.html      pages
+privacy.html  terms.html  accessibility.html  404.html
+
+where-to-buy.html  wines.html   redirect stubs for the pre-Wix URLs
+redirect.js                     the stubs' redirect, external because of the CSP
 
 site.css              styles shared by every page, and the --bb-* palette
 site-data.js          FAQ list, contact address, copyright — shared content
@@ -121,8 +200,10 @@ locator-analytics.js  provider-agnostic instrumentation (inert by default)
 locator-jsonld.js     schema.org markup for the locator
 stores.json           102 stockists — the locator's data
 
-wines-motion.js      carousel motion for wines.html
-server.py             dev server + Instagram API + security headers
+wines-motion.js      carousel motion for ourWines.html
+server.py             dev server — imitates Wix, sends the CSP
+tools/build-wix.mjs   assembles dist/, the only thing that ships
+tools/csp.json        the CSP, shared by server.py, the checks and every page
 tools/                tests, data validation, dependency vendoring
 assets/web2/          the live image set (see the note in Known gaps)
 ```
@@ -144,8 +225,9 @@ vendored-React override is read too late.
 ### Cache busting
 
 Local scripts carry a manual version string — `age-gate.js?v=2`, `store-map.js?v=15`.
-**Bump it in every page that references the file whenever you change that file.** There is no
-build step to do this for you, and GitHub Pages caches for 10 minutes.
+**Bump it in every page that references the file whenever you change that file.** The build
+copies files, it does not rewrite them, so nothing does this for you — and Wix serves
+uploaded assets with a one-hour `immutable` cache, so a missed bump is an hour of stale JS.
 
 ### Shared code
 
@@ -221,21 +303,40 @@ The 29MB master is not in the working tree. It is in git history — `git show d
 
 ## Security headers
 
-`server.py` sends a CSP plus `X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`
-and `Permissions-Policy`.
+**Wix sends no security headers and provides no way to add them** — there is no `_headers`
+file, no header setting in the dashboard. So the `<meta http-equiv="Content-Security-Policy">`
+tag in each page is not defence in depth. It is the entire policy production enforces.
 
-**GitHub Pages sends no response headers**, so every page also carries the same policy as a
-`<meta http-equiv="Content-Security-Policy">` tag. That is what actually protects production —
-keep the two in sync when either changes.
+`tools/csp.json` is the single source of truth. `server.py` reads it and sends the real
+header locally; `tools/check-pages.mjs` asserts that every page carries exactly the policy
+assigned to it; `tools/build-wix.mjs --check` refuses to ship a page that has lost the tag.
+Change the policy there, then re-run the checks — never edit the tag in a page by hand.
 
-What meta *cannot* express is `frame-ancestors`, and `X-Frame-Options` is header-only, so
-**clickjacking protection is still missing in production.** Closing that needs a CDN that can
-set headers (Cloudflare's free tier, Netlify) in front of Pages; the same move would let the
-other three headers through and unblock a serverless Instagram endpoint.
+Two policies exist. Everything gets `base`, which reaches nothing off-origin. Only
+`findBrisaBay.html` gets `locator`, which additionally allows the basemap tiles, the
+geocoder, and the Wix SDK and Data API the Stockists collection is read through. A page
+widens its policy by being named in `csp.json`, not by accident.
+
+**What production does not get, and cannot:**
+
+- **`frame-ancestors` is ignored in a meta tag**, and `X-Frame-Options` is header-only.
+  **The site is framable and clickjacking is not mitigated.** There is no fix available
+  from inside this repo — it needs a host that can set response headers.
+- `Referrer-Policy` and `Permissions-Policy` are header-only too, so the geolocation
+  restriction the locator relies on is local-only.
+
+`server.py` sends all of these so local development is never *less* strict than production.
+That asymmetry is the point; it is not a claim about what visitors get.
 
 The CSP needs `'unsafe-eval'` because the DC runtime compiles component logic with
 `new Function`, and `'unsafe-inline'` for styles because the pages use inline `style`
 attributes throughout. Neither is a preference; both are what the framework requires.
+
+**Open item — `esm.sh` in `script-src`.** `findBrisaBay.html` imports `@wix/sdk` and
+`@wix/data` from `esm.sh` at runtime, so the locator policy has to allow executable code
+from a third-party CDN, at an unpinned major version. That is the one origin in either
+policy that is not strictly necessary: vendoring both modules into `assets/vendor/` the way
+Leaflet already is would return `script-src` to `'self'`. Worth doing before real traffic.
 
 ---
 
@@ -243,18 +344,6 @@ attributes throughout. Neither is a preference; both are what the framework requ
 
 Deliberate, known, and written down so they aren't rediscovered as surprises. Full analysis and
 a phased plan live in the tech-debt audit.
-
-**Nothing runs the tests automatically.** A GitHub Actions workflow is written and verified —
-it runs both tools, syntax-checks every page script and byte-compiles `server.py` — but it is
-not in the repository yet. Pushing a file under `.github/workflows/` requires the `workflow`
-OAuth scope, which the login used to create these branches does not have. To enable it:
-
-```bash
-gh auth refresh -s workflow
-```
-
-then push the branch holding the workflow. Until that happens, running the two tools by hand
-before pushing is the only thing standing between a regression and `main`.
 
 **`support.js` has no source.** It was bundled from `dc-runtime/src/*.ts`, a tree that is not
 in this repo and not anywhere in its git history — the file was committed once, whole, and
@@ -266,9 +355,10 @@ tile servers and Komoot's public Photon instance. Both are donated infrastructur
 terms that do not cover commercial use. Before any real traffic, move to a contracted provider —
 the config is structured so it's a two-value change.
 
-**The Instagram feed doesn't run in production.** The homepage fetches `/api/instagram/moments`,
-which only `server.py` serves. On Pages that 404s, is caught, and the curated fallback gallery
-shows instead — permanently. Either serve it at build time or drop the endpoint deliberately.
+**Bottled Moments is curated, not live.** Wix runs no server-side code, so there is nowhere
+to call the Instagram Graph API from and nowhere to hold a token. The gallery ships with the
+page (`curatedMoments` in `index.html`). Making it live again means a service outside this
+repo that writes the images into the page at build time.
 
 **No responsive images.** Every image ships one size to every device — there is no `srcset` and
 no per-breakpoint variant, so a phone downloads the same file a desktop does. Same for the hero
@@ -282,9 +372,8 @@ isn't. Both test tools warn about this on every run.
 
 ---
 
-## Deploying
+## Before you push
 
-Push to `main`. GitHub Pages serves the repo root as-is.
-
-Before pushing: run both test tools, bump the `?v=` on anything you changed, and check the page
-in a browser through `server.py` rather than `file://`.
+Run `node tools/check-pages.mjs`, the other tools, and `node tools/build-wix.mjs --check`
+(CI runs all of them). Bump the `?v=` on anything you changed, and check the page in a
+browser through `server.py` rather than `file://`.

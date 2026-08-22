@@ -34,7 +34,7 @@ function section(t) { console.log(`\n${t}\n${'-'.repeat(t.length)}`); }
 // into one shared fake window in the same order the page loads them —
 // locator-search.js reads BBLocator.milesBetween at call time.
 //
-// This used to regex the implementations back out of where-to-buy.html and eval
+// This used to regex the implementations back out of findBrisaBay.html and eval
 // them, which meant reformatting the page could break the suite. The functions
 // now live in locator-search.js and are loaded, not scraped.
 function load(file, win) {

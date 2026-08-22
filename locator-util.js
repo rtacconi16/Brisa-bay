@@ -1,4 +1,4 @@
-// Shared helpers for the store locator. Loaded by where-to-buy.html and by
+// Shared helpers for the store locator. Loaded by findBrisaBay.html and by
 // <store-map>, both of which previously carried their own copy of the distance
 // maths and the directions-URL construction.
 (() => {

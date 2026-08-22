@@ -1,6 +1,6 @@
 // Search ranking and geocode filtering for the store locator.
 //
-// These functions used to live inside where-to-buy.html's logic block, which is
+// These functions used to live inside findBrisaBay.html's logic block, which is
 // a <script type="text/x-dc"> the runtime compiles with new Function. Nothing
 // can import that: not a linter, not a bundler, and not a test. So
 // tools/test-locator.mjs pulled the implementations back out with eight regexes
@@ -17,7 +17,7 @@
 //
 // Loaded after locator-util.js, whose milesBetween this depends on.
 //
-// Bump the ?v= on the <script> in where-to-buy.html when this file changes.
+// Bump the ?v= on the <script> in findBrisaBay.html when this file changes.
 (function (global) {
   'use strict';
 

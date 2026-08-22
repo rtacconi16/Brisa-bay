@@ -13,7 +13,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ORIGIN = 'https://brisabay.com';
+const ORIGIN = 'https://www.brisabay.com';
 const OUT = join(ROOT, 'stockists');
 const LASTMOD = '2026-08-15';
 
@@ -120,7 +120,7 @@ function breadcrumbJsonLd(name, path) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${ORIGIN}/` },
-      { '@type': 'ListItem', position: 2, name: 'Where to Buy', item: `${ORIGIN}/where-to-buy.html` },
+      { '@type': 'ListItem', position: 2, name: 'Where to Buy', item: `${ORIGIN}/findBrisaBay.html` },
       { '@type': 'ListItem', position: 3, name, item: `${ORIGIN}/${path}` }
     ]
   };
@@ -187,18 +187,18 @@ function page({ title, description, canonicalPath, h1, lead, extraHtml, list, js
   <main id="bb-content" tabindex="-1">
     <div style="background:var(--bb-dark);padding:clamp(20px,3vw,44px) clamp(20px,4.7vw,90px) clamp(40px,5vw,72px);box-sizing:border-box">
       <div data-bb-nav="" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:clamp(12px,2vw,40px)">
-        <a href="../index.html" data-bb-wordmark="">Brisa Bay</a>
+        <a href="/" data-bb-wordmark="">Brisa Bay</a>
         <div role="navigation" aria-label="Main">
-          <a href="../about.html">About us</a>
-          <a href="../wines.html">Our Wines</a>
-          <a href="../where-to-buy.html">Where to buy</a>
+          <a href="/about.html">About us</a>
+          <a href="/ourWines.html">Our Wines</a>
+          <a href="/findBrisaBay.html">Where to buy</a>
         </div>
       </div>
       <h1 style="margin:clamp(36px,5vw,72px) 0 0;font-family:'Old Newspaper',serif;font-size:clamp(32px,4.6vw,72px);line-height:1.08;font-weight:400;letter-spacing:0.03em;color:var(--bb-cream)">${esc(h1)}</h1>
     </div>
     <div style="padding:clamp(36px,5vw,80px) clamp(20px,5vw,190px) clamp(64px,8vw,120px);box-sizing:border-box">
       <p style="margin:0 0 28px;max-width:46em;font-size:clamp(18px,1.7vw,28px);line-height:1.45">${esc(lead)}</p>
-      <p style="margin:0 0 36px;font-size:clamp(16px,1.4vw,22px)"><a href="../wines.html#chardonnay">Chardonnay</a> · <a href="../wines.html#sauvignon-blanc">Sauvignon Blanc</a> · <a href="../where-to-buy.html">Full locator</a></p>
+      <p style="margin:0 0 36px;font-size:clamp(16px,1.4vw,22px)"><a href="/ourWines.html#chardonnay">Chardonnay</a> · <a href="/ourWines.html#sauvignon-blanc">Sauvignon Blanc</a> · <a href="/findBrisaBay.html">Full locator</a></p>
       ${extraHtml || ''}
       <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px">
         ${storeRows(list)}
@@ -207,7 +207,7 @@ function page({ title, description, canonicalPath, h1, lead, extraHtml, list, js
   </main>
   <div role="contentinfo" style="background:var(--bb-sage);padding:clamp(40px,5vw,80px) clamp(20px,5vw,190px);box-sizing:border-box;color:var(--bb-cream)">
     <div style="font-size:clamp(36px,6vw,96px);line-height:1">Brisa Bay</div>
-    <p style="margin:16px 0 0;font-size:clamp(15px,1.4vw,22px)"><a href="../privacy.html" style="color:inherit">Privacy</a> · <a href="../terms.html" style="color:inherit">Terms</a> · <a href="../accessibility.html" style="color:inherit">Accessibility</a></p>
+    <p style="margin:16px 0 0;font-size:clamp(15px,1.4vw,22px)"><a href="/privacy.html" style="color:inherit">Privacy</a> · <a href="/terms.html" style="color:inherit">Terms</a> · <a href="/accessibility.html" style="color:inherit">Accessibility</a></p>
   </div>
 </div>
 </body>
@@ -298,8 +298,8 @@ for (const [st, list] of [...byState.entries()].sort()) {
 const publicPages = [
   { loc: `${ORIGIN}/`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/about.html`, lastmod: LASTMOD },
-  { loc: `${ORIGIN}/wines.html`, lastmod: LASTMOD },
-  { loc: `${ORIGIN}/where-to-buy.html`, lastmod: LASTMOD },
+  { loc: `${ORIGIN}/ourWines.html`, lastmod: LASTMOD },
+  { loc: `${ORIGIN}/findBrisaBay.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/privacy.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/terms.html`, lastmod: LASTMOD },
   { loc: `${ORIGIN}/accessibility.html`, lastmod: LASTMOD },

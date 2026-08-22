@@ -21,17 +21,19 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const CSP = JSON.parse(readFileSync(join(ROOT, 'tools', 'csp.json'), 'utf8'));
 const PUBLIC_PAGES = [
-  'index.html', 'about.html', 'wines.html', 'where-to-buy.html',
+  'index.html', 'about.html', 'ourWines.html', 'findBrisaBay.html',
   'privacy.html', 'terms.html', 'accessibility.html'
 ];
-const SKIP = new Set(['safari-check.html', '404.html']);
-const PAGES = readdirSync(ROOT)
-  .filter((f) => f.endsWith('.html') && !SKIP.has(f))
-  .sort();
+
+function canonPath(file) {
+  if (file === 'index.html') return 'https://www.brisabay.com/';
+  return 'https://www.brisabay.com/' + file;
+}
 
 for (const expected of PUBLIC_PAGES) {
-  if (!PAGES.includes(expected)) {
+  if (!existsSync(join(ROOT, expected))) {
     console.error(`missing public page: ${expected}`);
     process.exit(1);
   }
@@ -45,7 +47,7 @@ function check(name, cond, detail = '') {
 }
 function section(t) { console.log(`\n${t}\n${'-'.repeat(t.length)}`); }
 
-const pages = PAGES.map((f) => ({ file: f, html: readFileSync(join(ROOT, f), 'utf8') }));
+const pages = PUBLIC_PAGES.map((f) => ({ file: f, html: readFileSync(join(ROOT, f), 'utf8') }));
 
 // ===========================================================================
 section('Logic blocks parse');
@@ -95,7 +97,13 @@ for (const { file, html } of pages) {
   const head = html.slice(0, html.indexOf('</head>'));
   check(`${file} links site.css`, /href="\.\/site\.css\?v=\d+"/.test(head));
   check(`${file} loads site-data.js`, /src="\.\/site-data\.js\?v=\d+"/.test(head));
-  check(`${file} does not carry a meta CSP`, !/http-equiv="Content-Security-Policy"/.test(head));
+  // The meta CSP is not belt-and-braces here — it is the whole belt. Wix sends
+  // no security headers and gives no way to add them, so a page without this
+  // tag ships with no policy at all. tools/csp.json holds the expected text.
+  const expectedCsp = CSP.policies[CSP.pages[file] || CSP.default];
+  const actualCsp = (head.match(/http-equiv="Content-Security-Policy" content="([^"]*)"/) || [])[1];
+  check(`${file} carries a meta CSP`, Boolean(actualCsp));
+  check(`${file} CSP matches tools/csp.json`, actualCsp === expectedCsp, actualCsp || 'missing');
   check(`${file} preloads both WOFF2 faces`,
     /rel="preload"[^>]+EBGaramond-Regular\.woff2/.test(head) &&
     /rel="preload"[^>]+OldNewspaperTypes\.woff2/.test(head));
@@ -107,6 +115,19 @@ for (const { file, html } of pages) {
   const iSup = head.indexOf('support.js');
   check(`${file} head order: site.css, resources.js, support.js`,
     iCss > -1 && iCss < iRes && iRes < iSup, `${iCss} / ${iRes} / ${iSup}`);
+}
+
+// ===========================================================================
+section('Wix hosting constraints');
+
+// Wix serves uploaded files verbatim at their own path. It has no directory
+// indexes, no redirect rules and no server-side code, so three things that were
+// fine on Cloudflare Pages are silent 404s here.
+for (const { file, html } of pages) {
+  const prettyLinks = [...html.matchAll(/href="(\/[a-zA-Z][\w-]*)"/g)].map((m) => m[1]);
+  check(`${file} links no extensionless URLs`, prettyLinks.length === 0,
+    [...new Set(prettyLinks)].join(', '));
+  check(`${file} calls no /api route`, !/fetch\(\s*['"`]\/api\//.test(html));
 }
 
 // ===========================================================================
@@ -152,13 +173,13 @@ for (const { file, html } of pages) {
   check(`${file} has a static <title> in <head>`, /<title>.+<\/title>/.test(head));
   check(`${file} has a static meta description in <head>`,
     /<meta name="description" content="[^"]+"/.test(head));
-  check(`${file} has a canonical URL`, /<link rel="canonical" href="https:\/\/brisabay\.com\//.test(head));
-  check(`${file} has og:url`, /property="og:url" content="https:\/\/brisabay\.com\//.test(head));
-  const og = (head.match(/property="og:image" content="(https:\/\/brisabay\.com\/assets\/web2\/og-[^"]+\.jpg)"/) || [])[1];
+  check(`${file} has a canonical URL`, /<link rel="canonical" href="https:\/\/www\.brisabay\.com\//.test(head));
+  check(`${file} has og:url`, /property="og:url" content="https:\/\/www\.brisabay\.com\//.test(head));
+  const og = (head.match(/property="og:image" content="(https:\/\/www\.brisabay\.com\/assets\/web2\/og-[^"]+\.jpg)"/) || [])[1];
   check(`${file} has an absolute og:image under assets/web2`, Boolean(og), og || 'missing');
   const canonical = (head.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
   const ogUrl = (head.match(/property="og:url" content="([^"]+)"/) || [])[1] || '';
-  const expectedCanon = file === 'index.html' ? 'https://brisabay.com/' : `https://brisabay.com/${file}`;
+  const expectedCanon = canonPath(file);
   check(`${file} canonical is self-referential`, canonical === expectedCanon, canonical);
   check(`${file} og:url matches canonical`, ogUrl === canonical, ogUrl);
   check(`${file} helmet does not duplicate <title>`, !/<title>/.test(helmet));
@@ -198,20 +219,20 @@ for (const { file, html } of pages) {
   const sitemap = existsSync(join(ROOT, 'sitemap.xml'))
     ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
   check('robots.txt exists', robots.length > 0);
-  check('robots.txt points at the sitemap', robots.includes('Sitemap: https://brisabay.com/sitemap.xml'));
+  check('robots.txt points at the sitemap', robots.includes('Sitemap: https://www.brisabay.com/sitemap.xml'));
   check('robots.txt does not Disallow safari-check', !/Disallow:\s*\/safari-check/.test(robots));
   check('sitemap.xml exists', sitemap.length > 0);
   check('sitemap uses lastmod', sitemap.includes('<lastmod>'));
   check('sitemap omits changefreq', !sitemap.includes('<changefreq>'));
   check('sitemap omits priority', !sitemap.includes('<priority>'));
   for (const f of PUBLIC_PAGES) {
-    const loc = f === 'index.html' ? 'https://brisabay.com/' : `https://brisabay.com/${f}`;
+    const loc = canonPath(f);
     check(`sitemap lists public ${f}`, sitemap.includes(`<loc>${loc}</loc>`));
   }
   const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   check('sitemap has loc entries', locs.length > 0);
   for (const loc of locs) {
-    const path = loc.replace('https://brisabay.com/', '').replace(/\/$/, '');
+    const path = loc.replace('https://www.brisabay.com/', '').replace(/\/$/, '');
     const file = path === '' ? 'index.html' : path;
     check(`sitemap loc resolves: ${loc}`, existsSync(join(ROOT, file)), file);
   }
@@ -244,25 +265,40 @@ for (const { file, html } of pages) {
     const html = readFileSync(join(stockDir, f), 'utf8');
     const canonical = (html.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
     check(`stockists/${f} canonical is self-referential`,
-      canonical === `https://brisabay.com/stockists/${f}`, canonical);
+      canonical === `https://www.brisabay.com/stockists/${f}`, canonical);
     check(`stockists/${f} is in the sitemap`,
-      sitemap.includes(`<loc>https://brisabay.com/stockists/${f}</loc>`));
+      sitemap.includes(`<loc>https://www.brisabay.com/stockists/${f}</loc>`));
     check(`stockists/${f} has one h1`, (html.match(/<h1[\s>]/g) || []).length === 1);
     check(`stockists/${f} is not noindex`, !/name="robots" content="noindex/.test(html));
   }
-  const wtb = readFileSync(join(ROOT, 'where-to-buy.html'), 'utf8');
+  const wtb = readFileSync(join(ROOT, 'findBrisaBay.html'), 'utf8');
   for (const f of stockFiles) {
     check(`where-to-buy links stockists/${f}`, wtb.includes(`stockists/${f}`));
   }
 }
 
 {
-  const headers = existsSync(join(ROOT, '_headers'))
-    ? readFileSync(join(ROOT, '_headers'), 'utf8') : '';
-  check('_headers exists', headers.length > 0);
-  check('_headers sends CSP', headers.includes('Content-Security-Policy:'));
-  check('_headers sends X-Frame-Options', headers.includes('X-Frame-Options: DENY'));
-  check('_redirects exists', existsSync(join(ROOT, '_redirects')));
+  // The Cloudflare Pages files are gone: Wix reads neither, and leaving them in
+  // the tree invites someone to edit a policy that has no effect. What replaces
+  // them is tools/csp.json (enforced per page above) and the redirect stubs.
+  check('_headers is gone (Wix ignores it)', !existsSync(join(ROOT, '_headers')));
+  check('_redirects is gone (Wix ignores it)', !existsSync(join(ROOT, '_redirects')));
+  check('no Pages functions remain', !existsSync(join(ROOT, 'functions')));
+
+  const cfg = JSON.parse(readFileSync(join(ROOT, 'wix.config.json'), 'utf8'));
+  check('wix.config.json builds from dist/', cfg.site && cfg.site.outputDirectory === 'dist',
+    cfg.site ? cfg.site.outputDirectory : 'no site block');
+
+  // Every pre-Wix URL that was ever indexed needs a stub, because a 301 is not
+  // available. Each must point at a page that exists.
+  for (const [stub, target] of [['where-to-buy.html', 'findBrisaBay.html'], ['wines.html', 'ourWines.html']]) {
+    const html = existsSync(join(ROOT, stub)) ? readFileSync(join(ROOT, stub), 'utf8') : '';
+    check(`${stub} redirects to ${target}`, html.includes(`0;url=/${target}`), stub);
+    check(`${stub} redirect target exists`, existsSync(join(ROOT, target)));
+    check(`${stub} preserves query and hash`, html.includes(`src="./redirect.js" data-to="/${target}"`));
+    check(`${stub} is not in the sitemap`,
+      !readFileSync(join(ROOT, 'sitemap.xml'), 'utf8').includes(`/${stub}<`));
+  }
 }
 
 {

@@ -2,6 +2,13 @@
 
 **Brisa Bay — SEO remediation plan**
 
+> **Status, 21 August 2026 — Phase 0 is done, but not the way this document plans it.**
+> The site is on **Wix**, not Cloudflare Pages. The hosting section and Phase 0 below have
+> been rewritten to record what actually happened; **do not follow the original Cloudflare
+> steps** — several of them would break the site as it now stands. Phases 1 onward are
+> hosting-independent and still apply, with one change throughout: the canonical host is
+> `https://www.brisabay.com/`, and page URLs end in `.html`.
+
 The site's on-page SEO is already good. It is pointed at a domain that serves someone else's placeholder, which cancels nearly all of it. Seven phases, in dependency order.
 
 | | |
@@ -13,15 +20,31 @@ The site's on-page SEO is already good. It is pointed at a domain that serves so
 
 ---
 
-## Hosting decision — asked and answered
+## Hosting decision — asked, answered, then overtaken
 
-### Move to Cloudflare Pages, and point brisabay.com at it.
+### The site went to Wix.
 
-GitHub Pages is the wrong host for *this* site, and the repo says so itself. `server.py` sends CSP, `X-Frame-Options`, `Permissions-Policy` and `Referrer-Policy`, and serves `/api/instagram/moments`. GitHub Pages supports none of it — no custom headers, no server code, no redirects. That is why the CSP is written twice (the `<meta>` copy cannot carry `frame-ancestors`), why production ships the fallback gallery instead of the real Instagram feed, and why there is no `www`→apex 301.
+The original recommendation here was Cloudflare Pages, for good reasons: `_headers` would
+have made `server.py`'s security headers real, `_redirects` would have handled
+canonicalisation, and Pages Functions could have hosted the Instagram endpoint. That is not
+what happened. The site is served by Wix, released with the Wix CLI, with the stockists in a
+Wix CMS collection.
 
-Cloudflare Pages keeps the no-build-step workflow and deploys from the same `main`, while closing all of it: `_headers` makes `server.py`'s headers real in production, `_redirects` handles canonicalisation, Pages Functions can host the Instagram endpoint with real secrets, and unmetered bandwidth matters when a single visit pulls a 4.7 MB hero video. Netlify matches it on features but meters bandwidth on the free tier. Confirm both tiers' current limits before committing.
+What that costs, recorded plainly because each one was a working feature that no longer is:
 
-A useful side effect: `tools/check-pages.mjs` already hard-asserts `https://brisabay.com/` in every canonical, `og:url`, `og:image` and sitemap entry. Keeping the real domain means those assertions stay correct as written. The github.io fallback would have required rewriting the test suite as well as ~40 URLs.
+| Wanted | On Wix |
+|---|---|
+| Real security headers | **Not available.** No `_headers`, no dashboard setting. The CSP is a `<meta>` tag, so `frame-ancestors` and `X-Frame-Options` are simply absent and clickjacking is unmitigated. |
+| 301 canonicalisation | **Not available** for uploaded files. `where-to-buy.html` and `wines.html` are stub pages that redirect client-side. |
+| Serverless Instagram endpoint | **Not available.** Wix runs no server-side code, so Bottled Moments is a curated gallery shipped with the page. |
+| Own `robots.txt` / `sitemap.xml` | **Overridden.** Wix serves its own at both paths. Crawl directives and the submitted sitemap live in the Wix dashboard, under SEO Tools. |
+| Pretty URLs | **Not available.** No directory indexes; every page is addressed as `.html`. |
+
+What Wix gives back is the CMS, the forms, and the dashboard — the reasons it was chosen.
+
+The canonical host is now `https://www.brisabay.com/`, because Wix 301s the apex to `www`.
+`tools/check-pages.mjs` asserts that host in every canonical, `og:url`, `og:image` and
+sitemap entry, so the assertions and the server agree.
 
 ---
 
@@ -57,71 +80,32 @@ Numbered because they are a real dependency chain, not a priority ranking. Phase
 
 ---
 
-## Phase 0 — Move the site to its own domain
+## Phase 0 — Move the site to its own domain ✅ done, via Wix
 
-> Findings 1, 2, 3 and 17 share one root cause. This phase is worth more than every phase below it combined.
+> Findings 1, 2, 3 and 17 shared one root cause: the domain served someone else's
+> placeholder. That is resolved — `brisabay.com` serves the site.
 
-**Effort:** ~half a day + DNS propagation · **Blocks:** Phases 1, 4, 5
+What landed, in place of the Cloudflare steps this section used to list:
 
-### 0.1 Create the Cloudflare Pages project
+- **The domain serves the real site.** `https://www.brisabay.com/` is the site; the apex
+  301s to `www`; the GoDaddy placeholder is gone.
+- **Security headers did *not* land, and cannot.** See the table above. The `<meta>` CSP is
+  the whole policy — `tools/csp.json` is its source of truth, and step 0.5 of the old plan
+  ("drop the meta CSP") must **not** be carried out; it would leave the site with no policy
+  at all.
+- **The Instagram endpoint was removed rather than ported.** There is nowhere to run it.
+- **Redirects are stub pages**, not 301s, for the two renamed URLs.
+- **Release is now a build step:** `node tools/build-wix.mjs --check && npx @wix/cli@latest release`.
+  Before this existed, `outputDirectory` was `"."` and the whole repo was public on the
+  domain — `server.py`, `README.md`, `AGENTS.md` and the unexecuted Pages function were all
+  fetchable.
 
-Connect `rtacconi16/Brisa-bay`, production branch `main`, build command empty, output directory `/`. Confirm the `*.pages.dev` preview renders the homepage, the locator loads 102 stores, and the age gate behaves.
+**Verify**
 
-### 0.2 Port `server.py`'s headers into `_headers`
-
-This is the change that makes the local-only security posture real in production.
-
+```bash
+curl -sI https://www.brisabay.com/                    # 200, and note: no CSP header — expected
+curl -so /dev/null -w '%{http_code}\n' https://www.brisabay.com/server.py   # want 404
 ```
-/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=(), usb=()
-  X-Frame-Options: DENY
-  Strict-Transport-Security: max-age=63072000; includeSubDomains
-
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
-```
-
-The `/assets/*` rule resolves finding 17 for images, fonts and vendored JS. Leave HTML on a short TTL.
-
-> **Test consequence:** `tools/test-server.py` checks the CSP in `server.py` against the `<meta>` copy in every page. Point that comparison at `_headers` instead, or it will pass while checking the wrong thing.
-
-### 0.3 Repoint DNS
-
-Lower the TTL on the current GoDaddy records first and let the old value expire, then move the nameservers to Cloudflare (cleanest, since Pages is there) or add the records GoDaddy-side. Attach both apex and `www` to the Pages project and wait for the certificate to issue.
-
-> **Rollback:** leave the GitHub Pages deployment enabled until the new domain has served correctly for a day. Reverting is then a nameserver change, not a rebuild.
-
-### 0.4 Add `_redirects` for canonicalisation
-
-One host, one URL per page — the thing GitHub Pages could never do.
-
-```
-https://www.brisabay.com/*  https://brisabay.com/:splat  301
-```
-
-### 0.5 Drop the `<meta>` CSP from all seven pages
-
-Once the real header ships, the duplicate is strictly worse than nothing: it cannot express `frame-ancestors`, and it is a second copy of a policy that has already drifted once.
-
-- **Touches:** `index` · `about` · `wines` · `where-to-buy` · `privacy` · `terms` · `accessibility`
-- **Verify:** `node tools/check-pages.mjs` · `python3 tools/test-server.py`
-
-### 0.6 Port the Instagram endpoint (optional, defer if you like)
-
-`functions/api/instagram/moments.js` with the two `.env` values as Pages secrets. Until then the curated fallback keeps serving, exactly as it does today — so this does not block the domain move.
-
-### 0.7 Retire the GoDaddy placeholder
-
-So "Savor the Flavor" and its *"placeholder content coming soon… focused on web development solutions"* description stop being what the brand's domain says.
-
-**Done when**
-
-- `curl -sI https://brisabay.com/` shows Cloudflare and the full header set
-- `curl -sI https://brisabay.com/assets/web2/og-share.jpg` returns 200
-- Every canonical is self-referential — no cross-origin canonical anywhere
 
 ---
 

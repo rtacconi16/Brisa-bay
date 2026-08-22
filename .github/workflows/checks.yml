@@ -20,3 +20,8 @@ jobs:
       - run: node tools/test-age-gate.mjs
       - run: node tools/check-pages.mjs
       - run: python3 tools/test-server.py
+      # Build the directory `wix release` uploads, and fail if it contains
+      # anything that should not be public or anything Wix cannot serve.
+      # Without this the release is the first place a mistake shows up, and by
+      # then it is live.
+      - run: node tools/build-wix.mjs --check

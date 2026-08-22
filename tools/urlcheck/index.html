@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>URL shape probe</title>
+</head>
+<body>
+<!--
+  Answers one question that no Wix documentation does: does Wix static hosting
+  serve dir/index.html when asked for /dir?
+
+  It ships at /urlcheck/index.html. After a release:
+
+      curl -s -o /dev/null -w '%{http_code}\n' https://www.brisabay.com/urlcheck
+
+  200  → directory indexes work. Clean URLs (/about instead of /about.html) are
+         possible; see README, "URL shape".
+  404  → they do not. The .html suffix is required and this is settled.
+
+  Deployed deliberately and harmlessly: noindex, linked from nowhere, ~1 KB.
+  Delete this directory and drop 'urlcheck' from SITE in tools/build-wix.mjs
+  once the question is answered.
+-->
+<h1>urlcheck</h1>
+<p>If you can read this at <code>/urlcheck</code> with no trailing slash and no
+<code>.html</code>, Wix resolves directory indexes and clean URLs are available.</p>
+</body>
+</html>
