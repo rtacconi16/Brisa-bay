@@ -1,11 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import html from '../partials/about.html?raw';
-import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd, faqJsonLd, faq } from '../data/site';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd } from '../data/site';
 import '../styles/about.css';
 
 const body = html.replaceAll('{{CONTACT}}', CONTACT_EMAIL);
-const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('About', '/about'), faqJsonLd(faq())];
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('About', '/about')];
 ---
 <Layout
   title="The Brisa Way | About Brisa Bay Napa Valley wine"

@@ -21,8 +21,12 @@ for (const dir of dirs) {
   cpSync(from, join(PUBLIC, dir), { recursive: true });
 }
 
+rmSync(join(PUBLIC, 'assets/fonts/OldNewspaperTypes.ttf'), { force: true });
+rmSync(join(PUBLIC, 'assets/vendor/react'), { recursive: true, force: true });
+
 const files = [
   'favicon.ico',
+  'favicon.png',
   'apple-touch-icon.png',
   'stores.json'
 ];

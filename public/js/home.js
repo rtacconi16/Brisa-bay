@@ -26,10 +26,7 @@
       if (narrow) {
         v.pause();
         v.style.display = 'none';
-        if (poster) {
-          if (!poster.getAttribute('src')) poster.setAttribute('src', '/assets/web2/hero-mobile-poster.jpg');
-          poster.style.display = 'block';
-        }
+        if (poster) poster.style.display = 'block';
         return;
       }
       if (poster) poster.style.display = 'none';

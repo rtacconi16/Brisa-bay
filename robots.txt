@@ -1,4 +1,10 @@
+# Not authoritative. Crawlers receive the Wix-generated robots.txt
+# (SEO Tools > Robots.txt Editor). Keep that copy in sync with this file.
+# Point Sitemap at /inventory.xml — that route is the complete inventory
+# (marketing + stockist pages, no /404). Wix's /sitemap.xml is incomplete.
+
 User-agent: *
 Allow: /
 
 Sitemap: https://www.brisabay.com/sitemap.xml
+Sitemap: https://www.brisabay.com/inventory.xml

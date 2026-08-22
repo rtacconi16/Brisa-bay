@@ -1,3 +1,8 @@
+import '../../locator-config.js';
+import '../../locator-util.js';
+import '../../locator-search.js';
+import '../../locator-analytics.js';
+import '../../store-map.js';
 import { createClient, OAuthStrategy } from '@wix/sdk';
 import { items } from '@wix/data';
 

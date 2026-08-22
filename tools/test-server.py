@@ -54,12 +54,13 @@ class CspSourceOfTruth(unittest.TestCase):
     def test_the_locator_allows_exactly_the_origins_it_uses(self):
         locator = CSP["policies"]["locator"]
         for origin in (
-            "https://tile.openstreetmap.org",
+            "https://basemaps.cartocdn.com",
             "https://photon.komoot.io",
             "https://www.wixapis.com",
             "https://edge.wixapis.com",
         ):
             self.assertIn(origin, locator)
+        self.assertNotIn("https://tile.openstreetmap.org", locator)
         self.assertNotIn("https://esm.sh", locator)
 
     def test_frame_ancestors_is_header_only(self):

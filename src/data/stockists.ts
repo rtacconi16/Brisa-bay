@@ -177,7 +177,7 @@ export function storeNode(s: Store) {
   return node;
 }
 
-export function stockistJsonLd(page: StockistPage) {
+export function stockistJsonLd(page: Pick<StockistPage, 'jsonName' | 'jsonDesc' | 'list'>) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -190,6 +190,14 @@ export function stockistJsonLd(page: StockistPage) {
       item: storeNode(s)
     }))
   };
+}
+
+export function allStoresItemList() {
+  return stockistJsonLd({
+    jsonName: 'Brisa Bay stockists',
+    jsonDesc: 'Shops, bars and restaurants carrying Brisa Bay Napa Valley wine.',
+    list: loadStores()
+  });
 }
 
 export function stockistBreadcrumb(page: StockistPage) {

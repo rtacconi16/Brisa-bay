@@ -9,6 +9,14 @@
     _kickBandVideo() {
       const v = document.getElementById('bb-band-video');
       if (!v) return;
+      if (!v.dataset.wired) {
+        v.querySelectorAll('source').forEach((s) => {
+          const src = s.getAttribute('data-bb-src');
+          if (src) s.setAttribute('src', src);
+        });
+        v.load();
+        v.dataset.wired = '1';
+      }
       v.muted = true;
       v.defaultMuted = true;
       v.setAttribute('muted', '');

@@ -184,3 +184,136 @@ a:hover { color: var(--bb-yellow); }
     flex: 0 0 auto;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Footer, phones
+ * ---------------------------------------------------------------------------
+ *
+ * The block above holds the desktop two-column arrangement all the way down by
+ * shrinking type. Measured on the live site, that costs more than it buys once
+ * the clamps bottom out — which they do across the whole range, not just at the
+ * narrow end:
+ *
+ *     320px   links 15px / 20px tall   legal 13px   wordmark 27px   gap  30px
+ *     375px   links 15px / 20px tall   legal 13px   wordmark 32px   gap  66px
+ *     700px   links 15px / 20px tall   legal 13px   wordmark 59px   gap 245px
+ *
+ * Two problems. Every footer link is a 20px-tall tap target, under the 24px
+ * WCAG 2.2 minimum and less than half the 44px both platform guidelines ask
+ * for — on the one site that publishes an accessibility statement. And the
+ * link group is pinned to the right edge while the wordmark grows, so the dead
+ * space between them widens as the viewport does.
+ *
+ * Fix in two parts. Tap targets and the type floors are wrong at every mobile
+ * width, so those go in the 900px band with the rest. The stacking only helps
+ * below ~560px, where the two columns genuinely stop fitting beside a legible
+ * wordmark; tablets keep the arrangement the block above was written for.
+ *
+ * Padding rather than font-size buys the tap target, so the type keeps the
+ * scale it was designed at and only the hit area grows. The column gap goes to
+ * zero to pay for it — the padding already separates the rows.
+ *
+ * Same structural selectors as above, for the same reason: seven hand-written
+ * footers, one shared shape.
+ */
+@media (max-width: 900px) {
+  /* Links are bare inline <a>: a 15px font gives a 20px box and nothing else.
+     The copyright is the last child of the legal group and is not interactive,
+     so it keeps its natural line box. */
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div > a,
+  [data-screen-label="Footer"] > div:last-child > div:first-child > a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  /* Active-state items are <span> and have to match so the rows line up. The
+     stockist-state row is a <span> too, but it wraps links rather than being
+     one — :has() tells them apart. Kept in its own rule so that if :has() ever
+     fails to parse, the links above still keep their targets. */
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div > span:not(:has(a)),
+  [data-screen-label="Footer"] > div:last-child > div:first-child > span:not(:last-child) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  /* The state row is a dense inline list at 0.72em. Giving each of its five
+     links 44px would add ~90px of footer for secondary navigation, so they get
+     32px — clear of the 24px WCAG minimum, and the row still reads as one line
+     of text rather than a stack of buttons. */
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div > span a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+  }
+  /* align-items so the "·" separators sit on the links' centre line rather than
+     stretching to the 32px box and riding high. */
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div > span:has(a) {
+    align-items: center;
+    margin-top: 6px;
+  }
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div {
+    gap: 0 !important;
+    font-size: clamp(17px, 1.7vw, 32px) !important;
+  }
+  [data-screen-label="Footer"] > div:last-child > div:first-child {
+    align-items: center;
+    row-gap: 0 !important;
+    font-size: clamp(15px, 1.6vw, 30px) !important;
+  }
+  /* Let the link group take the slack instead of hugging the right edge, so
+     the gap beside the wordmark stops growing with the viewport. */
+  [data-screen-label="Footer"] > div:first-child > div:last-child {
+    flex: 1 1 auto !important;
+    justify-content: flex-end;
+  }
+  [data-screen-label="Footer"] > div:last-child > div:last-child > a {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Below this the wordmark and both columns cannot share a line at a size
+     worth reading, so stop forcing them to and stack instead. */
+  [data-screen-label="Footer"] > div {
+    flex-wrap: wrap !important;
+  }
+
+  /* Row 1 — wordmark on its own line, then the columns share the full width. */
+  [data-screen-label="Footer"] > div:first-child {
+    gap: clamp(18px, 5vw, 30px) !important;
+  }
+  [data-screen-label="Footer"] > div:first-child > div:first-child {
+    font-size: clamp(44px, 13.5vw, 64px) !important;
+    flex: 1 0 100%;
+  }
+  /* Both columns go full width rather than splitting the line. Side by side they
+     are ~154px each, and the stockist-state row lives inside the first one — at
+     that width it wrapped to three lines with separators orphaned at the ends.
+     Full width it is a single line at 320px, and the whole link group reads as
+     one list. Costs ~90px of footer height; worth it. */
+  [data-screen-label="Footer"] > div:first-child > div:last-child {
+    flex: 1 0 100% !important;
+    gap: 0 !important;
+    justify-content: flex-start;
+  }
+  [data-screen-label="Footer"] > div:first-child > div:last-child > div {
+    flex: 1 0 100%;
+    min-width: 0;
+  }
+
+  /* Row 2 — legal links wrap across the full width, the copyright takes its
+     own line on purpose rather than orphaning onto one, then Instagram. */
+  [data-screen-label="Footer"] > div:last-child {
+    align-items: flex-start !important;
+    gap: clamp(10px, 3vw, 18px) !important;
+    margin-top: clamp(24px, 7vw, 40px) !important;
+  }
+  [data-screen-label="Footer"] > div:last-child > div:first-child {
+    flex: 1 0 100%;
+    column-gap: clamp(16px, 6vw, 34px) !important;
+  }
+  [data-screen-label="Footer"] > div:last-child > div:first-child > :last-child {
+    flex: 1 0 100%;
+  }
+}

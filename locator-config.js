@@ -5,18 +5,10 @@
 // ---------------------------------------------------------------------------
 // PRODUCTION NOTE — tiles and geocoding
 // ---------------------------------------------------------------------------
-// The defaults below point at OpenStreetMap's tile servers and Komoot's public
-// Photon instance. Both are community services provided on donated
-// infrastructure with fair-use expectations and no SLA, and OSM's tile usage
-// policy does not permit heavy or commercial use. They are fine for
-// development and for this file to keep working out of the box; they are NOT a
-// production configuration for a commercial brand site.
-//
-// Before launch, set `tiles` to a provider the business holds a contract with
-// (MapTiler, Stadia, Mapbox, Carto) or to a self-hosted basemap (Protomaps),
-// and point `geocode.endpoint` at a self-hosted Photon or a proxied commercial
-// geocoder. Keys must live behind the proxy, never in this file — anything here
-// ships to the browser.
+// Tiles use CARTO's public Voyager raster, which permits this commercial use
+// with attribution. Photon (Komoot) is still a community geocoder — swap
+// `geocode.endpoint` for a contracted or self-hosted instance when one exists.
+// Keys must live behind a proxy, never in this file.
 //
 // When the tile source changes, `tiles.attribution` MUST change with it. Most
 // providers require specific attribution text as a condition of use.
@@ -33,8 +25,8 @@
     },
 
     tiles: {
-      url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-      attribution: '© OpenStreetMap contributors',
+      url: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+      attribution: '© OpenStreetMap contributors © CARTO',
       maxZoom: 19,
       // Guard rails so the map cannot be zoomed out to the whole globe or
       // panned into open ocean with no way back.

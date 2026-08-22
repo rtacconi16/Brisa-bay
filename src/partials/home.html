@@ -8,11 +8,11 @@
           <!-- poster paints on the first frame so the hero is never a black box while
                the file streams in; the encode is faststart, so playback begins long
                before the download finishes. -->
-          <video id="bb-hero-video" data-bb-hero-video="" muted loop playsinline webkit-playsinline preload="none" poster="/assets/web2/hero-poster.jpg" width="1600" height="800" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
+          <video id="bb-hero-video" data-bb-hero-video="" muted loop playsinline webkit-playsinline preload="none" poster="/assets/web2/hero-poster.webp" width="1600" height="800" aria-label="Brisa Bay lifestyle film" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; z-index: 0">
             <source data-bb-src="/assets/web2/hero-video.webm" type="video/webm">
             <source data-bb-src="/assets/web2/hero-video.mp4" type="video/mp4">
           </video>
-          <img id="bb-hero-mobile-poster" data-bb-hero-mobile-poster="" width="1620" height="1486" alt="Brisa Bay — meant to be lived, not collected" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: calc(50% + 7px) center; display: none; z-index: 0">
+          <img id="bb-hero-mobile-poster" data-bb-hero-mobile-poster="" src="/assets/web2/hero-mobile-poster.webp" fetchpriority="high" width="1620" height="1486" alt="Brisa Bay — meant to be lived, not collected" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: calc(50% + 7px) center; display: none; z-index: 0">
           <div style="position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(to bottom, rgba(45,45,42,0.55), rgba(45,45,42,0)); pointer-events: none; z-index: 2"></div>
           <div data-bb-hero-veil="" aria-hidden="true"></div>
 

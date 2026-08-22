@@ -10,25 +10,32 @@
     "asserts they match.",
     "",
     "What meta cannot do: frame-ancestors is ignored in a meta tag, and there is",
-    "no X-Frame-Options either. The site is therefore framable in production and",
-    "clickjacking is not mitigated. headerOnly below is the directive a real",
-    "hosting header would add; production cannot send it.",
+    "no X-Frame-Options either. src/middleware.ts also sets frame-ancestors,",
+    "X-Frame-Options, Referrer-Policy and Permissions-Policy on the response in",
+    "case the Wix edge forwards them. If it strips them, the meta CSP remains.",
     "",
-    "script-src is 'self' only. The Design Component runtime (new Function /",
-    "'unsafe-eval') is gone; @wix/sdk is bundled by Astro instead of loaded from",
-    "esm.sh. Inline style attributes still need style-src 'unsafe-inline'."
+    "C1 — Wix platform scripts: script-src is 'self' only, on purpose. Wix still",
+    "injects cookie-consent, analytics and tag-manager scripts after our <head>;",
+    "those stay blocked. We are not widening the policy with static.parastorage.com",
+    "or 'unsafe-inline', because that would run a consent banner and third-party",
+    "tags the marketing site has never shown. Measurement stays off until someone",
+    "explicitly chooses to allow those origins.",
+    "",
+    "The Design Component runtime (new Function / 'unsafe-eval') is gone;",
+    "@wix/sdk is bundled by Astro instead of loaded from esm.sh. Inline style",
+    "attributes still need style-src 'unsafe-inline'."
   ],
 
   "policies": {
     "base": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests",
 
-    "locator": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io https://www.wixapis.com https://edge.wixapis.com; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests"
+    "locator": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://basemaps.cartocdn.com https://a.basemaps.cartocdn.com https://b.basemaps.cartocdn.com https://c.basemaps.cartocdn.com https://d.basemaps.cartocdn.com; connect-src 'self' https://photon.komoot.io https://www.wixapis.com https://edge.wixapis.com; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests"
   },
 
   "_locatorNote": [
     "Only /findBrisaBay gets the wider policy, and every origin in it is",
     "there for a reason the page can point at:",
-    "  tile.openstreetmap.org  basemap tiles (see locator-config.js)",
+    "  basemaps.cartocdn.com   CARTO Voyager tiles (see locator-config.js)",
     "  photon.komoot.io        geocoding for the search box",
     "  www.wixapis.com         Wix SDK token exchange",
     "  edge.wixapis.com        where the Stockists collection query actually goes",

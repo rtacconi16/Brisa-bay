@@ -1,19 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd, faqJsonLd, faq } from '../data/site';
-import { allStockistPages } from '../data/stockists';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd } from '../data/site';
+import { allStockistPages, allStoresItemList } from '../data/stockists';
 import '../styles/locator.css';
 
 const locatorFaq = {
   'where-to-buy': 'Search a store, city, ZIP or address, or tap the crosshair to use your location. You can also filter by type and by distance. If your favourite spot does not carry us yet, ask them to order it.'
 };
+const stockistPages = allStockistPages();
 const jsonLd = [
   orgJsonLd(),
   websiteJsonLd(),
   breadcrumbJsonLd('Where to Buy', '/findBrisaBay'),
-  faqJsonLd(faq(locatorFaq))
+  allStoresItemList()
 ];
-const stockistPages = allStockistPages();
 const cityPages = stockistPages.filter((p) => p.kind === 'city');
 const statePages = stockistPages.filter((p) => p.kind === 'state');
 ---
@@ -95,12 +95,6 @@ const statePages = stockistPages.filter((p) => p.kind === 'state');
     </ul>
   </section>
 
-  <script slot="scripts" is:inline src="/js/locator-config.js"></script>
-  <script slot="scripts" is:inline src="/js/locator-util.js"></script>
-  <script slot="scripts" is:inline src="/js/locator-search.js"></script>
-  <script slot="scripts" is:inline src="/js/locator-analytics.js"></script>
-  <script slot="scripts" is:inline src="/js/locator-jsonld.js"></script>
-  <script slot="scripts" is:inline src="/js/store-map.js"></script>
   <script>
     import '../scripts/locator-app.js';
   </script>

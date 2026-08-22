@@ -37,7 +37,7 @@ const {
   themeColor = '#60b98f'
 } = Astro.props;
 
-const canonical = path === '/' ? `${ORIGIN}/` : `${ORIGIN}${path}`;
+const canonical = path === '/' ? ORIGIN : `${ORIGIN}${path}`;
 const image = `${ORIGIN}/assets/web2/${ogImage}`;
 const csp = locator ? CSP.locator : CSP.base;
 const graphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
@@ -54,6 +54,7 @@ const items = showFaq ? faqItems(faqOverride) : [];
   <meta name="description" content={description} />
   <meta name="theme-color" content={themeColor} />
   <link rel="canonical" href={canonical} />
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="48x48" />
   <link rel="icon" href="/favicon.ico" sizes="48x48" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <meta property="og:type" content="website" />

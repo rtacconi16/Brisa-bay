@@ -156,9 +156,21 @@
       this.appendChild(this._el);
       this.appendChild(this._tone);
       this._hoverId = null;
-      loadLeaflet()
-        .then((L) => this._init(L))
-        .catch((err) => this._failGracefully(err));
+      const start = () => {
+        loadLeaflet()
+          .then((L) => this._init(L))
+          .catch((err) => this._failGracefully(err));
+      };
+      if (typeof IntersectionObserver === 'function') {
+        const io = new IntersectionObserver((entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          io.disconnect();
+          start();
+        }, { rootMargin: '120px' });
+        io.observe(this);
+      } else {
+        start();
+      }
     }
 
     /** The map is an enhancement, not the product: the list beside it already

@@ -1,10 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import html from '../partials/ourWines.html?raw';
-import { orgJsonLd, websiteJsonLd, breadcrumbJsonLd, faqJsonLd, faq, wineJsonLd } from '../data/site';
+import { orgJsonLd, websiteJsonLd, breadcrumbJsonLd, wineJsonLd } from '../data/site';
 import '../styles/wines.css';
 
-const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('Our Wines', '/ourWines'), faqJsonLd(faq()), wineJsonLd()];
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('Our Wines', '/ourWines'), wineJsonLd()];
 ---
 <Layout
   title="Our Wines | Brisa Bay Chardonnay & Sauvignon Blanc"

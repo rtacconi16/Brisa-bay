@@ -40,6 +40,11 @@
       transform-origin: center center;
       will-change: transform;
     }
+    [data-bb-hero-mobile-poster] { display: none; }
+    @media (max-width: 900px) {
+      [data-bb-hero-video] { display: none !important; }
+      [data-bb-hero-mobile-poster] { display: block !important; }
+    }
     [data-bb-hero-veil] {
       position: absolute;
       inset: 0;

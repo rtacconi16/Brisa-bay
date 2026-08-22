@@ -24,7 +24,7 @@ const PUBLIC_PAGES = [
 ];
 
 function canonPath(path) {
-  return path === '/' ? `${ORIGIN}/` : `${ORIGIN}${path}`;
+  return path === '/' ? ORIGIN : `${ORIGIN}${path}`;
 }
 
 function walk(dir, acc = []) {
@@ -164,7 +164,10 @@ section('Sitemap and robots');
     ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
   check('robots.txt exists', robots.length > 0);
   check('robots.txt points at the sitemap', robots.includes('Sitemap: https://www.brisabay.com/sitemap.xml'));
+  check('robots.txt points at the complete inventory', robots.includes('Sitemap: https://www.brisabay.com/inventory.xml'));
+  check('robots.txt says the live file is Wix-generated', /not authoritative|Wix-generated/i.test(robots));
   check('sitemap.xml exists', sitemap.length > 0);
+  check('inventory.xml route exists', existsSync(join(ROOT, 'src/pages/inventory.xml.ts')));
   check('sitemap uses lastmod', sitemap.includes('<lastmod>'));
   check('sitemap omits changefreq', !sitemap.includes('<changefreq>'));
   check('sitemap omits priority', !sitemap.includes('<priority>'));

@@ -42,7 +42,24 @@
     try { history.replaceState(null, '', location.pathname + location.search + hash); } catch (e) {}
   }
 
+  function clonePourTrack() {
+    var track = document.querySelector('[data-bb-pour-track]');
+    if (!track || track.dataset.bbCloned === '1') return;
+    Array.from(track.children).forEach(function (el) {
+      var clone = el.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      clone.setAttribute('tabindex', '-1');
+      clone.querySelectorAll('img').forEach(function (img) {
+        img.setAttribute('alt', '');
+        img.setAttribute('loading', 'lazy');
+      });
+      track.appendChild(clone);
+    });
+    track.dataset.bbCloned = '1';
+  }
+
   function boot() {
+    clonePourTrack();
     var hashed = fromHash();
     apply(hashed === null ? 0 : hashed);
     document.addEventListener('click', function (e) {
