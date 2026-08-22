@@ -1,0 +1,448 @@
+/* Every control in the locator is a div[role=button]; without this there is
+       no visible focus at all against the cream palette. */
+    [data-bb-locator] :focus-visible,
+    [role="dialog"] :focus-visible {
+      outline: 2px solid var(--bb-red);
+      outline-offset: 2px;
+    }
+    [data-bb-store-row]:focus-visible { outline-offset: -3px; }
+    .leaflet-popup-content-wrapper {
+      border-radius: 0;
+      background: var(--bb-cream);
+      box-shadow: 0 10px 28px rgba(60,58,52,0.18);
+      border: 1px solid rgba(87,84,74,0.12);
+    }
+    .leaflet-popup-tip { background: var(--bb-cream); }
+    .leaflet-container { font-family: 'EB Garamond', Garamond, serif; background: var(--bb-cream-dim); }
+    .leaflet-popup-content a:hover { color: var(--bb-sage) !important; }
+    .leaflet-control-zoom {
+      border: 1px solid rgba(87,84,74,0.2) !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: hidden;
+    }
+    .leaflet-control-zoom a {
+      background: var(--bb-cream) !important;
+      color: var(--bb-dark) !important;
+      border-bottom: 1px solid rgba(87,84,74,0.14) !important;
+      width: 32px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+      font-size: 16px !important;
+    }
+    .leaflet-control-zoom a:hover { background: var(--bb-cream-dim-2) !important; color: var(--bb-red) !important; }
+    .bb-locate-control a {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 32px !important;
+      height: 32px !important;
+      background: var(--bb-cream) !important;
+      color: var(--bb-dark) !important;
+      border-radius: 0 !important;
+    }
+    .bb-locate-control a:hover { color: var(--bb-red) !important; background: var(--bb-cream-dim-2) !important; }
+    .leaflet-control-attribution {
+      background: rgba(238,238,228,0.82) !important;
+      color: rgba(87,84,74,0.55) !important;
+      font-size: 10px !important;
+      letter-spacing: 0.02em;
+    }
+    .leaflet-control-attribution a { color: rgba(87,84,74,0.7) !important; }
+
+    /* Locator runs on two voices only: EB Garamond for the UI, Old Newspaper for
+       the page titles. Matches the reference's structure without borrowing its brand. */
+    [data-bb-toolbar] {
+      flex: 0 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(10px, 1.2vw, 20px);
+      padding: 0 clamp(20px, 3.4vw, 64px) clamp(12px, 1.4vh, 20px);
+      border-bottom: 1px solid rgba(87, 84, 74, 0.16);
+      background: var(--bb-cream);
+    }
+    [data-bb-search-wrap] {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 260px;
+      max-width: 420px;
+      padding: 10px 12px;
+      border: 1px solid rgba(87, 84, 74, 0.22);
+      background: rgba(255, 255, 255, 0.5);
+    }
+    [data-bb-search-wrap] > svg { width: 16px; height: 16px; flex: none; color: rgba(87, 84, 74, 0.5); }
+    [data-bb-search-wrap] input {
+      flex: 1 1 auto;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'EB Garamond', Garamond, serif;
+      font-size: clamp(16px, 1.15vw, 20px);
+      color: var(--bb-dark);
+    }
+    [data-bb-search-wrap] input::placeholder { color: rgba(87, 84, 74, 0.45); }
+    [data-bb-locate] {
+      display: flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; flex: none; cursor: pointer;
+      color: rgba(87, 84, 74, 0.55); transition: color 0.2s;
+    }
+    [data-bb-locate]:hover { color: var(--bb-red); }
+    [data-bb-locate] svg { width: 16px; height: 16px; }
+
+    [data-bb-radius] { flex: none; display: block; }
+    [data-bb-radius] select {
+      font-family: 'EB Garamond', Garamond, serif;
+      font-size: clamp(15px, 1.05vw, 19px);
+      color: var(--bb-dark);
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(87, 84, 74, 0.22);
+      padding: 10px 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    [data-bb-toolbar-status] {
+      margin-left: auto;
+      font-size: clamp(12px, 0.85vw, 14px);
+      color: rgba(87, 84, 74, 0.62);
+      white-space: nowrap;
+    }
+
+    [data-bb-featured-name] {
+      margin-top: 8px;
+      font-size: clamp(20px, 1.5vw, 28px);
+      color: var(--bb-dark);
+      line-height: 1.2;
+    }
+    [data-bb-featured-line] {
+      margin-top: 6px;
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87, 84, 74, 0.78);
+    }
+
+    /* ---- rows: compact, mono, with a real directions button ---- */
+    [data-bb-store-main] { min-width: 0; }
+    [data-bb-store-name] {
+      font-size: clamp(18px, 1.35vw, 26px);
+      letter-spacing: 0.01em;
+      color: var(--bb-dark);
+      line-height: 1.2;
+    }
+    [data-bb-store-addr] {
+      margin-top: 5px;
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87, 84, 74, 0.78);
+    }
+    [data-bb-directions] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: var(--bb-cream);
+      background: var(--bb-dark);
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    [data-bb-directions]:hover { background: var(--bb-red); color: var(--bb-cream); }
+    [data-bb-store-side] {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right;
+    }
+    [data-bb-store-dist] {
+      font-size: clamp(11px, 0.8vw, 13px);
+      color: rgba(87, 84, 74, 0.55);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Shared editorial furniture — same system as the wine stage on ourWines.html. */
+    [data-bb-label] {
+      font-size: clamp(10px, 0.72vw, 13px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: rgba(87, 84, 74, 0.55);
+    }
+    /* Numbered rows — a directory should read as an index, not a list of cards. */
+    [data-bb-store-index] {
+      font-size: clamp(10px, 0.7vw, 12px);
+      letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
+      color: rgba(87, 84, 74, 0.35);
+    }
+    [data-bb-store-row][data-active="true"] [data-bb-store-index] { color: var(--bb-red); }
+    /* The city is scannable content, not just a label — give it a touch more size. */
+    [data-bb-store-row] [data-bb-label] {
+      font-size: clamp(11px, 0.78vw, 13px);
+      letter-spacing: 0.13em;
+      color: rgba(87, 84, 74, 0.62);
+    }
+
+    /* Viewport-driven search. Sits top-centre over the map so it reads as a
+       property of the view rather than another toolbar filter. */
+    [data-bb-area-search], [data-bb-area-clear] {
+      position: absolute;
+      top: clamp(16px, 1.4vw, 28px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 500;
+      font-size: clamp(13px, 0.92vw, 16px);
+      letter-spacing: 0.04em;
+      padding: 9px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(60,58,52,0.18);
+      transition: background 0.2s, color 0.2s;
+      animation: bb-row-in 0.3s ease both;
+    }
+    [data-bb-area-search] { background: var(--bb-dark); color: var(--bb-cream); }
+    [data-bb-area-search]:hover { background: var(--bb-red); }
+    [data-bb-area-clear] {
+      background: rgba(238,238,228,0.94);
+      color: var(--bb-ink);
+      border: 1px solid rgba(87,84,74,0.2);
+    }
+    [data-bb-area-clear]:hover { color: var(--bb-red); border-color: rgba(230,57,58,0.45); }
+    @media (max-width: 900px) {
+      [data-bb-area-search], [data-bb-area-clear] { top: 12px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-area-search], [data-bb-area-clear] { animation: none !important; transition: none !important; }
+    }
+
+    [data-bb-featured][data-out-of-range="true"] [data-bb-label] { color: var(--bb-red) !important; }
+    [data-bb-ask] {
+      margin: 0 clamp(20px, 1.9vw, 38px) 4px;
+      padding: clamp(14px, 1.2vw, 22px) 0 clamp(16px, 1.3vw, 24px);
+      border-bottom: 1px solid rgba(87,84,74,0.14);
+    }
+    [data-bb-ask-copy] {
+      font-size: clamp(14px, 0.98vw, 18px);
+      line-height: 1.45;
+      color: rgba(87,84,74,0.78);
+      text-wrap: pretty;
+    }
+    [data-bb-ask-link] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: var(--bb-cream);
+      background: var(--bb-dark);
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    [data-bb-ask-link]:hover { background: var(--bb-red); color: var(--bb-cream); }
+
+    [data-bb-row-actions] {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: clamp(8px, 0.9vw, 16px);
+    }
+    [data-bb-row-link] {
+      display: inline-block;
+      margin-top: clamp(10px, 1vw, 14px);
+      font-size: clamp(13px, 0.92vw, 16px);
+      color: var(--bb-ink);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(87,84,74,0.3);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    [data-bb-row-link]:hover { color: var(--bb-red); border-color: rgba(230,57,58,0.5); }
+
+    [data-bb-empty-action] {
+      display: inline-block;
+      margin-top: clamp(12px, 1.1vw, 18px);
+      font-size: clamp(14px, 0.98vw, 17px);
+      letter-spacing: 0.05em;
+      color: var(--bb-cream);
+      background: var(--bb-dark);
+      padding: 7px 13px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    [data-bb-empty-action]:hover { background: var(--bb-red); }
+    [data-bb-beyond-row] {
+      padding: clamp(12px, 1vw, 18px) 0;
+      border-top: 1px solid rgba(87,84,74,0.12);
+      cursor: pointer;
+    }
+    [data-bb-beyond-row]:hover [data-bb-store-name] { color: var(--bb-red); }
+
+    [data-bb-type-filters] {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      gap: 0.35em 0.55em;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    [data-bb-type-filters]::-webkit-scrollbar { display: none; }
+    [data-bb-type-filter] {
+      font-size: clamp(12px, 0.85vw, 14px);
+      letter-spacing: 0.02em;
+      color: rgba(87,84,74,0.55);
+      cursor: pointer;
+      user-select: none;
+      padding: 0 0 8px;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.25s, border-color 0.25s;
+      white-space: nowrap;
+    }
+    [data-bb-type-filter]:hover { color: var(--bb-dark); }
+    [data-bb-type-filter][data-active="true"] {
+      color: var(--bb-dark);
+      border-bottom-color: var(--bb-red);
+    }
+    [data-bb-type-filters] > [data-bb-type-filter]:not(:first-child)::before {
+      content: '·';
+      margin-right: 0.55em;
+      color: rgba(87,84,74,0.28);
+      pointer-events: none;
+    }
+
+    [data-bb-store-row] {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 6px clamp(12px, 1.1vw, 18px);
+      padding: clamp(18px, 1.35vw, 28px) clamp(20px, 1.9vw, 38px);
+      border-top: 1px solid rgba(87,84,74,0.12);
+      cursor: pointer;
+      background: transparent;
+      transition: background 0.28s ease, box-shadow 0.28s ease;
+      animation: bb-row-in 0.45s ease both;
+    }
+    [data-bb-store-row]:hover { background: rgba(96,185,143,0.1); }
+    [data-bb-store-row][data-active="true"] {
+      background: rgba(245,215,50,0.16);
+      box-shadow: inset 3px 0 0 var(--bb-red);
+    }
+    [data-bb-store-row][data-hover="true"]:not([data-active="true"]) {
+      background: rgba(96,185,143,0.12);
+      box-shadow: inset 3px 0 0 rgba(96,185,143,0.7);
+    }
+    @keyframes bb-row-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bb-mast-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    [data-bb-masthead] h1 { animation: bb-mast-in 0.7s ease both; }
+    [data-bb-featured] { animation: bb-row-in 0.5s ease both; }
+
+    [data-bb-sheet-handle] { display: none; }
+
+    /* Same contract as index/about/wines: nothing moves that does not have to.
+       The locator is the most animated page on the site — row entrances, the
+       masthead, marker transitions, and the map's own fly-to. */
+    @media (prefers-reduced-motion: reduce) {
+      [data-bb-store-row],
+      [data-bb-masthead] h1,
+      [data-bb-featured] {
+        animation: none !important;
+      }
+      [data-bb-store-row],
+      [data-bb-directions],
+      [data-bb-type-filter],
+      [data-bb-row-link],
+      [data-bb-empty-action],
+      [data-bb-locate],
+      [data-bb-see-all],
+      [data-bb-locator-list] {
+        transition: none !important;
+      }
+    }
+
+    @media (max-width: 900px) {
+      [data-bb-locator] {
+        height: auto !important;
+        min-height: 100svh !important;
+        overflow: visible !important;
+      }
+      [data-bb-masthead] {
+        min-height: 0 !important;
+        height: auto !important;
+      }
+      [data-bb-locator-body] {
+        flex-direction: column !important;
+        min-height: 0 !important;
+      }
+      [data-bb-locator-map] {
+        order: 1 !important;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        height: 46svh !important;
+        min-height: 260px !important;
+      }
+      [data-bb-locator-list] {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-height: 48svh !important;
+        margin-top: -22px !important;
+        border-right: none !important;
+        border-radius: 20px 20px 0 0 !important;
+        box-shadow: 0 -12px 40px rgba(60,58,52,0.14) !important;
+        z-index: 20 !important;
+        transition: max-height 0.35s ease !important;
+      }
+      [data-bb-locator-list][data-sheet="open"] {
+        max-height: 72svh !important;
+      }
+      [data-bb-sheet-handle] {
+        display: flex !important;
+        justify-content: center;
+        padding: 10px 0 4px;
+        cursor: pointer;
+      }
+      [data-bb-sheet-handle]::before {
+        content: '';
+        width: 42px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(87,84,74,0.28);
+      }
+      [data-bb-list-head] {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: var(--bb-cream);
+      }
+      [data-bb-store-row] {
+        padding: 14px 20px !important;
+        gap: 2px 12px !important;
+      }
+      /* WCAG 2.5.8 wants 24x24 minimum. Sized to their text, the short filter
+         labels fell well under — "All" measured 14px wide at 320px. */
+      [data-bb-type-filter] {
+        min-height: 34px !important;
+        display: inline-flex !important;
+        align-items: center;
+        padding: 6px 6px 10px !important;
+      }
+      [data-bb-locate] { width: 34px !important; height: 34px !important; }
+      [data-bb-sheet-handle] { padding: 14px 0 10px !important; }
+      [data-bb-nav] { row-gap: 8px !important; }
+      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
+      [data-bb-see-all] {
+        top: 12px !important;
+        right: 12px !important;
+      }
+    }

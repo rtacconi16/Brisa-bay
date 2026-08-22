@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import html from '../partials/home.html?raw';
+import { orgJsonLd, websiteJsonLd, faqJsonLd, faq } from '../data/site';
+import '../styles/home.css';
+
+const jsonLd = [orgJsonLd(), websiteJsonLd(), faqJsonLd(faq())];
+---
+<Layout
+  title="Brisa Bay | Napa Valley wine meant to be lived, not collected"
+  description="Brisa Bay makes bright, unpretentious Napa Valley Chardonnay and Sauvignon Blanc. Skip the cellar, open a bottle because the sun is out."
+  path="/"
+  ogImage="og-share.jpg"
+  jsonLd={jsonLd}
+  gated
+  faq
+>
+  <Fragment set:html={html} />
+  <script slot="scripts" is:inline src="/js/home.js"></script>
+</Layout>

@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import html from '../partials/privacy.html?raw';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd } from '../data/site';
+
+const body = html.replaceAll('{{CONTACT}}', CONTACT_EMAIL);
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('Privacy Policy', '/privacy')];
+---
+<Layout
+  title="Privacy Policy | Brisa Bay"
+  description="How Brisa Bay collects, uses and protects your information when you visit the site or get in touch."
+  path="/privacy"
+  jsonLd={jsonLd}
+  active="privacy"
+>
+  <Fragment set:html={body} />
+</Layout>

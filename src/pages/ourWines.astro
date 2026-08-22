@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import html from '../partials/ourWines.html?raw';
+import { orgJsonLd, websiteJsonLd, breadcrumbJsonLd, faqJsonLd, faq, wineJsonLd } from '../data/site';
+import '../styles/wines.css';
+
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('Our Wines', '/ourWines'), faqJsonLd(faq()), wineJsonLd()];
+---
+<Layout
+  title="Our Wines | Brisa Bay Chardonnay & Sauvignon Blanc"
+  description="Explore Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc: tasting notes, ABV, vintages and food pairings for each wine."
+  path="/ourWines"
+  ogImage="og-blends.jpg"
+  jsonLd={jsonLd}
+  gated
+  faq
+  active="wines"
+  shellExtra="overflow-x: clip;"
+>
+  <Fragment set:html={html} />
+  <script slot="scripts" is:inline src="/js/wines.js"></script>
+  <script slot="scripts" is:inline src="/js/wines-motion.js"></script>
+</Layout>

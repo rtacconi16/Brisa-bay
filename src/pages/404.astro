@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+---
+<Layout
+  title="Page not found | Brisa Bay"
+  description="That page is not on the Brisa Bay site. Head home or find a bottle near you."
+  path="/404"
+  noindex
+>
+  <div style="position: relative; background: var(--bb-dark); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px) clamp(40px, 5vw, 96px); box-sizing: border-box">
+    <Nav />
+    <h1 style="margin: clamp(48px, 6vw, 96px) 0 0; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5vw, 96px); line-height: 1.08; font-weight: 400; letter-spacing: 0.03em; color: var(--bb-cream)">Page not found</h1>
+  </div>
+  <div style="padding: clamp(40px, 5vw, 96px) clamp(20px, 5vw, 190px) clamp(64px, 8vw, 140px); box-sizing: border-box">
+    <p style="margin: 0 0 28px; max-width: 42em; font-size: clamp(18px, 1.8vw, 32px); line-height: 1.45">That address is not on this site. The bottle is still out there — start from the home page or find one near you.</p>
+    <p style="margin: 0; display: flex; flex-wrap: wrap; gap: 16px">
+      <a href="/" style="background: var(--bb-red); color: var(--bb-cream); font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: 12px 28px 14px; border-radius: 999px; text-decoration: none">Go home</a>
+      <a href="/findBrisaBay" style="background: var(--bb-lime); color: var(--bb-cream); font-family: 'Old Newspaper', serif; font-size: clamp(16px, 1.5vw, 28px); padding: 12px 28px 14px; border-radius: 999px; text-decoration: none">Find a bottle</a>
+    </p>
+  </div>
+</Layout>

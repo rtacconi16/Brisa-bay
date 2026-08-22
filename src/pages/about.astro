@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import html from '../partials/about.html?raw';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd, faqJsonLd, faq } from '../data/site';
+import '../styles/about.css';
+
+const body = html.replaceAll('{{CONTACT}}', CONTACT_EMAIL);
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('About', '/about'), faqJsonLd(faq())];
+---
+<Layout
+  title="The Brisa Way | About Brisa Bay Napa Valley wine"
+  description="Where the water meets the vines. Meet the family behind Brisa Bay and the growers who make our bright, no-barriers Napa Valley wine."
+  path="/about"
+  ogImage="og-about.jpg"
+  jsonLd={jsonLd}
+  gated
+  faq
+  active="about"
+  shellExtra="overflow: clip; color: var(--bb-grey);"
+>
+  <Fragment set:html={body} />
+  <script slot="scripts" is:inline src="/js/about.js"></script>
+</Layout>

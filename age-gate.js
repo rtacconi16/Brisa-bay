@@ -14,6 +14,7 @@
 
   function writeOk() {
     try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    try { document.documentElement.setAttribute('data-bb-age-ok', ''); } catch (e) {}
   }
 
   /** Enter/Space handler for div[role=button] controls. */
@@ -143,4 +144,8 @@
     syncModal: syncModal,
     cleanupModal: cleanupModal
   };
+
+  if (readOk()) {
+    try { document.documentElement.setAttribute('data-bb-age-ok', ''); } catch (e) {}
+  }
 })(typeof window !== 'undefined' ? window : globalThis);

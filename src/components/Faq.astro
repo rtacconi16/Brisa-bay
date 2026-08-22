@@ -1,0 +1,21 @@
+---
+import { CONTACT_EMAIL, type FaqItem } from '../data/site';
+interface Props {
+  items: FaqItem[];
+}
+const { items } = Astro.props;
+---
+<div data-bb-faq="" hidden role="dialog" aria-modal="true" tabindex="-1" aria-label="Frequently asked questions. Press Escape to close." style="position: fixed; inset: 0; background: rgba(60,58,52,0.8); display: flex; align-items: flex-start; justify-content: center; padding: clamp(16px, 3vw, 60px); z-index: 1190; overflow: auto; font-family: 'EB Garamond', serif">
+  <div style="background: var(--bb-cream); width: 100%; max-width: 900px; padding: clamp(28px, 3vw, 58px) clamp(22px, 3.4vw, 64px) clamp(32px, 3.4vw, 64px); box-sizing: border-box; position: relative">
+    <div data-bb-faq-close="" role="button" tabindex="0" aria-label="Close frequently asked questions" title="Close" style="position: absolute; top: clamp(14px, 1.4vw, 26px); right: clamp(14px, 1.4vw, 26px); width: 48px; height: 48px; border-radius: 50%; background: var(--bb-red); color: var(--bb-cream); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; line-height: 1; transition: transform 0.25s" style-hover="transform: scale(1.08)">×</div>
+    <h2 style="margin: 0 0 clamp(6px, 0.6vw, 12px); font-family: 'Old Newspaper', serif; font-size: clamp(32px, 3.4vw, 64px); font-weight: 400; color: var(--bb-ink-muted); letter-spacing: 0.03em">FAQs</h2>
+    <p style="margin: 0 0 clamp(18px, 1.8vw, 34px); font-size: clamp(16px, 1.5vw, 28px); color: rgba(87,84,74,0.8)">The short answers. For anything else, just write to us.</p>
+    {items.map((item) => (
+      <div style="border-top: 2px solid rgba(87,84,74,0.18); padding: clamp(14px, 1.5vw, 28px) 0">
+        <h3 style="margin: 0 0 clamp(6px, 0.6vw, 11px); font-size: clamp(18px, 1.7vw, 32px); font-style: italic; color: var(--bb-ink)">{item.q}</h3>
+        <p style="margin: 0; font-size: clamp(16px, 1.5vw, 28px); line-height: 1.45; color: var(--bb-ink); text-wrap: pretty">{item.a}</p>
+      </div>
+    ))}
+    <p style="margin: clamp(20px, 2vw, 38px) 0 0; font-size: clamp(16px, 1.5vw, 28px); color: var(--bb-ink)">Still curious? Email <a href={`mailto:${CONTACT_EMAIL}`} style="color: var(--bb-red)">{CONTACT_EMAIL}</a>.</p>
+  </div>
+</div>

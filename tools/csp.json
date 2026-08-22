@@ -4,45 +4,41 @@
     "",
     "Wix sends no security headers and offers no way to add them: there is no",
     "_headers file, no header configuration in the dashboard, nothing. So the",
-    "<meta http-equiv=\"Content-Security-Policy\"> tag in each page is the only",
-    "CSP production actually enforces, and these strings are what those tags",
-    "must contain. tools/check-pages.mjs asserts it page by page; server.py",
-    "reads the same file so local development matches.",
+    "<meta http-equiv=\"Content-Security-Policy\"> tag in Layout.astro is the only",
+    "CSP production actually enforces, and these strings are what that tag",
+    "must contain. src/data/site.ts re-exports the same strings; tools/check-pages.mjs",
+    "asserts they match.",
     "",
     "What meta cannot do: frame-ancestors is ignored in a meta tag, and there is",
     "no X-Frame-Options either. The site is therefore framable in production and",
-    "clickjacking is not mitigated. headerOnly below is sent by server.py so the",
-    "local server is honest about the difference, and README.md records the gap.",
+    "clickjacking is not mitigated. headerOnly below is the directive a real",
+    "hosting header would add; production cannot send it.",
     "",
-    "'unsafe-eval' and inline styles are required by the DC runtime, not chosen:",
-    "support.js compiles component code with new Function, and the pages carry",
-    "inline style attributes throughout. Inline <script> blocks are NOT allowed."
+    "script-src is 'self' only. The Design Component runtime (new Function /",
+    "'unsafe-eval') is gone; @wix/sdk is bundled by Astro instead of loaded from",
+    "esm.sh. Inline style attributes still need style-src 'unsafe-inline'."
   ],
 
   "policies": {
-    "base": "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests",
+    "base": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests",
 
-    "locator": "default-src 'self'; script-src 'self' 'unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io https://www.wixapis.com https://edge.wixapis.com; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests"
+    "locator": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://photon.komoot.io https://www.wixapis.com https://edge.wixapis.com; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests"
   },
 
   "_locatorNote": [
-    "Only findBrisaBay.html gets the wider policy, and every origin in it is",
+    "Only /findBrisaBay gets the wider policy, and every origin in it is",
     "there for a reason the page can point at:",
     "  tile.openstreetmap.org  basemap tiles (see locator-config.js)",
     "  photon.komoot.io        geocoding for the search box",
     "  www.wixapis.com         Wix SDK token exchange",
     "  edge.wixapis.com        where the Stockists collection query actually goes",
-    "  esm.sh                  where @wix/sdk and @wix/data are imported from",
     "",
-    "That last one is the weak link and should not stay: esm.sh is a third-party",
-    "CDN serving executable code, the specifier is an unpinned major range, and",
-    "allowing it in script-src reopens exactly what locator-config.js vendored",
-    "Leaflet locally to avoid. Vendoring the two Wix modules into assets/vendor/",
-    "would return this policy to script-src 'self'. See README.md."
+    "@wix/sdk and @wix/data are bundled into a same-origin module, so they do",
+    "not appear in script-src."
   ],
 
   "pages": {
-    "findBrisaBay.html": "locator"
+    "/findBrisaBay": "locator"
   },
   "default": "base",
 

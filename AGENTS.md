@@ -3,33 +3,30 @@
 A Wix headless site built with the `wix-headless` skill. Napa Valley wine label — Chardonnay and Sauvignon Blanc, with a stockist locator and no direct shipping.
 
 ## Live site
-- **Site:** https://export-8e9ef224-info699110.wix-site-host.com
+- **Site:** https://www.brisabay.com
 - **Dashboard:** https://manage.wix.com/dashboard/f81bd804-9f61-4ed0-a239-a87bd5f499a0
 
 ## Frontend
-custom. Run: `python3 server.py`. Build + publish: `node tools/build-wix.mjs --check && npx @wix/cli@latest release`.
+Astro (`output: 'server'`) on the existing Wix site (`siteId` / `appId` in `wix.config.json`). Pretty URLs — `/about`, not `/about.html`. `.html` paths 301.
 
-The build assembles `dist/`, which is what `wix.config.json` uploads. It is an allowlist,
-not a copy of the repo — see README.md, "Deploying". Releasing without building ships a
-stale `dist/`.
+Local: `npm install && cp .env.example .env && npm run dev`. Build + publish: `npm run release` (do not release until the Astro migration has been reviewed).
 
 ## Features
-- CMS → Stockists collection powering the store locator
-- Forms → Trade & Press Inquiry contact form (not yet on any page; adding it means widening
-  `connect-src` and `form-action` in `tools/csp.json`, which is currently `'none'`)
+- CMS → Stockists collection powering the store locator (client SDK, with `/stores.json` fallback)
+- Forms → Trade & Press Inquiry contact form (not yet on any page; adding it means widening `connect-src` and `form-action` in `tools/csp.json`, which is currently `'none'`)
 
 ## Pages
 - `/` Home
-- `/about.html` About
-- `/ourWines.html` Wines (`/wines.html` redirects here)
-- `/findBrisaBay.html` Store locator (`/where-to-buy.html` redirects here)
-- `/privacy.html` Privacy
-- `/terms.html` Terms
-- `/accessibility.html` Accessibility
+- `/about` About
+- `/ourWines` Wines (`/wines` and `/wines.html` redirect here)
+- `/findBrisaBay` Store locator (`/where-to-buy` and `/where-to-buy.html` redirect here)
+- `/privacy` Privacy
+- `/terms` Terms
+- `/accessibility` Accessibility
 - `/stockists/*` city and state SEO pages
 
 ## Seeded content
 102 stockists in 1 CMS collection · 1 contact form.
 
 ## Extending
-Built with the `wix-headless` skill; re-run it to add features or restyle.
+Built with the `wix-headless` skill; re-run it to add features or restyle. Stay on this siteId — do not `create headless` or `headless link`.

@@ -1,0 +1,256 @@
+<!-- ================= HERO → BOTTLE STAGE (pinned scrub) ================= -->
+  <div data-bb-blend-scroll="" data-screen-label="Hero to Wines">
+    <div data-bb-blend-pin="" data-blend="0">
+      <img width="1400" height="935" data-bb-blend-photo="" src="/assets/web/blends-hero.webp" alt="Friends on a beach blanket with bottles of Brisa Bay Sauvignon Blanc and Chardonnay, glasses of wine and a tray of fruit">
+      <div style="position: absolute; left: 0; right: 0; top: 0; height: 42%; background: linear-gradient(to bottom, rgba(45,45,42,0.62), rgba(45,45,42,0)); pointer-events: none; z-index: 3"></div>
+      <div data-bb-blend-bottom-veil="" style="position: absolute; left: 0; right: 0; bottom: 0; height: 58%; background: linear-gradient(to top, rgba(45,45,42,0.58), rgba(45,45,42,0)); pointer-events: none; z-index: 3; will-change: opacity"></div>
+
+      <div data-bb-nav="" style="position: absolute; z-index: 8; left: 0; right: 0; top: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(20px, 3vw, 44px) clamp(20px, 4.7vw, 90px); box-sizing: border-box">
+        <a href="/" data-bb-wordmark="">Brisa Bay</a>
+        <div role="navigation" aria-label="Main">
+          <a href="/about" style-hover="color: var(--bb-yellow)">About us</a>
+          <span data-bb-nav-active="">Our Wines</span>
+          <a href="/findBrisaBay" style-hover="color: var(--bb-yellow)">Where to buy</a>
+        </div>
+      </div>
+
+      <div data-bb-blend-hero-copy="">
+        <h1 style="margin: 0; max-width: 20ch; font-family: 'Old Newspaper', serif; font-size: clamp(38px, 5.6vw, 108px); line-height: 1.08; font-weight: 400; color: var(--bb-cream); text-wrap: balance"><span style="display: block; animation: bb-wipe 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both">Two bottles, one breeze.</span></h1>
+        <div data-bb-blend-scroll-cue="" style="display: flex; align-items: center; gap: 0.6em; font-size: clamp(14px, 1.35vw, 26px); color: rgba(238,238,228,0.85); animation: bb-fade 1.4s ease 0.4s both">
+          <span>Scroll to meet the wines</span>
+          <svg width="1.1em" height="1.1em" viewBox="0 0 24 24" fill="none" stroke="#eeeee4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: bb-floaty 2.6s ease-in-out infinite; animation-play-state: running" aria-hidden="true"><line x1="12" y1="4" x2="12" y2="19"></line><polyline points="5 12 12 19 19 12"></polyline></svg>
+        </div>
+      </div>
+
+      <div data-bb-blend-stage="" data-blend="0" aria-labelledby="bb-active-wine">
+        <p id="bb-active-wine" data-bb-stage-live="" aria-live="polite" aria-atomic="true">Showing Chardonnay</p>
+        <div data-bb-stage-copy="">
+            <div data-bb-copy-panel="" id="chardonnay" data-i="0">
+            <h2 id="bb-wine-chardonnay">Chardonnay</h2>
+            <p>A brighter side of Napa Valley made for warm afternoons. Waves of ripe white peach and fresh citrus meet a tender texture and a mouthwatering acidity that quietly invites another sip.</p>
+            <dl data-bb-spec="">
+              <div><dt>Profile</dt><dd>Ripe peach, bright citrus, and a smooth, tender finish.</dd></div>
+              <div><dt>Best served</dt><dd>Cold, during a long lunch that rolls right into dinner.</dd></div>
+            </dl>
+          </div>
+            <div data-bb-copy-panel="" id="sauvignon-blanc" data-i="1">
+            <h2 id="bb-wine-sauvignon">Sauvignon Blanc</h2>
+            <p>Our very first release: bright, energetic, and easygoing. Guava, passionfruit, and tropical flowers lead into juicy pineapple, lime, and a cool vein of stony minerality that lingers.</p>
+            <dl data-bb-spec="">
+              <div><dt>Profile</dt><dd>Tropical fruit, juicy lime, and a crisp vein of stony minerality.</dd></div>
+              <div><dt>Best served</dt><dd>Chilled, the second the sun comes out and the music starts.</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <div data-bb-stage-row="">
+          <button type="button" data-bb-bottle-arrow="" data-dir="prev" aria-label="Show Sauvignon Blanc" title="Show Sauvignon Blanc" data-bb-wine="flip">
+            <span aria-hidden="true">&larr;</span>
+          </button>
+          <div data-bb-bottle-slot="">
+            <div data-bottle="" data-i="0" style="position: absolute; inset: 0; pointer-events: none; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
+              <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: running">
+                <img loading="lazy" width="182" height="700" src="/assets/web2/bottle.webp" alt="Brisa Bay Chardonnay bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
+              </div>
+            </div>
+            <div data-bottle="" data-i="1" style="position: absolute; inset: 0; pointer-events: none; transition: opacity 0.45s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1)">
+              <div style="height: 100%; animation: bb-floaty 7s ease-in-out infinite; animation-play-state: running">
+                <img loading="lazy" width="152" height="599" src="/assets/web2/bottle-sauvblanc-trim.webp" alt="Brisa Bay Sauvignon Blanc bottle" style="height: 100%; max-height: 100%; width: 100%; object-fit: contain; display: block; filter: drop-shadow(0 30px 40px rgba(45,45,42,0.5))">
+              </div>
+            </div>
+          </div>
+          <button type="button" data-bb-bottle-arrow="" data-dir="next" aria-label="Show Sauvignon Blanc" title="Show Sauvignon Blanc" data-bb-wine="flip">
+            <span aria-hidden="true">&rarr;</span>
+          </button>
+          <div data-bb-bottle-plinth=""></div>
+        </div>
+
+        <div data-bb-stage-nav="">
+          <div data-bb-wine-switch="" role="tablist" aria-label="Choose a wine">
+            <button type="button" role="tab" data-bb-wine-tab="" aria-selected="true" aria-controls="bb-wine-chardonnay" id="bb-tab-chardonnay" data-bb-wine="0">Chardonnay</button>
+            <span data-bb-wine-sep="" aria-hidden="true"></span>
+            <button type="button" role="tab" data-bb-wine-tab="" aria-selected="false" aria-controls="bb-wine-sauvignon" id="bb-tab-sauvignon" data-bb-wine="1">Sauvignon Blanc</button>
+          </div>
+          <a data-bb-stage-cta="" href="/findBrisaBay">Find a bottle <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= PHOTO CAROUSEL ================= -->
+  <section data-bb-pour="" data-screen-label="Photo Carousel" aria-label="See what else we're pouring">
+    <div data-bb-pour-head="">
+      <h2 data-bb-pour-line="">See what else we're pouring<a data-bb-pour-cta="" data-bb-pour-cta-desk="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Follow us on Instagram" title="Follow us on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.6"></rect><circle cx="12" cy="12" r="4.7"></circle><circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none"></circle></svg></a></h2>
+    </div>
+
+    <div data-bb-pour-rail="">
+      <div data-bb-pour-window="">
+        <div data-bb-pour-track="">
+                      <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Friends toasting with Brisa Bay at a picnic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/15-posts-july-artboard-3.webp" alt="Friends toasting with Brisa Bay at a picnic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="wide" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Bird over a Brisa Bay vineyard">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/01-3cd17d63-fdfd-431d-9ae8-edb566f92859.webp" alt="Bird over a Brisa Bay vineyard" width="2304" height="1536" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Pouring Brisa Bay by the pool">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/06-julio-artboard-4.webp" alt="Pouring Brisa Bay by the pool" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay week of bottles graphic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/08-julio-artboard-8.webp" alt="Brisa Bay week of bottles graphic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay bottle balanced on a cap">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/12-post-10.webp" alt="Brisa Bay bottle balanced on a cap" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="wide" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Sunset over the vineyard">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/02-7e7103b6-0a1e-4d89-b2e9-365755455338.webp" alt="Sunset over the vineyard" width="2306" height="1536" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Made for the moments you do not plan">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/04-julio-artboard-12.webp" alt="Made for the moments you do not plan" width="1080" height="1350" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Surreal Brisa Bay collage">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/10-julio-jumping-wine.webp" alt="Surreal Brisa Bay collage" width="1080" height="1350" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay with cheese outdoors">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/09-julio-dia-del-queso-2.webp" alt="Brisa Bay with cheese outdoors" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="The Brisa Times newspaper graphic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/07-julio-artboard-7.webp" alt="The Brisa Times newspaper graphic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Pouring Brisa Bay at the table">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/16-img-6287.webp" alt="Pouring Brisa Bay at the table" width="854" height="1280" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Sauvignon Blanc polaroid vineyard">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/11-julio-polaroid.webp" alt="Sauvignon Blanc polaroid vineyard" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Opening a bottle of Brisa Bay">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/14-posts-july-artboard-1.webp" alt="Opening a bottle of Brisa Bay" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay Chardonnay on corks">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/05-julio-artboard-17.webp" alt="Brisa Bay Chardonnay on corks" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Beach-day emoji sticker graphic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/03-julio-artboard-11.webp" alt="Beach-day emoji sticker graphic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Wine pouring from a polaroid into a glass">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/13-post-8.webp" alt="Wine pouring from a polaroid into a glass" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Friends toasting with Brisa Bay at a picnic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/15-posts-july-artboard-3.webp" alt="Friends toasting with Brisa Bay at a picnic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="wide" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Bird over a Brisa Bay vineyard">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/01-3cd17d63-fdfd-431d-9ae8-edb566f92859.webp" alt="Bird over a Brisa Bay vineyard" width="2304" height="1536" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Pouring Brisa Bay by the pool">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/06-julio-artboard-4.webp" alt="Pouring Brisa Bay by the pool" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay week of bottles graphic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/08-julio-artboard-8.webp" alt="Brisa Bay week of bottles graphic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay bottle balanced on a cap">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/12-post-10.webp" alt="Brisa Bay bottle balanced on a cap" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="wide" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Sunset over the vineyard">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/02-7e7103b6-0a1e-4d89-b2e9-365755455338.webp" alt="Sunset over the vineyard" width="2306" height="1536" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Made for the moments you do not plan">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/04-julio-artboard-12.webp" alt="Made for the moments you do not plan" width="1080" height="1350" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Surreal Brisa Bay collage">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/10-julio-jumping-wine.webp" alt="Surreal Brisa Bay collage" width="1080" height="1350" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay with cheese outdoors">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/09-julio-dia-del-queso-2.webp" alt="Brisa Bay with cheese outdoors" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="The Brisa Times newspaper graphic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/07-julio-artboard-7.webp" alt="The Brisa Times newspaper graphic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Pouring Brisa Bay at the table">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/16-img-6287.webp" alt="Pouring Brisa Bay at the table" width="854" height="1280" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Sauvignon Blanc polaroid vineyard">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/11-julio-polaroid.webp" alt="Sauvignon Blanc polaroid vineyard" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Opening a bottle of Brisa Bay">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/14-posts-july-artboard-1.webp" alt="Opening a bottle of Brisa Bay" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="sm" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Brisa Bay Chardonnay on corks">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/05-julio-artboard-17.webp" alt="Brisa Bay Chardonnay on corks" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="lg" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Beach-day emoji sticker graphic">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/03-julio-artboard-11.webp" alt="Beach-day emoji sticker graphic" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+            <a data-bb-pour-card="" data-size="md" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Wine pouring from a polaroid into a glass">
+              <div class="bb-pour-frame">
+                <img src="/assets/web2/pour/13-post-8.webp" alt="Wine pouring from a polaroid into a glass" width="1081" height="1351" loading="lazy">
+              </div>
+            </a>
+        </div>
+      </div>
+    </div>
+
+    <div data-bb-pour-foot="">
+      <a data-bb-pour-cta="" data-bb-pour-cta-mob="" href="https://www.instagram.com/brisabaywines" target="_blank" rel="noopener" aria-label="Follow us on Instagram" title="Follow us on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.6" y="2.6" width="18.8" height="18.8" rx="5.6"></rect><circle cx="12" cy="12" r="4.7"></circle><circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none"></circle></svg></a>
+    </div>
+  </section>

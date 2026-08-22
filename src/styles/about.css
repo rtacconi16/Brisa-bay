@@ -1,0 +1,368 @@
+@keyframes bb-stamp { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+    @keyframes bb-rise { from { opacity: 0; transform: translateY(70px) scale(0.975) } to { opacity: 1; transform: none } }
+
+    /* Shared flow (desktop + mobile): Brisa Way → Our Roots over band → Way cards */
+    [data-bb-roots] {
+      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      height: 100svh;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(64px, 8vh, 150px) clamp(16px, 4.7vw, 90px) clamp(24px, 3vw, 60px);
+      box-sizing: border-box;
+      pointer-events: none;
+      background: transparent;
+    }
+    [data-bb-roots-card] {
+      width: 100%;
+      max-width: 1240px;
+      max-height: calc(100svh - 96px);
+      overflow-y: auto;
+      background: rgba(247, 247, 242, 0.94);
+      border-radius: clamp(22px, 2.8vw, 40px);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.75) inset,
+        0 4px 18px rgba(60, 58, 52, 0.08),
+        0 28px 70px rgba(60, 58, 52, 0.2);
+      padding: clamp(28px, 3.2vw, 64px) clamp(20px, 3vw, 56px);
+      box-sizing: border-box;
+      display: grid;
+      gap: clamp(14px, 1.7vw, 30px);
+      pointer-events: auto;
+    }
+    [data-bb-roots-card] p {
+      margin: 0;
+      font-size: clamp(16px, 2.05vw, 40px);
+      line-height: 1.4;
+      letter-spacing: -0.012em;
+      text-align: justify;
+      text-justify: inter-word;
+      text-wrap: pretty;
+      color: var(--bb-grey);
+    }
+    [data-screen-label="The Brisa Way"] {
+      position: relative;
+      z-index: 5;
+    }
+
+    /* The Brisa Way — stacked photos rise from bottom, copy updates */
+    [data-bb-way-scroll] {
+      position: relative;
+      z-index: 4;
+      height: 560vh;
+      background: var(--bb-cream);
+      box-shadow: 0 -40px 70px -40px rgba(60, 58, 52, 0.55);
+    }
+    [data-bb-way-pin] {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+      background: var(--bb-cream);
+      box-sizing: border-box;
+    }
+    [data-bb-way-pin] > [data-bb-stamp] {
+      will-change: transform;
+      transform-origin: 50% 50%;
+    }
+    [data-bb-way-track] {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    [data-bb-way-panel] {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: stretch;
+      padding: clamp(72px, 10vh, 120px) clamp(20px, 5vw, 190px) clamp(56px, 8vh, 96px);
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+    [data-bb-way-panel]:nth-child(1) { z-index: 14; }
+    [data-bb-way-panel]:nth-child(2) { z-index: 13; }
+    [data-bb-way-panel]:nth-child(3) { z-index: 12; }
+    [data-bb-way-panel]:nth-child(4) { z-index: 11; }
+    [data-bb-way-panel]:first-child [data-bb-way-photo] {
+      transform: translate3d(12px, 0, 0) rotate(-7deg);
+    }
+    [data-bb-way-panel]:not(:first-child) [data-bb-way-photo] {
+      transform: translate3d(0, 115vh, 0) rotate(10deg) scale(0.96);
+    }
+    [data-bb-way-panel]:not(:first-child) [data-bb-way-copy] {
+      opacity: 0;
+    }
+    [data-bb-way-row] {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: clamp(18px, 2.4vw, 48px);
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      align-items: center;
+    }
+    [data-bb-way-photo] {
+      /* Outer shell only moves — never use filter here (breaks child radius clipping) */
+      justify-self: center;
+      align-self: center;
+      width: min(36vw, 420px);
+      max-width: 100%;
+      max-height: min(72vh, 100%);
+      min-height: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-origin: 50% 60%;
+    }
+    [data-bb-way-photo-frame] {
+      display: block;
+      width: fit-content;
+      max-width: 100%;
+      max-height: min(72vh, 100%);
+      line-height: 0;
+      overflow: hidden;
+      border-radius: 48px;
+      background: var(--bb-cream);
+      box-shadow: 0 22px 40px rgba(60, 58, 52, 0.2);
+      /* Force a clipped compositing layer so radius is present on first paint */
+      -webkit-mask-image: -webkit-radial-gradient(white, black);
+      transform: translate3d(0, 0, 0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    [data-bb-way-photo] img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: min(72vh, 100%);
+      object-fit: contain;
+      object-position: center;
+      border-radius: 48px;
+    }
+    [data-bb-way-copy] {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: clamp(16px, 2vw, 32px);
+      /* Sit just under the stamp: stamp size + stamp top - panel top padding + small gap */
+      padding: calc(clamp(170px, 22vw, 400px) + clamp(8px, 2vh, 28px) + 10px - clamp(72px, 10vh, 120px)) 0 0;
+      box-sizing: border-box;
+      min-height: 0;
+      background: transparent;
+      transition: opacity 0.25s ease;
+    }
+    [data-bb-way-title] {
+      margin: 0;
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(28px, 3.8vw, 72px);
+      line-height: 1.05;
+      font-weight: 400;
+      font-style: normal;
+      letter-spacing: 0.05em;
+      color: var(--bb-ink);
+      opacity: 0;
+      transform: translate3d(0, 26px, 0);
+      will-change: opacity, transform;
+    }
+    [data-bb-way-body] {
+      margin: 0;
+      /* Body copy is EB Garamond everywhere else on the site — Old Newspaper is
+         display type only (titles, stamp, buttons). Inherit rather than restate. */
+      font-size: clamp(16px, 1.7vw, 30px);
+      line-height: 1.45;
+      font-weight: 400;
+      color: var(--bb-grey);
+      text-align: justify;
+      text-justify: inter-word;
+      text-wrap: pretty;
+      max-width: 34ch;
+    }
+    [data-bb-way-word] {
+      display: inline-block;
+      opacity: 0;
+      transform: translate3d(0, 0.45em, 0);
+      will-change: opacity, transform;
+    }
+    [data-bb-way-progress] {
+      position: absolute;
+      right: clamp(20px, 5vw, 190px);
+      bottom: clamp(16px, 2.6vh, 32px);
+      z-index: 8;
+      pointer-events: none;
+      display: flex;
+      align-items: baseline;
+      gap: clamp(10px, 1.2vw, 18px);
+      color: var(--bb-ink);
+      font-family: 'Old Newspaper', serif;
+      letter-spacing: 0.05em;
+    }
+    [data-bb-way-progress-num] {
+      font-size: clamp(15px, 1.35vw, 22px);
+      color: var(--bb-red);
+      min-width: 1.6em;
+    }
+    [data-bb-way-progress-rule] {
+      display: block;
+      width: clamp(28px, 3vw, 48px);
+      height: 1px;
+      background: rgba(87, 84, 74, 0.45);
+      align-self: center;
+      transform-origin: left center;
+    }
+    [data-bb-way-progress-label] {
+      font-family: 'Old Newspaper', serif;
+      font-size: clamp(14px, 1.25vw, 20px);
+      letter-spacing: 0.04em;
+      color: var(--bb-ink);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-curtain] { position: static !important; height: auto !important; min-height: 0 !important; box-shadow: none !important; overflow: visible !important; }
+      [data-curtain] [data-curtain-fit] { max-height: none !important; }
+      [data-reveal] { animation: none !important; opacity: 1 !important; transform: none !important; }
+      [data-curtain][data-bb-band] { min-height: 42svh !important; height: 42svh !important; }
+      [data-bb-roots] { position: relative !important; height: auto !important; min-height: 0 !important; }
+      [data-bb-hello] { height: auto !important; overflow: visible !important; }
+      [data-bb-hello] [data-screen-label="Say Hello"] { flex: none !important; min-height: 52svh !important; }
+      [data-bb-way-scroll] { height: auto !important; }
+      [data-bb-way-pin] { position: relative !important; height: auto !important; overflow: visible !important; background: var(--bb-cream) !important; }
+      [data-bb-way-track] {
+        display: grid !important;
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        gap: clamp(16px, 2vw, 30px);
+        padding: clamp(60px, 7vw, 130px) clamp(20px, 5vw, 190px) clamp(70px, 11vw, 200px);
+        box-sizing: border-box;
+      }
+      [data-bb-way-panel] {
+        position: relative !important;
+        inset: auto !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 0 !important;
+        pointer-events: auto !important;
+      }
+      [data-bb-way-title] { opacity: 1 !important; transform: none !important; }
+      [data-bb-way-word] { opacity: 1 !important; transform: none !important; }
+      [data-bb-way-copy] { opacity: 1 !important; }
+      [data-bb-way-photo] { transform: none !important; }
+      [data-bb-way-pin] > [data-bb-stamp] { transform: none !important; }
+      [data-bb-way-progress] { display: none !important; }
+    }
+    @media (max-width: 900px) {
+      /* Same mobile header treatment as wines / where-to-buy: let the nav wrap
+         onto its own row instead of crowding the wordmark. */
+      [data-bb-nav] { row-gap: 10px !important; }
+      [data-bb-nav] [role="navigation"] { font-size: 15px !important; gap: 14px !important; }
+      [data-bb-band] h2 { font-size: clamp(40px, 12vw, 72px) !important; }
+      [data-bb-roots] { padding: clamp(64px, 10vh, 96px) 16px 24px !important; }
+      [data-bb-roots-card] { padding: clamp(22px, 4vh, 32px) 18px !important; gap: 14px !important; }
+      [data-bb-roots-card] p { font-size: clamp(16px, 4.2vw, 19px) !important; line-height: 1.45 !important; }
+      /* Portrait: photo stack on top, copy under it. Stamp floats over the photos
+         so we don't reserve a tall empty band above them. */
+      [data-bb-way-panel] {
+        padding: calc(clamp(10px, 1.6vh, 18px) + 32px) 18px 46px !important;
+        min-height: 0 !important;
+      }
+      [data-bb-way-row] {
+        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-rows: auto auto !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        align-content: start !important;
+        justify-items: center !important;
+        gap: clamp(28px, 6vw, 40px) !important;
+      }
+      [data-bb-way-photo] {
+        /* Sit high in the viewport; leave room below for title + body. */
+        width: min(94vw, 460px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: min(62svh, calc(100svh - 220px)) !important;
+        min-height: 0 !important;
+        align-self: start !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+      }
+      [data-bb-way-photo-frame] {
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        width: fit-content !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        border-radius: 32px !important;
+        overflow: hidden !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      [data-bb-way-photo] img {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: min(62svh, calc(100svh - 220px)) !important;
+        border-radius: 32px !important;
+        object-fit: contain !important;
+        box-shadow: 0 22px 40px rgba(60, 58, 52, 0.2);
+      }
+      [data-bb-way-copy] {
+        width: 100% !important;
+        padding: 0 !important;
+        margin-top: 45px !important;
+        gap: clamp(8px, 2.2vw, 14px) !important;
+        justify-content: flex-start !important;
+        flex-shrink: 0 !important;
+        align-self: stretch !important;
+      }
+      [data-bb-way-title] { font-size: clamp(24px, 6.4vw, 34px) !important; line-height: 1.1 !important; }
+      [data-bb-way-body] { font-size: clamp(15px, 4.1vw, 19px) !important; line-height: 1.45 !important; max-width: 46ch !important; }
+      [data-bb-way-progress] { right: 16px !important; bottom: 14px !important; }
+      [data-bb-stamp] {
+        width: clamp(118px, 34vw, 168px) !important;
+        left: auto !important;
+        right: 6px !important;
+        top: clamp(8px, 1.4vh, 18px) !important;
+        z-index: 50 !important;
+      }
+      /* Keep the wordmark the same fraction of the stamp as on desktop — the
+         stamp is clamp(118px, 34vw, 168px) here, so track it at ~15%. */
+      [data-bb-stamp] span { font-size: clamp(17px, 5.1vw, 25px) !important; }
+      [data-bb-way-pin] > [data-bb-deco] {
+        display: block !important;
+        width: 160% !important;
+        left: -30% !important;
+        top: -48px !important;
+        height: 90px !important;
+      }
+      [data-bb-hello] [data-screen-label="Say Hello"] > div { padding: 16px !important; }
+      [data-bb-hello-card] { padding: 20px 16px !important; }
+      [data-bb-hello-card] h2 {
+        font-size: clamp(22px, 5.5vw, 28px) !important;
+        margin-bottom: 12px !important;
+      }
+      [data-bb-hello-card] > div {
+        font-size: clamp(14px, 3.6vw, 17px) !important;
+        gap: 8px !important;
+        word-break: break-word !important;
+      }
+      [data-bb-hello] [data-screen-label="Footer"] { padding: 18px 16px 14px !important; }
+      [data-bb-hello] [data-screen-label="Footer"] > div:first-child > div:first-child {
+        font-size: clamp(36px, 12vw, 56px) !important;
+      }
+    }
+    /* The mobile block above wins on source order, so re-state the two rules the
+       un-pinned reduced-motion flow needs: panels are laid out by the track there,
+       and the photo is bounded by its own box rather than the viewport. */
+    @media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+      [data-bb-way-panel] { padding: 0 !important; }
+      [data-bb-way-photo], [data-bb-way-photo-frame] { max-height: none !important; }
+    }

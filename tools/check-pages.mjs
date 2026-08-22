@@ -1,20 +1,9 @@
 #!/usr/bin/env node
-// Static checks over the seven pages.
+// Static checks over the Astro source. The live site is SSR, so these look at
+// src/ rather than a built dist/: a missing title or a leftover .html href is
+// a source mistake, and catching it before `wix build` is the point.
 //
 //   node tools/check-pages.mjs
-//
-// Each page carries a <script type="text/x-dc"> logic block that the runtime
-// compiles with new Function at mount time. Nothing parses it before then: it is
-// not JavaScript as far as the browser is concerned, so a syntax error there is
-// invisible until the page is opened, and it does not fail loudly — the
-// component simply never mounts and the page renders as raw, unstyled template.
-//
-// That is exactly how a missing comma in renderVals took out three pages during
-// the phase 4 copyright change. The browser reported no error; the only symptom
-// was a mailto: link with no address.
-//
-// These checks are static and cheap, and cover the mistakes that are silent at
-// runtime.
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -22,21 +11,30 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CSP = JSON.parse(readFileSync(join(ROOT, 'tools', 'csp.json'), 'utf8'));
+const ORIGIN = 'https://www.brisabay.com';
+
 const PUBLIC_PAGES = [
-  'index.html', 'about.html', 'ourWines.html', 'findBrisaBay.html',
-  'privacy.html', 'terms.html', 'accessibility.html'
+  { file: 'src/pages/index.astro', path: '/' },
+  { file: 'src/pages/about.astro', path: '/about' },
+  { file: 'src/pages/ourWines.astro', path: '/ourWines' },
+  { file: 'src/pages/findBrisaBay.astro', path: '/findBrisaBay' },
+  { file: 'src/pages/privacy.astro', path: '/privacy' },
+  { file: 'src/pages/terms.astro', path: '/terms' },
+  { file: 'src/pages/accessibility.astro', path: '/accessibility' }
 ];
 
-function canonPath(file) {
-  if (file === 'index.html') return 'https://www.brisabay.com/';
-  return 'https://www.brisabay.com/' + file;
+function canonPath(path) {
+  return path === '/' ? `${ORIGIN}/` : `${ORIGIN}${path}`;
 }
 
-for (const expected of PUBLIC_PAGES) {
-  if (!existsSync(join(ROOT, expected))) {
-    console.error(`missing public page: ${expected}`);
-    process.exit(1);
+function walk(dir, acc = []) {
+  if (!existsSync(dir)) return acc;
+  for (const name of readdirSync(dir, { withFileTypes: true })) {
+    const p = join(dir, name.name);
+    if (name.isDirectory()) walk(p, acc);
+    else acc.push(p);
   }
+  return acc;
 }
 
 let pass = 0, fail = 0;
@@ -47,171 +45,117 @@ function check(name, cond, detail = '') {
 }
 function section(t) { console.log(`\n${t}\n${'-'.repeat(t.length)}`); }
 
-const pages = PUBLIC_PAGES.map((f) => ({ file: f, html: readFileSync(join(ROOT, f), 'utf8') }));
+const pages = PUBLIC_PAGES.map((p) => ({
+  ...p,
+  src: readFileSync(join(ROOT, p.file), 'utf8')
+}));
 
-// ===========================================================================
-section('Logic blocks parse');
-
-for (const { file, html } of pages) {
-  const m = html.match(/data-dc-script[^>]*>\n([\s\S]*?)<\/script>/);
-  if (!m) { check(`${file} has a logic block`, false); continue; }
-  // `class Component extends DCLogic` needs the base class to exist before the
-  // body will parse standalone.
-  const src = 'class DCLogic {}\n' + m[1];
-  let err = null;
-  try { new Function(src); } catch (e) { err = e.message; }
-  check(`${file} logic block parses`, err === null, err || '');
+for (const p of PUBLIC_PAGES) {
+  check(`missing page: ${p.file}`, existsSync(join(ROOT, p.file)));
 }
 
+const layout = readFileSync(join(ROOT, 'src/layouts/Layout.astro'), 'utf8');
+const siteTs = readFileSync(join(ROOT, 'src/data/site.ts'), 'utf8');
+const srcFiles = walk(join(ROOT, 'src'));
+
 // ===========================================================================
-section('Template interpolation resolves');
+section('Astro pages replace Design Components');
 
-for (const { file, html } of pages) {
-  const body = html.slice(html.indexOf('<x-dc>'), html.indexOf('</x-dc>'));
-  const logic = (html.match(/data-dc-script[^>]*>\n([\s\S]*?)<\/script>/) || [, ''])[1];
-  const props = (html.match(/data-props="([^"]*)"/) || [, ''])[1];
+const srcCode = srcFiles.filter((f) => /\.(astro|html|js|ts|mjs|css)$/.test(f));
+check('Layout has no DC runtime', !layout.includes('support.js') && !layout.includes('x-dc'));
+check('no page loads support.js', srcCode.every((f) => {
+  const text = readFileSync(f, 'utf8');
+  return !/\bsrc=["'][^"']*support\.js/.test(text) && !/\bfrom ['"][^'"]*support\.js/.test(text);
+}));
+check('no page uses <x-dc>', srcFiles.every((f) => !readFileSync(f, 'utf8').includes('<x-dc')));
+check('CSP has no unsafe-eval', !siteTs.includes('unsafe-eval') && !CSP.policies.base.includes('unsafe-eval') && !CSP.policies.locator.includes('unsafe-eval'));
+check('CSP has no esm.sh', !CSP.policies.locator.includes('esm.sh') && !siteTs.includes('esm.sh'));
 
-  // Literals, not names to resolve.
-  const LITERALS = new Set(['true', 'false', 'null', 'undefined', 'this']);
+// ===========================================================================
+section('Shared layout');
 
-  const used = [...new Set([...body.matchAll(/\{\{\s*([A-Za-z_$][\w$]*)/g)].map((x) => x[1]))]
-    .filter((n) => !LITERALS.has(n));
+check('Layout declares html lang', /<html lang="en">/.test(layout));
+check('Layout has a skip link', /data-bb-skiplink=""/.test(layout));
+check('Layout emits a meta CSP', /http-equiv="Content-Security-Policy"/.test(layout));
+check('Layout preloads both WOFF2 faces',
+  /EBGaramond-Regular\.woff2/.test(layout) && /OldNewspaperTypes\.woff2/.test(layout));
+check('Layout canonicalises from ORIGIN + path', layout.includes('const canonical'));
 
-  const missing = used.filter((name) => {
-    // renderVals supplies these as `name: value` or as ES6 shorthand `name,`
-    if (new RegExp(`(^|[\\s{,])${name}\\s*:`, 'm').test(logic)) return false;
-    if (new RegExp(`(^|[\\s{,])${name}\\s*[,}]`, 'm').test(logic)) return false;
-    // …or it is a local binding the shorthand then returns
-    if (new RegExp(`\\b(?:const|let|var|function)\\s+${name}\\b`).test(logic)) return false;
-    if (props.includes(`&quot;${name}&quot;`)) return false;
-    if (new RegExp(`as="${name}"`).test(body)) return false;   // <sc-for> loop variable
-    return true;
-  });
-  check(`${file}: every {{ value }} has a source`, missing.length === 0, missing.join(', '));
+const siteBase = (siteTs.match(/base:\s*"([^"]+)"/) || [])[1];
+const siteLocator = (siteTs.match(/locator:\s*"([^"]+)"/) || [])[1];
+check('site.ts base CSP matches tools/csp.json', siteBase === CSP.policies.base, siteBase || 'missing');
+check('site.ts locator CSP matches tools/csp.json', siteLocator === CSP.policies.locator, siteLocator || 'missing');
+check('Layout picks locator CSP only when asked', layout.includes('locator ? CSP.locator : CSP.base'));
+
+// ===========================================================================
+section('Pretty URLs');
+
+const htmlHrefs = [];
+for (const file of srcFiles) {
+  const text = readFileSync(file, 'utf8');
+  for (const m of text.matchAll(/href="([^"]+\.html[^"]*)"/g)) {
+    htmlHrefs.push(`${file.replace(ROOT + '/', '')}: ${m[1]}`);
+  }
+}
+check('src/ links no .html URLs', htmlHrefs.length === 0, htmlHrefs.slice(0, 8).join(', '));
+check('src/ calls no /api route', srcFiles.every((f) => !/fetch\(\s*['"`]\/api\//.test(readFileSync(f, 'utf8'))));
+
+const mw = readFileSync(join(ROOT, 'src/middleware.ts'), 'utf8');
+check('middleware strips .html', mw.includes('.html'));
+check('middleware aliases /wines', mw.includes("'/wines': '/ourWines'"));
+check('middleware aliases /where-to-buy', mw.includes("'/where-to-buy': '/findBrisaBay'"));
+
+// ===========================================================================
+section('SEO head tags');
+
+const titles = [];
+const descs = [];
+for (const { file, src, path } of pages) {
+  const title = (src.match(/\btitle="([^"]+)"/) || [])[1] || '';
+  const desc = (src.match(/\bdescription="([^"]+)"/) || [])[1] || '';
+  const declaredPath = (src.match(/\bpath="([^"]+)"/) || [])[1] || '';
+  check(`${file} has a title`, title.length > 0);
+  check(`${file} has a description`, desc.length > 0);
+  check(`${file} path is ${path}`, declaredPath === path, declaredPath);
+  check(`${file} title length 15–70`, title.length >= 15 && title.length <= 70, `${title.length}`);
+  check(`${file} description length 50–160`, desc.length >= 50 && desc.length <= 160, `${desc.length}`);
+  titles.push([file, title]);
+  descs.push([file, desc]);
+}
+for (let i = 0; i < titles.length; i++) {
+  for (let j = i + 1; j < titles.length; j++) {
+    check(`titles unique: ${titles[i][0]} vs ${titles[j][0]}`, titles[i][1] !== titles[j][1]);
+    check(`descriptions unique: ${descs[i][0]} vs ${descs[j][0]}`, descs[i][1] !== descs[j][1]);
+  }
 }
 
-// ===========================================================================
-section('Shared resources are wired up');
-
-for (const { file, html } of pages) {
-  const head = html.slice(0, html.indexOf('</head>'));
-  check(`${file} links site.css`, /href="\.\/site\.css\?v=\d+"/.test(head));
-  check(`${file} loads site-data.js`, /src="\.\/site-data\.js\?v=\d+"/.test(head));
-  // The meta CSP is not belt-and-braces here — it is the whole belt. Wix sends
-  // no security headers and gives no way to add them, so a page without this
-  // tag ships with no policy at all. tools/csp.json holds the expected text.
-  const expectedCsp = CSP.policies[CSP.pages[file] || CSP.default];
-  const actualCsp = (head.match(/http-equiv="Content-Security-Policy" content="([^"]*)"/) || [])[1];
-  check(`${file} carries a meta CSP`, Boolean(actualCsp));
-  check(`${file} CSP matches tools/csp.json`, actualCsp === expectedCsp, actualCsp || 'missing');
-  check(`${file} preloads both WOFF2 faces`,
-    /rel="preload"[^>]+EBGaramond-Regular\.woff2/.test(head) &&
-    /rel="preload"[^>]+OldNewspaperTypes\.woff2/.test(head));
-
-  // resources.js must precede support.js or the vendored-React override is read
-  // too late; site.css must precede both so it is not render-blocking mid-parse.
-  const iCss = head.indexOf('site.css');
-  const iRes = head.indexOf('resources.js');
-  const iSup = head.indexOf('support.js');
-  check(`${file} head order: site.css, resources.js, support.js`,
-    iCss > -1 && iCss < iRes && iRes < iSup, `${iCss} / ${iRes} / ${iSup}`);
-}
-
-// ===========================================================================
-section('Wix hosting constraints');
-
-// Wix serves uploaded files verbatim at their own path. It has no directory
-// indexes, no redirect rules and no server-side code, so three things that were
-// fine on Cloudflare Pages are silent 404s here.
-for (const { file, html } of pages) {
-  const prettyLinks = [...html.matchAll(/href="(\/[a-zA-Z][\w-]*)"/g)].map((m) => m[1]);
-  check(`${file} links no extensionless URLs`, prettyLinks.length === 0,
-    [...new Set(prettyLinks)].join(', '));
-  check(`${file} calls no /api route`, !/fetch\(\s*['"`]\/api\//.test(html));
-}
-
-// ===========================================================================
-section('No duplication regressions');
-
-// These moved into site.css and site-data.js. A page redefining them locally
-// means the extraction has started to unravel.
-for (const { file, html } of pages) {
-  check(`${file} does not redefine the shared preamble`,
-    !html.includes('[data-bb-wordmark] {') && !html.includes('[data-bb-skiplink] {'));
-  check(`${file} does not hardcode the contact address`,
-    !/info@brisabay\.com/.test(html.slice(html.indexOf('<x-dc>'), html.indexOf('</x-dc>'))));
-  check(`${file} does not hardcode a copyright year`, !/Brisa Bay 20\d\d/.test(html));
+{
+  const notFound = readFileSync(join(ROOT, 'src/pages/404.astro'), 'utf8');
+  check('404.astro is noindex', /noindex/.test(notFound));
+  check('404.astro has one h1', (notFound.match(/<h1[\s>]/g) || []).length === 1);
 }
 
 // ===========================================================================
 section('Accessibility basics');
 
-for (const { file, html } of pages) {
-  // Strip <style> first: a CSS comment mentioning <h1> is not an element, and
-  // counting it produced a false "two headings" failure.
-  const body = html.slice(html.indexOf('<x-dc>'), html.indexOf('</x-dc>'))
-    .replace(/<style>[\s\S]*?<\/style>/g, '');
+const partials = ['home', 'about', 'ourWines', 'privacy', 'terms', 'accessibility']
+  .map((name) => ({ name, html: readFileSync(join(ROOT, `src/partials/${name}.html`), 'utf8') }));
+
+for (const { name, html } of partials) {
+  const body = html.replace(/<style>[\s\S]*?<\/style>/g, '');
   const h1s = (body.match(/<h1[\s>]/g) || []).length;
-  check(`${file} has exactly one <h1>`, h1s === 1, `${h1s}`);
-  check(`${file} has a skip link`, /data-bb-skiplink=""/.test(body));
-  check(`${file} declares a language`, /<html lang="[a-z]{2}"/.test(html));
+  check(`${name}.html has exactly one <h1>`, h1s === 1, `${h1s}`);
   const imgs = body.match(/<img\b[^>]*>/g) || [];
-  check(`${file}: every <img> has alt`, imgs.every((t) => /\balt=/.test(t)),
+  check(`${name}.html: every <img> has alt`, imgs.every((t) => /\balt=/.test(t)),
     imgs.filter((t) => !/\balt=/.test(t)).length + ' without');
-  check(`${file}: every <img> declares dimensions`,
-    imgs.every((t) => /\bwidth=/.test(t) && /\bheight=/.test(t)) ||
-    imgs.filter((t) => !/\bwidth=/.test(t)).every((t) => /\{\{/.test(t)),
-    imgs.filter((t) => !/\bwidth=/.test(t) && !/\{\{/.test(t)).length + ' without');
 }
+
+check('privacy.astro substitutes CONTACT', pages.find((p) => p.path === '/privacy').src.includes("replaceAll('{{CONTACT}}'"));
+check('terms.astro substitutes CONTACT', pages.find((p) => p.path === '/terms').src.includes("replaceAll('{{CONTACT}}'"));
+check('accessibility.astro substitutes CONTACT', pages.find((p) => p.path === '/accessibility').src.includes("replaceAll('{{CONTACT}}'"));
 
 // ===========================================================================
-section('SEO head tags');
-
-for (const { file, html } of pages) {
-  const head = html.slice(0, html.indexOf('</head>'));
-  const helmet = (html.match(/<helmet>[\s\S]*?<\/helmet>/) || [''])[0];
-  check(`${file} has a static <title> in <head>`, /<title>.+<\/title>/.test(head));
-  check(`${file} has a static meta description in <head>`,
-    /<meta name="description" content="[^"]+"/.test(head));
-  check(`${file} has a canonical URL`, /<link rel="canonical" href="https:\/\/www\.brisabay\.com\//.test(head));
-  check(`${file} has og:url`, /property="og:url" content="https:\/\/www\.brisabay\.com\//.test(head));
-  const og = (head.match(/property="og:image" content="(https:\/\/www\.brisabay\.com\/assets\/web2\/og-[^"]+\.jpg)"/) || [])[1];
-  check(`${file} has an absolute og:image under assets/web2`, Boolean(og), og || 'missing');
-  const canonical = (head.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
-  const ogUrl = (head.match(/property="og:url" content="([^"]+)"/) || [])[1] || '';
-  const expectedCanon = canonPath(file);
-  check(`${file} canonical is self-referential`, canonical === expectedCanon, canonical);
-  check(`${file} og:url matches canonical`, ogUrl === canonical, ogUrl);
-  check(`${file} helmet does not duplicate <title>`, !/<title>/.test(helmet));
-  check(`${file} helmet does not duplicate og: tags`, !/property="og:/.test(helmet));
-  const iData = head.indexOf('site-data.js');
-  const iSeo = head.indexOf('seo.js');
-  check(`${file} loads seo.js after site-data.js`,
-    iSeo > -1 && iData > -1 && iData < iSeo, `${iData} / ${iSeo}`);
-}
-
-{
-  const titles = [];
-  const descs = [];
-  for (const { file, html } of pages) {
-    const head = html.slice(0, html.indexOf('</head>'));
-    const title = (head.match(/<title>([^<]+)<\/title>/) || [])[1] || '';
-    const desc = (head.match(/<meta name="description" content="([^"]+)"/) || [])[1] || '';
-    const plainTitle = title.replace(/&amp;/g, '&');
-    check(`${file} title length 15–70`, plainTitle.length >= 15 && plainTitle.length <= 70,
-      `${plainTitle.length}`);
-    check(`${file} description length 50–160`, desc.length >= 50 && desc.length <= 160,
-      `${desc.length}`);
-    titles.push([file, plainTitle]);
-    descs.push([file, desc]);
-  }
-  for (let i = 0; i < titles.length; i++) {
-    for (let j = i + 1; j < titles.length; j++) {
-      check(`titles unique: ${titles[i][0]} vs ${titles[j][0]}`, titles[i][1] !== titles[j][1]);
-      check(`descriptions unique: ${descs[i][0]} vs ${descs[j][0]}`, descs[i][1] !== descs[j][1]);
-    }
-  }
-}
+section('Sitemap and robots');
 
 {
   const robots = existsSync(join(ROOT, 'robots.txt'))
@@ -220,89 +164,80 @@ for (const { file, html } of pages) {
     ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
   check('robots.txt exists', robots.length > 0);
   check('robots.txt points at the sitemap', robots.includes('Sitemap: https://www.brisabay.com/sitemap.xml'));
-  check('robots.txt does not Disallow safari-check', !/Disallow:\s*\/safari-check/.test(robots));
   check('sitemap.xml exists', sitemap.length > 0);
   check('sitemap uses lastmod', sitemap.includes('<lastmod>'));
   check('sitemap omits changefreq', !sitemap.includes('<changefreq>'));
   check('sitemap omits priority', !sitemap.includes('<priority>'));
-  for (const f of PUBLIC_PAGES) {
-    const loc = canonPath(f);
-    check(`sitemap lists public ${f}`, sitemap.includes(`<loc>${loc}</loc>`));
+  check('sitemap does not list 404', !sitemap.includes('/404'));
+  for (const p of PUBLIC_PAGES) {
+    const loc = canonPath(p.path);
+    check(`sitemap lists ${p.path}`, sitemap.includes(`<loc>${loc}</loc>`));
   }
   const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   check('sitemap has loc entries', locs.length > 0);
-  for (const loc of locs) {
-    const path = loc.replace('https://www.brisabay.com/', '').replace(/\/$/, '');
-    const file = path === '' ? 'index.html' : path;
-    check(`sitemap loc resolves: ${loc}`, existsSync(join(ROOT, file)), file);
-  }
-  check('sitemap does not list safari-check.html', !sitemap.includes('safari-check.html'));
-  check('sitemap does not list 404.html', !sitemap.includes('404.html'));
+  check('sitemap uses pretty URLs', locs.every((loc) => !loc.endsWith('.html')),
+    locs.filter((loc) => loc.endsWith('.html')).join(', '));
 }
 
+// ===========================================================================
+section('Stockist pages');
+
 {
-  const safari = join(ROOT, 'safari-check.html');
-  if (existsSync(safari)) {
-    const html = readFileSync(safari, 'utf8');
-    check('safari-check.html is noindex', /name="robots" content="noindex/.test(html));
+  const stockTs = readFileSync(join(ROOT, 'src/data/stockists.ts'), 'utf8');
+  const cityBlock = (stockTs.match(/export const CITY_COPY[\s\S]*?\n\};\n/) || [''])[0];
+  const cities = [...cityBlock.matchAll(/'([^']+)':/g)].map((m) => m[1]);
+  const stateBlock = (stockTs.match(/export const STATE_COPY[\s\S]*?\n\};\n/) || [''])[0];
+  const states = [...stateBlock.matchAll(/^\s+(\w+):/gm)].map((m) => m[1]);
+
+  function splitCity(city) {
+    const parts = String(city || '').split(',').map((s) => s.trim());
+    return { locality: parts[0] || '', region: parts[1] || '' };
   }
-  const notFound = join(ROOT, '404.html');
-  if (existsSync(notFound)) {
-    const html = readFileSync(notFound, 'utf8');
-    check('404.html is noindex', /name="robots" content="noindex/.test(html));
+  function slugCity(city) {
+    const { locality, region } = splitCity(city);
+    return `${locality}-${region}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+  const STATE_NAME = { FL: 'Florida', GA: 'Georgia', NJ: 'New Jersey', PR: 'Puerto Rico', OH: 'Ohio' };
+  function slugState(st) {
+    return STATE_NAME[st].toLowerCase().replace(/\s+/g, '-');
+  }
+
+  check('city copy covers the dense markets', cities.length >= 16, `${cities.length}`);
+  check('state copy covers the five regions', states.length === 5, `${states.join(',')}`);
+  check('stockist route exists', existsSync(join(ROOT, 'src/pages/stockists/[slug].astro')));
+  check('stockist breadcrumbs use /findBrisaBay', stockTs.includes('${ORIGIN}/findBrisaBay'));
+
+  const locator = pages.find((p) => p.path === '/findBrisaBay').src;
+  const sitemap = readFileSync(join(ROOT, 'sitemap.xml'), 'utf8');
+  for (const city of cities) {
+    const slug = slugCity(city);
+    check(`locator lists /stockists/${slug}`, locator.includes(`/stockists/${slug}`) || locator.includes('cityPages.map'));
+    check(`sitemap lists /stockists/${slug}`, sitemap.includes(`<loc>${ORIGIN}/stockists/${slug}</loc>`));
+  }
+  for (const st of states) {
+    const slug = slugState(st);
+    check(`locator lists /stockists/${slug}`, locator.includes(`/stockists/${slug}`) || locator.includes('statePages.map'));
+    check(`sitemap lists /stockists/${slug}`, sitemap.includes(`<loc>${ORIGIN}/stockists/${slug}</loc>`));
   }
 }
 
-{
-  const stockDir = join(ROOT, 'stockists');
-  const stockFiles = existsSync(stockDir)
-    ? readdirSync(stockDir).filter((f) => f.endsWith('.html')).sort()
-    : [];
-  check('stockist pages exist', stockFiles.length >= 16, `${stockFiles.length}`);
-  const sitemap = existsSync(join(ROOT, 'sitemap.xml'))
-    ? readFileSync(join(ROOT, 'sitemap.xml'), 'utf8') : '';
-  for (const f of stockFiles) {
-    const html = readFileSync(join(stockDir, f), 'utf8');
-    const canonical = (html.match(/<link rel="canonical" href="([^"]+)"/) || [])[1] || '';
-    check(`stockists/${f} canonical is self-referential`,
-      canonical === `https://www.brisabay.com/stockists/${f}`, canonical);
-    check(`stockists/${f} is in the sitemap`,
-      sitemap.includes(`<loc>https://www.brisabay.com/stockists/${f}</loc>`));
-    check(`stockists/${f} has one h1`, (html.match(/<h1[\s>]/g) || []).length === 1);
-    check(`stockists/${f} is not noindex`, !/name="robots" content="noindex/.test(html));
-  }
-  const wtb = readFileSync(join(ROOT, 'findBrisaBay.html'), 'utf8');
-  for (const f of stockFiles) {
-    check(`where-to-buy links stockists/${f}`, wtb.includes(`stockists/${f}`));
-  }
-}
+// ===========================================================================
+section('Wix config and leftovers');
 
 {
-  // The Cloudflare Pages files are gone: Wix reads neither, and leaving them in
-  // the tree invites someone to edit a policy that has no effect. What replaces
-  // them is tools/csp.json (enforced per page above) and the redirect stubs.
-  check('_headers is gone (Wix ignores it)', !existsSync(join(ROOT, '_headers')));
-  check('_redirects is gone (Wix ignores it)', !existsSync(join(ROOT, '_redirects')));
+  check('_headers is gone', !existsSync(join(ROOT, '_headers')));
+  check('_redirects is gone', !existsSync(join(ROOT, '_redirects')));
   check('no Pages functions remain', !existsSync(join(ROOT, 'functions')));
 
   const cfg = JSON.parse(readFileSync(join(ROOT, 'wix.config.json'), 'utf8'));
-  check('wix.config.json builds from dist/', cfg.site && cfg.site.outputDirectory === 'dist',
-    cfg.site ? cfg.site.outputDirectory : 'no site block');
-
-  // Every pre-Wix URL that was ever indexed needs a stub, because a 301 is not
-  // available. Each must point at a page that exists.
-  for (const [stub, target] of [['where-to-buy.html', 'findBrisaBay.html'], ['wines.html', 'ourWines.html']]) {
-    const html = existsSync(join(ROOT, stub)) ? readFileSync(join(ROOT, stub), 'utf8') : '';
-    check(`${stub} redirects to ${target}`, html.includes(`0;url=/${target}`), stub);
-    check(`${stub} redirect target exists`, existsSync(join(ROOT, target)));
-    check(`${stub} preserves query and hash`, html.includes(`src="./redirect.js" data-to="/${target}"`));
-    check(`${stub} is not in the sitemap`,
-      !readFileSync(join(ROOT, 'sitemap.xml'), 'utf8').includes(`/${stub}<`));
-  }
+  check('wix.config.json keeps the live siteId', cfg.siteId === 'f81bd804-9f61-4ed0-a239-a87bd5f499a0');
+  check('wix.config.json keeps the live appId', cfg.appId === 'e67c40ee-b5bc-459a-9e2b-267b8cf96c85');
+  check('wix.config.json has no static outputDirectory', !cfg.site || !cfg.site.outputDirectory,
+    cfg.site && cfg.site.outputDirectory);
 }
 
 {
-  const css = readFileSync(join(ROOT, 'site.css'), 'utf8');
+  const css = readFileSync(join(ROOT, 'src/styles/site.css'), 'utf8');
   const faces = css.match(/@font-face\s*\{[^}]+\}/g) || [];
   check('every @font-face sets font-display: swap',
     faces.length >= 2 && faces.every((b) => /font-display:\s*swap/.test(b)),
@@ -310,7 +245,32 @@ for (const { file, html } of pages) {
   check('fonts are woff2', faces.every((b) => /format\('woff2'\)/.test(b)));
 }
 
-// ===========================================================================
+{
+  const home = readFileSync(join(ROOT, 'src/partials/home.html'), 'utf8');
+  check('homepage calls no instagram endpoint', !home.includes('/api/instagram') && !home.includes('loadMoments'));
+  check('moment arrows use data-bb-moment-nav',
+    /data-bb-moment-nav="prev"/.test(home) && /data-bb-moment-nav="next"/.test(home));
+  check('moment arrows are not data-bb-moment', !/data-bb-moment="(prev|next)"/.test(home));
+  check('moments viewport exists', /data-bb-moment-viewport/.test(home));
+  const homeJs = readFileSync(join(ROOT, 'public/js/home.js'), 'utf8');
+  check('home.js advances the carousel via data-bb-moment-nav', homeJs.includes('[data-bb-moment-nav]'));
+  check('home.js sizes slides from the viewport', homeJs.includes('viewport.clientWidth'));
+  check('home.js swipes the moments track', homeJs.includes('bindMomentSwipe'));
+  const homeCss = readFileSync(join(ROOT, 'src/styles/home.css'), 'utf8');
+  check('mobile moment card height is scoped to the track',
+    /\[data-bb-moment-track\]\s*>\s*\[data-bb-moment\]/.test(homeCss));
+  check('unscoped [data-bb-moment] flex rule is gone',
+    !/^\s*\[data-bb-moment\]\s*\{/m.test(homeCss));
+  check('mobile gallery drops transform so iOS can swipe',
+    /\[data-bb-moments-gallery\]\s*\{[^}]*transform:\s*none/.test(homeCss));
+  const imgs = [...home.matchAll(/src="(\/assets\/web2\/[^"]+)"/g)].map((m) => m[1]);
+  const moments = imgs.filter((s) => /\/(pour|collage|vibe-|better-|every-|freshness-|intro-|keeping-)/.test(s));
+  check('bottled moments ships at least six images', moments.length >= 6, `${moments.length}`);
+  for (const src of moments) {
+    check(`moment image exists: ${src}`, existsSync(join(ROOT, src.replace(/^\//, ''))));
+  }
+}
+
 console.log('\n' + '='.repeat(60));
 if (failures.length) {
   console.log(`\n${failures.length} failure(s):\n`);

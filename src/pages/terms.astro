@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import html from '../partials/terms.html?raw';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd } from '../data/site';
+
+const body = html.replaceAll('{{CONTACT}}', CONTACT_EMAIL);
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('Terms of Service', '/terms')];
+---
+<Layout
+  title="Terms of Service | Brisa Bay"
+  description="The terms governing your use of the Brisa Bay website, including age, trademarks and limitation of liability."
+  path="/terms"
+  jsonLd={jsonLd}
+  active="terms"
+>
+  <Fragment set:html={body} />
+</Layout>

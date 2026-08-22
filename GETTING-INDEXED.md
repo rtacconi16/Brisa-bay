@@ -2,6 +2,13 @@
 
 **Brisa Bay — SEO remediation plan**
 
+> **Status, 21 August 2026 — the site is Astro on Wix Headless.** Canonical host remains
+> `https://www.brisabay.com/`. Page URLs are now pretty (`/about`, not `/about.html`); the
+> adapter 301s the old `.html` paths. Wix may still serve its own `/sitemap.xml` and
+> `/robots.txt` — submit the pretty inventory from this repo's `sitemap.xml` in the
+> dashboard. Clickjacking is still unmitigated (meta CSP cannot set `frame-ancestors`).
+> Phases 1 onward below still apply with those two substitutions: www host, no `.html`.
+
 > **Status, 21 August 2026 — Phase 0 is done, but not the way this document plans it.**
 > The site is on **Wix**, not Cloudflare Pages. The hosting section and Phase 0 below have
 > been rewritten to record what actually happened; **do not follow the original Cloudflare

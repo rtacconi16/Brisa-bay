@@ -1,11 +1,20 @@
 {
   "production": {
-    "id": "cb676b25-48d0-4069-87c2-3613f74655a5",
+    "id": "56034b81-4220-46b3-8379-b942339fbab9",
     "site": {
-      "main": "https://ukcga6-export-8e9ef224-info699110.wix-site-host.com"
+      "main": "https://wux1om-export-8e9ef224-info699110.wix-site-host.com"
     },
     "dashboard": {
-      "main": "https://manage.wix.com/dashboard/f81bd804-9f61-4ed0-a239-a87bd5f499a0?apps-override=cb676b25-48d0-4069-87c2-3613f74655a5"
+      "main": "https://manage.wix.com/dashboard/f81bd804-9f61-4ed0-a239-a87bd5f499a0?apps-override=56034b81-4220-46b3-8379-b942339fbab9"
+    }
+  },
+  "preview": {
+    "id": "b666488c-3bbb-4712-89ea-c9e8b0cf95b5",
+    "site": {
+      "main": "https://h9uvmc-export-8e9ef224-info699110.wix-site-host.com"
+    },
+    "dashboard": {
+      "main": "https://manage.wix.com/dashboard/f81bd804-9f61-4ed0-a239-a87bd5f499a0?apps-override=b666488c-3bbb-4712-89ea-c9e8b0cf95b5"
     }
   }
 }

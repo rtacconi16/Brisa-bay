@@ -1,0 +1,14 @@
+---
+interface Props {
+  active?: string;
+}
+const { active = '' } = Astro.props;
+---
+<div data-bb-nav="" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px)">
+  <a href="/" data-bb-wordmark="">Brisa Bay</a>
+  <div role="navigation" aria-label="Main">
+    <a href="/about" data-bb-nav-active={active === 'about' ? '' : undefined}>About us</a>
+    <a href="/ourWines" data-bb-nav-active={active === 'wines' ? '' : undefined}>Our Wines</a>
+    <a href="/findBrisaBay" data-bb-nav-active={active === 'locator' ? '' : undefined}>Where to buy</a>
+  </div>
+</div>

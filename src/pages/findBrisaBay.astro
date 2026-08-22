@@ -1,0 +1,107 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd, faqJsonLd, faq } from '../data/site';
+import { allStockistPages } from '../data/stockists';
+import '../styles/locator.css';
+
+const locatorFaq = {
+  'where-to-buy': 'Search a store, city, ZIP or address, or tap the crosshair to use your location. You can also filter by type and by distance. If your favourite spot does not carry us yet, ask them to order it.'
+};
+const jsonLd = [
+  orgJsonLd(),
+  websiteJsonLd(),
+  breadcrumbJsonLd('Where to Buy', '/findBrisaBay'),
+  faqJsonLd(faq(locatorFaq))
+];
+const stockistPages = allStockistPages();
+const cityPages = stockistPages.filter((p) => p.kind === 'city');
+const statePages = stockistPages.filter((p) => p.kind === 'state');
+---
+<Layout
+  title="Where to Buy Brisa Bay | Napa Valley wine near you"
+  description="Find shops, bars and restaurants pouring Brisa Bay Napa Valley Chardonnay and Sauvignon Blanc. Search by city or use the map to locate a bottle near you."
+  path="/findBrisaBay"
+  ogImage="og-locator.jpg"
+  jsonLd={jsonLd}
+  gated
+  locator
+  faq
+  faqOverride={locatorFaq}
+  active="locator"
+  themeColor="#3c3a34"
+>
+  <div data-screen-label="Store Locator" data-bb-locator="" data-contact={CONTACT_EMAIL} style="height: 100svh; min-height: 640px; display: flex; flex-direction: column; overflow: hidden">
+    <div data-bb-nav="" style="flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: clamp(12px, 2vw, 40px); padding: clamp(14px, 1.5vw, 28px) clamp(20px, 3.4vw, 64px); background: var(--bb-dark); position: relative; z-index: 5">
+      <a href="/" data-bb-wordmark="">Brisa Bay</a>
+      <div role="navigation" aria-label="Main">
+        <a href="/about" style-hover="color: var(--bb-yellow)">About us</a>
+        <a href="/ourWines" style-hover="color: var(--bb-yellow)">Our Wines</a>
+        <span data-bb-nav-active="">Where to buy</span>
+      </div>
+    </div>
+
+    <div data-bb-masthead="" style="flex: 0 0 auto; background: var(--bb-cream); padding: clamp(26px, 3.4vh, 52px) clamp(20px, 3.4vw, 64px) clamp(18px, 2.2vh, 30px); box-sizing: border-box; text-align: center">
+      <h1 style="margin: 0; font-family: 'Old Newspaper', serif; font-size: clamp(28px, 3.2vw, 54px); font-weight: 400; line-height: 1.02; color: var(--bb-dark); letter-spacing: 0.02em">Find the Brisa Near You</h1>
+    </div>
+
+    <div data-bb-toolbar="">
+      <div data-bb-search-wrap="">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="20" y1="20" x2="16.2" y2="16.2"></line></svg>
+        <input type="search" placeholder="City, ZIP or store name" aria-label="Search stockists by name, city, ZIP, or address" value="" />
+        <div data-bb-locate="" role="button" tabindex="0" aria-label="Use my current location" title="Near me">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>
+        </div>
+      </div>
+      <label data-bb-radius="" aria-label="Search radius" title="Set your location to filter by distance">
+        <select>
+          <option value="0" selected>Any distance</option>
+          <option value="10">10 mi</option>
+          <option value="25">25 mi</option>
+          <option value="50">50 mi</option>
+          <option value="100">100 mi</option>
+        </select>
+      </label>
+      <div data-bb-type-filters="" role="group" aria-label="Filter by type"></div>
+      <div data-bb-toolbar-status="" role="status" aria-live="polite" aria-atomic="true">Loading stockists…</div>
+    </div>
+
+    <div data-bb-locator-body="" style="flex: 1 1 auto; min-height: 0; display: flex; align-items: stretch">
+      <div data-bb-locator-list="" data-sheet="peek" style="flex: 0 0 34%; display: flex; flex-direction: column; min-height: 0; background: var(--bb-cream); border-right: 1px solid rgba(87,84,74,0.14)">
+        <div data-bb-sheet-handle="" role="button" tabindex="0" aria-label="Expand or collapse stockist list" aria-expanded="false"></div>
+        <div data-bb-store-scroll="" style="flex: 1 1 auto; min-height: 0; overflow-y: auto"></div>
+      </div>
+      <div data-bb-locator-map="" style="flex: 0 0 66%; position: relative; min-width: 0; background: var(--bb-cream-dim)">
+        <Fragment set:html={'<store-map></store-map>'} />
+        <div data-bb-area-search="" hidden role="button" tabindex="0">Search this area</div>
+        <div data-bb-area-clear="" hidden role="button" tabindex="0">Showing this area only · clear</div>
+        <div data-bb-see-all="" role="button" tabindex="0" aria-label="Reset the map and clear all filters" style="position: absolute; top: clamp(16px, 1.4vw, 28px); right: clamp(16px, 1.4vw, 28px); z-index: 500; background: rgba(238,238,228,0.92); color: var(--bb-dark); font-size: clamp(14px, 0.95vw, 17px); letter-spacing: 0.04em; padding: 8px 12px; cursor: pointer; border: 1px solid rgba(87,84,74,0.18); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: color 0.2s, border-color 0.2s" style-hover="color: var(--bb-red); border-color: rgba(230,57,58,0.45)">See all</div>
+      </div>
+    </div>
+  </div>
+
+  <section data-bb-cities="" aria-labelledby="bb-shop-by-city" style="background: var(--bb-cream); padding: clamp(40px, 6vw, 96px) clamp(20px, 5vw, 190px); box-sizing: border-box">
+    <h2 id="bb-shop-by-city" style="margin: 0 0 12px; font-family: 'Old Newspaper', serif; font-size: clamp(28px, 3.2vw, 54px); font-weight: 400; color: var(--bb-dark)">Shop by city</h2>
+    <p style="margin: 0 0 28px; max-width: 42em; font-size: clamp(16px, 1.5vw, 26px); line-height: 1.45">City pages for the denser markets, and a state page when a town has only one shop. The map above still has every account.</p>
+    <ul style="margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 28px; font-size: clamp(16px, 1.5vw, 24px)">
+      {cityPages.map((p) => (
+        <li><a href={`/stockists/${p.slug}`}>{p.label}</a></li>
+      ))}
+    </ul>
+    <h3 style="margin: 36px 0 12px; font-family: 'Old Newspaper', serif; font-size: clamp(20px, 2.2vw, 36px); font-weight: 400; color: var(--bb-dark)">By state</h3>
+    <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 10px 28px; font-size: clamp(16px, 1.5vw, 24px)">
+      {statePages.map((p) => (
+        <li><a href={`/stockists/${p.slug}`}>{p.label}</a></li>
+      ))}
+    </ul>
+  </section>
+
+  <script slot="scripts" is:inline src="/js/locator-config.js"></script>
+  <script slot="scripts" is:inline src="/js/locator-util.js"></script>
+  <script slot="scripts" is:inline src="/js/locator-search.js"></script>
+  <script slot="scripts" is:inline src="/js/locator-analytics.js"></script>
+  <script slot="scripts" is:inline src="/js/locator-jsonld.js"></script>
+  <script slot="scripts" is:inline src="/js/store-map.js"></script>
+  <script>
+    import '../scripts/locator-app.js';
+  </script>
+</Layout>

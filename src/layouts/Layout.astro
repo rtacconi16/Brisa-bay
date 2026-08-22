@@ -1,0 +1,95 @@
+---
+import '../styles/site.css';
+import Footer from '../components/Footer.astro';
+import AgeGate from '../components/AgeGate.astro';
+import Faq from '../components/Faq.astro';
+import { ORIGIN, CSP, faq as faqItems } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  ogImage?: string;
+  jsonLd?: object | object[];
+  gated?: boolean;
+  locator?: boolean;
+  faq?: boolean;
+  faqOverride?: Record<string, string>;
+  active?: 'about' | 'wines' | 'locator' | 'privacy' | 'terms' | 'accessibility' | '';
+  noindex?: boolean;
+  shellExtra?: string;
+  themeColor?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  ogImage = 'og-share.jpg',
+  jsonLd,
+  gated = false,
+  locator = false,
+  faq: showFaq = false,
+  faqOverride,
+  active = '',
+  noindex = false,
+  shellExtra = '',
+  themeColor = '#60b98f'
+} = Astro.props;
+
+const canonical = path === '/' ? `${ORIGIN}/` : `${ORIGIN}${path}`;
+const image = `${ORIGIN}/assets/web2/${ogImage}`;
+const csp = locator ? CSP.locator : CSP.base;
+const graphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const items = showFaq ? faqItems(faqOverride) : [];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content={csp} />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content={themeColor} />
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Brisa Bay" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={image} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={image} />
+  <link rel="preload" href="/assets/fonts/EBGaramond-Regular.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/OldNewspaperTypes.woff2" as="font" type="font/woff2" crossorigin />
+  {graphs.map((obj) => (
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(obj)} />
+  ))}
+  {gated && <script is:inline src="/js/age-gate.js"></script>}
+  <slot name="head" />
+</head>
+<body>
+  <a data-bb-skiplink="" href="#bb-content">Skip to main content</a>
+  <div style={`width: 100%; max-width: 1920px; margin: 0 auto; background: var(--bb-cream); position: relative; font-family: 'EB Garamond', serif; color: var(--bb-ink); ${shellExtra}`}>
+    <main id="bb-content" tabindex="-1">
+      <slot />
+    </main>
+    <Footer active={active} faq={showFaq} />
+  </div>
+  {showFaq && <Faq items={items} />}
+  {gated && <AgeGate />}
+  <script is:inline src="/js/style-hover.js"></script>
+  {gated && <script is:inline src="/js/gate-boot.js"></script>}
+  {showFaq && <script is:inline src="/js/faq.js"></script>}
+  <slot name="scripts" />
+</body>
+</html>

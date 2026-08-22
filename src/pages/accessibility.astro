@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import html from '../partials/accessibility.html?raw';
+import { CONTACT_EMAIL, orgJsonLd, websiteJsonLd, breadcrumbJsonLd } from '../data/site';
+
+const body = html.replaceAll('{{CONTACT}}', CONTACT_EMAIL);
+const jsonLd = [orgJsonLd(), websiteJsonLd(), breadcrumbJsonLd('Accessibility', '/accessibility')];
+---
+<Layout
+  title="Accessibility | Brisa Bay"
+  description="Brisa Bay's commitment to making our website accessible and user friendly for everyone."
+  path="/accessibility"
+  jsonLd={jsonLd}
+  active="accessibility"
+>
+  <Fragment set:html={body} />
+</Layout>
