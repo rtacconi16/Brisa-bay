@@ -35,7 +35,7 @@ npm run release
 ```
 
 That is `node tools/copy-public.mjs && npx @wix/cli@latest build && npx @wix/cli@latest release`.
-The Wix CLI runs `astro build` with its cloud adapter (`WIX_CI` / `WIX_BUILD`). A local
+The Wix CLI runs `astro build` with `@wix/cloud-provider-fetch-adapter`. A local
 `npm run build` uses `@astrojs/node` so you can `npm run preview`.
 
 Stay on this `siteId` / `appId`. Do not run `create headless` or `headless link`.

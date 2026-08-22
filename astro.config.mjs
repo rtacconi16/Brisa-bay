@@ -11,12 +11,25 @@ import { fileURLToPath } from 'node:url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 
-// Wix CLI sets WIX_CI / WIX_BUILD. Local `astro build` and `astro preview`
-// must keep the Node adapter — using the cloud adapter locally produces a
-// bundle that cannot be previewed, and using it whenever NODE_ENV=production
-// would also break `astro build` on a laptop.
-const env = (/** @type {any} */ (globalThis)).process?.env || {};
-const isWixBuild = Boolean(env.WIX_CI || env.WIX_BUILD);
+// `wix build` is just `astro build` with no WIX_CI/WIX_BUILD. Default to the
+// cloud adapter so production does not 500. Local `npm run dev` / `preview` /
+// `build` keep the Node adapter (lifecycle event, argv, or BB_NODE_ADAPTER=1).
+const proc = (/** @type {any} */ (globalThis)).process || {};
+const env = proc.env || {};
+const life = env.npm_lifecycle_event || '';
+const astroCmd = Array.isArray(proc.argv) ? String(proc.argv[2] || '') : '';
+const useNodeAdapter = env.BB_NODE_ADAPTER === '1'
+  || life === 'dev'
+  || life === 'preview'
+  || life === 'build'
+  || astroCmd === 'dev'
+  || astroCmd === 'preview';
+
+// Production Wix BaaS looks for /user-code/entry.mjs (Kubernetes). The fetch
+// adapter defaults to Cloudflare unless this is set, which 500s the live site.
+if (!useNodeAdapter && !env.WIX_CLOUD_PROVIDER) {
+  env.WIX_CLOUD_PROVIDER = 'KUBERNETES';
+}
 
 const wixEnvSchema = {
   WIX_CLIENT_ID: envField.string({ access: 'public', context: 'client', optional: true }),
@@ -70,9 +83,9 @@ export default defineConfig({
   integrations: [brisaPrep(), wix(), wixPages(), relaxWixEnv()],
   security: { checkOrigin: false },
   output: 'server',
-  adapter: isWixBuild
-    ? cloudProviderFetchAdapter({})
-    : node({ mode: 'standalone' }),
+  adapter: useNodeAdapter
+    ? node({ mode: 'standalone' })
+    : cloudProviderFetchAdapter({}),
   trailingSlash: 'never',
   image: {
     domains: ['static.wixstatic.com']

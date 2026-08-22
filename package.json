@@ -9,7 +9,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "test": "node tools/test-locator.mjs && node tools/validate-stores.mjs && node tools/test-age-gate.mjs && node tools/check-pages.mjs && python3 tools/test-server.py",
-    "release": "node tools/copy-public.mjs && npx @wix/cli@latest build && npx @wix/cli@latest release"
+    "release": "node tools/copy-public.mjs && WIX_CLOUD_PROVIDER=KUBERNETES npx @wix/cli@latest build && npx @wix/cli@latest release"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
